@@ -1,4 +1,4 @@
-# 🐍 Python: A Crash Course — A Beginner's Journey
+# Python: A Crash Course — A Beginner's Journey
 
 > An interactive, self-contained desktop learning app for anyone who wants to learn Python in a fun, practical, and hands-on way.
 
