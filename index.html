@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Python: A Crash Course — A Beginner's Journey</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/skulpt/1.2.0/skulpt.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/skulpt/1.2.0/skulpt-stdlib.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<style>
+:root{
+  --bg:#0f1117;--surface:#1a1d27;--s2:#23273a;--s3:#2d3148;
+  --b:rgba(255,255,255,0.08);--b2:rgba(255,255,255,0.14);
+  --t:#e8eaf0;--t2:#9ba3be;--t3:#636b8a;
+  --ac:#7c6dfa;--ac2:#9d91fb;--acb:rgba(124,109,250,0.12);--acbr:rgba(124,109,250,0.35);
+  --gr:#3dd68c;--grb:rgba(61,214,140,0.1);--grbr:rgba(61,214,140,0.3);
+  --ye:#f5c842;--yeb:rgba(245,200,66,0.1);
+  --re:#f06060;--reb:rgba(240,96,96,0.1);--rebr:rgba(240,96,96,0.3);
+  --r:10px;--f:'Segoe UI',system-ui,sans-serif;--m:'Fira Code','Consolas',monospace;
+  --sidebar-w:255px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--t);font-family:var(--f);height:100vh;overflow:hidden;}
+
+/* ── Layout ── */
+.app{display:grid;grid-template-rows:56px 1fr;height:100vh;transition:grid-template-columns .25s ease;}
+.app.sb-open{grid-template-columns:var(--sidebar-w) 1fr;}
+.app.sb-closed{grid-template-columns:0px 1fr;}
+
+/* ── Topbar ── */
+.top{grid-column:1/-1;background:var(--surface);border-bottom:1px solid var(--b);
+  display:flex;align-items:center;padding:0 16px;gap:12px;z-index:10;}
+.top h1{font-size:13px;font-weight:700;color:var(--t);white-space:nowrap;}
+.top h1 span{font-size:11px;font-weight:400;color:var(--t3);margin-left:6px;}
+.sb-toggle{background:transparent;border:1px solid var(--b2);border-radius:6px;
+  color:var(--t2);padding:5px 9px;cursor:pointer;font-size:14px;flex-shrink:0;}
+.sb-toggle:hover{background:var(--s2);color:var(--t);}
+.xpp{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.xbw{width:100px;height:6px;background:var(--s3);border-radius:99px;overflow:hidden;}
+.xb{height:100%;background:linear-gradient(90deg,var(--ac),var(--ac2));border-radius:99px;transition:width .5s;}
+.xt{font-size:12px;color:var(--t2);white-space:nowrap;}
+.sp{display:flex;align-items:center;gap:4px;background:var(--yeb);
+  border:1px solid rgba(245,200,66,.25);border-radius:20px;padding:4px 10px;
+  font-size:12px;color:var(--ye);font-weight:600;}
+
+/* ── Sidebar ── */
+.sb{background:var(--surface);border-right:1px solid var(--b);overflow-y:auto;
+  overflow-x:hidden;transition:width .25s ease;white-space:nowrap;}
+.app.sb-open .sb{width:var(--sidebar-w);}
+.app.sb-closed .sb{width:0;border-right:none;}
+.sb-inner{width:var(--sidebar-w);padding:12px 8px;}
+.sbs{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--t3);
+  text-transform:uppercase;padding:4px 8px 8px;}
+.ci{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r);
+  cursor:pointer;margin-bottom:2px;border:1px solid transparent;transition:background .15s;}
+.ci:hover:not(.lk){background:var(--s2);}
+.ci.ac{background:var(--acb);border-color:var(--acbr);}
+.ci.lk{opacity:.4;cursor:not-allowed;}
+.ci .ico{font-size:17px;flex-shrink:0;width:24px;text-align:center;}
+.ci .inf{flex:1;min-width:0;}
+.ci .ct{font-size:12px;font-weight:500;color:var(--t);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ci .cs{font-size:11px;color:var(--t3);margin-top:1px;}
+
+/* ── Main ── */
+.mn{overflow:hidden;display:flex;flex-direction:column;min-width:0;}
+.vw{display:none;flex:1;overflow:hidden;flex-direction:column;}
+.vw.on{display:flex;}
+
+/* ── Tabs ── */
+.tb{display:flex;gap:2px;padding:12px 16px 0;border-bottom:1px solid var(--b);flex-shrink:0;}
+.tb button{padding:7px 13px;border-radius:var(--r) var(--r) 0 0;border:none;background:transparent;
+  color:var(--t2);font-size:12px;cursor:pointer;font-family:var(--f);
+  border-bottom:2px solid transparent;margin-bottom:-1px;}
+.tb button.on{color:var(--ac2);border-bottom-color:var(--ac);}
+.tc{display:none;flex:1;overflow-y:auto;min-height:0;}
+.tc.on{display:flex;flex-direction:column;}
+
+/* ── Lesson ── */
+.lw{padding:20px 24px;max-width:820px;overflow-y:auto;flex:1;}
+.lw h2{font-size:18px;font-weight:700;margin-bottom:4px;}
+.lm{font-size:13px;color:var(--t3);margin-bottom:16px;}
+.lw p{font-size:14px;color:var(--t2);line-height:1.8;margin-bottom:12px;}
+.lw ul{margin:0 0 12px 20px;}
+.lw li{font-size:14px;color:var(--t2);line-height:2;}
+.cb{background:var(--s2);border:1px solid var(--b2);border-radius:var(--r);
+  padding:12px 15px;font-family:var(--m);font-size:13px;color:#c9d1f0;
+  line-height:1.65;margin:10px 0;overflow-x:auto;white-space:pre;}
+.kw{color:#bd93f9;}.str{color:#f1fa8c;}.fn{color:#8be9fd;}.cm{color:#6272a4;}.nm{color:#ffb86c;}
+.cl{background:var(--acb);border:1px solid var(--acbr);border-radius:var(--r);padding:11px 15px;margin:12px 0;}
+.clt{font-size:11px;font-weight:700;color:var(--ac2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
+.cl p{font-size:13px;color:var(--t2);margin:0;}
+.la{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;align-items:center;}
+.video-placeholder{background:var(--s2);border:1px dashed var(--b2);border-radius:var(--r);
+  padding:20px;text-align:center;margin:16px 0;color:var(--t3);font-size:13px;}
+.video-placeholder span{font-size:20px;display:block;margin-bottom:6px;}
+
+/* ── Sandbox (side by side) ── */
+.sw{display:flex;flex-direction:column;height:100%;}
+.sandbox-cols{display:flex;flex:1;min-height:0;gap:0;}
+.editor-col{display:flex;flex-direction:column;flex:1;min-width:0;border-right:1px solid var(--b);}
+.output-col{display:flex;flex-direction:column;width:42%;min-width:280px;}
+.sandbox-top{display:flex;align-items:center;gap:8px;padding:10px 14px;
+  border-bottom:1px solid var(--b);flex-shrink:0;background:var(--surface);}
+.sandbox-top h3{font-size:13px;font-weight:600;}
+.cs2{padding:7px 14px;background:var(--yeb);border-bottom:1px solid rgba(245,200,66,.2);
+  font-size:12px;color:var(--ye);flex-shrink:0;line-height:1.5;}
+.cs2 strong{color:#ffd966;}
+.pl{font-size:10px;color:var(--t3);padding:5px 14px 3px;text-transform:uppercase;
+  letter-spacing:.08em;flex-shrink:0;background:var(--surface);border-bottom:1px solid var(--b);}
+/* CodeMirror overrides */
+.CodeMirror{flex:1;height:100% !important;font-family:var(--m) !important;font-size:13px !important;
+  background:#1e2030 !important;line-height:1.65 !important;}
+.CodeMirror-scroll{height:100% !important;}
+.editor-cm-wrap{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden;}
+.ob{background:#0a0c12;font-family:var(--m);font-size:13px;padding:10px 14px;
+  flex:1;overflow-y:auto;white-space:pre-wrap;color:#b8f0c0;line-height:1.6;}
+.ob.er{color:var(--re);}
+.sbar{padding:8px 14px;background:var(--surface);border-top:1px solid var(--b);
+  display:flex;gap:8px;align-items:center;flex-shrink:0;}
+.out-header{padding:7px 14px;background:var(--surface);border-bottom:1px solid var(--b);
+  font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;
+  display:flex;align-items:center;gap:8px;flex-shrink:0;}
+
+/* ── Quiz ── */
+.qw{padding:20px 24px;max-width:680px;}
+.qw h2{font-size:18px;font-weight:700;margin-bottom:4px;}
+.qm{font-size:13px;color:var(--t3);margin-bottom:18px;}
+.qb{background:var(--surface);border:1px solid var(--b);border-radius:var(--r);padding:15px;margin-bottom:12px;}
+.qt{font-size:14px;font-weight:500;margin-bottom:12px;line-height:1.6;}
+.qo{display:block;width:100%;text-align:left;background:var(--s2);border:1px solid var(--b2);
+  border-radius:8px;padding:9px 13px;font-size:13px;color:var(--t2);cursor:pointer;margin-bottom:7px;
+  font-family:var(--f);transition:border-color .15s,background .15s;}
+.qo:hover:not([disabled]){border-color:var(--acbr);background:var(--acb);color:var(--t);}
+.qo.ok{background:var(--grb);border-color:var(--grbr);color:var(--gr);}
+.qo.ng{background:var(--reb);border-color:var(--rebr);color:var(--re);}
+.qr{background:var(--surface);border:1px solid var(--b);border-radius:var(--r);
+  padding:18px;margin-top:8px;text-align:center;}
+.qrs{font-size:34px;font-weight:800;color:var(--ac2);}
+.qrss{font-size:14px;color:var(--t2);margin-top:5px;}
+
+/* ── Tutor ── */
+.tw{display:flex;flex-direction:column;height:100%;}
+.tm{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;}
+.mg{max-width:82%;}
+.mg.u{align-self:flex-end;}
+.mg.a{align-self:flex-start;}
+.mb{padding:11px 14px;border-radius:14px;font-size:14px;line-height:1.7;}
+.mg.u .mb{background:var(--acb);border:1px solid var(--acbr);color:var(--t);border-bottom-right-radius:4px;}
+.mg.a .mb{background:var(--s2);border:1px solid var(--b2);color:var(--t2);border-bottom-left-radius:4px;}
+.mg.a .mb pre{background:var(--s3);border-radius:6px;padding:7px 11px;font-family:var(--m);
+  font-size:12px;margin:7px 0;color:#c9d1f0;white-space:pre-wrap;overflow-x:auto;}
+.tia{padding:11px 16px;border-top:1px solid var(--b);display:flex;flex-direction:column;gap:7px;flex-shrink:0;}
+.qbs{display:flex;flex-wrap:wrap;gap:5px;}
+.qb2{font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--b2);
+  background:transparent;color:var(--t2);cursor:pointer;font-family:var(--f);}
+.qb2:hover{border-color:var(--acbr);color:var(--ac2);}
+.tir{display:flex;gap:8px;}
+.ti{flex:1;background:var(--s2);border:1px solid var(--b2);border-radius:8px;
+  padding:8px 12px;font-size:13px;color:var(--t);font-family:var(--f);outline:none;}
+.ti:focus{border-color:var(--acbr);}
+
+/* ── Progress / Settings ── */
+.pv{padding:20px 24px;overflow-y:auto;flex:1;}
+.pv h2{font-size:18px;font-weight:700;margin-bottom:16px;}
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:20px;}
+.sc{background:var(--surface);border:1px solid var(--b);border-radius:var(--r);padding:13px;}
+.sl{font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px;}
+.sv{font-size:24px;font-weight:800;}
+.sv span{font-size:13px;font-weight:400;color:var(--t3);margin-left:3px;}
+.cpl{display:flex;flex-direction:column;gap:9px;}
+.cpi{background:var(--surface);border:1px solid var(--b);border-radius:var(--r);
+  padding:12px 15px;display:flex;align-items:center;gap:12px;}
+.cpbw{height:5px;background:var(--s3);border-radius:99px;margin-top:5px;overflow:hidden;}
+.cpb{height:100%;border-radius:99px;background:var(--ac);transition:width .4s;}
+.apib{background:var(--acb);border:1px solid var(--acbr);border-radius:var(--r);
+  padding:12px 15px;margin-bottom:14px;font-size:13px;color:var(--t2);}
+.apib strong{color:var(--ac2);}
+.apir{display:flex;gap:8px;margin-top:9px;}
+.apii{flex:1;background:var(--s2);border:1px solid var(--b2);border-radius:8px;
+  padding:8px 12px;font-size:13px;color:var(--t);font-family:var(--f);outline:none;}
+.apii:focus{border-color:var(--acbr);}
+.credits-box{background:var(--surface);border:1px solid var(--b);border-radius:var(--r);
+  padding:16px;margin-top:14px;font-size:13px;color:var(--t2);line-height:1.9;}
+.credits-box strong{color:var(--t);}
+.credits-box em{color:var(--ac2);}
+
+/* ── Script Modal ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;
+  display:flex;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.hidden{display:none;}
+.modal{background:var(--surface);border:1px solid var(--b2);border-radius:14px;
+  width:100%;max-width:800px;max-height:85vh;display:flex;flex-direction:column;}
+.modal-head{padding:16px 20px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:10px;}
+.modal-head h3{font-size:15px;font-weight:600;flex:1;}
+.modal-body{flex:1;overflow-y:auto;padding:20px;font-size:13px;color:var(--t2);
+  line-height:1.8;white-space:pre-wrap;font-family:var(--f);}
+.modal-foot{padding:14px 20px;border-top:1px solid var(--b);display:flex;gap:8px;justify-content:flex-end;}
+
+/* ── Floating Pop-out Panel ── */
+.popout{position:fixed;background:var(--surface);border:1px solid var(--b2);
+  border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.6);z-index:500;
+  display:flex;flex-direction:column;min-width:320px;min-height:200px;
+  resize:both;overflow:hidden;}
+.popout.hidden{display:none;}
+.popout.minimized .popout-body{display:none;}
+.popout.minimized{min-height:0;resize:none;}
+.popout-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;
+  background:var(--s2);border-bottom:1px solid var(--b);cursor:grab;flex-shrink:0;
+  border-radius:12px 12px 0 0;user-select:none;}
+.popout-bar:active{cursor:grabbing;}
+.popout-bar .title{font-size:12px;font-weight:600;color:var(--t);flex:1;}
+.popout-btn{background:transparent;border:none;color:var(--t3);cursor:pointer;
+  font-size:14px;padding:2px 6px;border-radius:4px;}
+.popout-btn:hover{background:var(--s3);color:var(--t);}
+.popout-body{flex:1;overflow-y:auto;padding:14px;font-size:13px;color:var(--t2);
+  line-height:1.8;min-height:150px;}
+
+/* ── Buttons ── */
+.btn{padding:7px 14px;border-radius:8px;border:1px solid var(--b2);background:var(--s2);
+  color:var(--t);font-size:13px;cursor:pointer;font-family:var(--f);transition:background .15s;}
+.btn:hover{background:var(--s3);}
+.btn.pr{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:600;}
+.btn.pr:hover{background:var(--ac2);}
+.btn.rn{background:var(--grb);border-color:var(--grbr);color:var(--gr);font-weight:600;}
+.btn.sm{padding:5px 10px;font-size:12px;}
+.btn.dn{border-color:var(--rebr);color:var(--re);}
+.btn.pu{background:var(--yeb);border-color:rgba(245,200,66,.3);color:var(--ye);}
+
+.dots::after{content:'.';animation:dk 1.2s infinite;}
+@keyframes dk{0%{content:'.'}33%{content:'..'}66%{content:'...'}}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-thumb{background:var(--s3);border-radius:99px;}
+</style>
+</head>
+<body>
+<div class="app sb-open" id="app">
+
+  <!-- TOP BAR -->
+  <header class="top">
+    <button class="sb-toggle" onclick="toggleSidebar()" title="Toggle sidebar">☰</button>
+    <span style="font-size:18px">🐍</span>
+    <h1>Python: A Crash Course <span>— A Beginner's Journey</span></h1>
+    <div class="xpp">
+      <span class="xt" id="xpText">0 / 500 XP</span>
+      <div class="xbw"><div class="xb" id="xpBar" style="width:0%"></div></div>
+      <div class="sp">🔥 <span id="strk">1</span>d</div>
+    </div>
+  </header>
+
+  <!-- SIDEBAR -->
+  <nav class="sb" id="sidebar">
+    <div class="sb-inner">
+      <div class="sbs">Chapters</div>
+      <div id="nav"></div>
+      <div class="sbs" style="margin-top:10px">More</div>
+      <div class="ci" onclick="showView('progress')">
+        <span class="ico">📊</span>
+        <div class="inf"><div class="ct">My progress</div><div class="cs">XP, streak, chapters</div></div>
+      </div>
+      <div class="ci" onclick="showView('settings')">
+        <span class="ico">⚙️</span>
+        <div class="inf"><div class="ct">Settings & Credits</div><div class="cs">API key, about</div></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="mn">
+
+    <!-- CHAPTER VIEW -->
+    <div class="vw on" id="v-chapter">
+      <div class="tb">
+        <button class="on" onclick="switchTab('lesson')">📖 Lesson</button>
+        <button onclick="switchTab('sandbox')">🖥️ Sandbox</button>
+        <button onclick="switchTab('quiz')">🧠 Quiz</button>
+        <button onclick="switchTab('tutor')">🤖 AI Tutor</button>
+      </div>
+
+      <!-- LESSON TAB -->
+      <div class="tc on" id="tab-lesson">
+        <div class="lw" id="lessonContent"></div>
+      </div>
+
+      <!-- SANDBOX TAB -->
+      <div class="tc" id="tab-sandbox">
+        <div class="sw">
+          <div class="sandbox-top">
+            <h3>🖥️ Python Sandbox</h3>
+            <span style="font-size:12px;color:var(--t3)">Real Python — runs on your machine</span>
+            <button class="btn sm pu" onclick="openPopout()" style="margin-left:auto" title="Pop out lesson">⧉ Pop out lesson</button>
+            <button class="btn sm" onclick="loadChallenge()">Load challenge</button>
+            <button class="btn sm" onclick="clearCode()">Clear</button>
+          </div>
+          <div class="cs2" id="challengeStrip">💡 Write any Python and click Run, or load the chapter challenge!</div>
+          <div class="sandbox-cols">
+            <!-- Editor -->
+            <div class="editor-col">
+              <div class="pl">your code</div>
+              <div class="editor-cm-wrap" id="cmWrap"></div>
+            </div>
+            <!-- Output -->
+            <div class="output-col">
+              <div class="out-header">output <span id="runSt"></span></div>
+              <div class="ob" id="outputBox">Output appears here...</div>
+            </div>
+          </div>
+          <div class="sbar">
+            <button class="btn rn" onclick="runCode()">▶ Run</button>
+            <button class="btn sm" onclick="copyCode()">Copy</button>
+            <button class="btn sm pu" onclick="openPopout()">⧉ Pop out lesson</button>
+            <span style="margin-left:auto;font-size:11px;color:var(--t3)">Python runs on your machine</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUIZ TAB -->
+      <div class="tc" id="tab-quiz">
+        <div class="qw" id="quizContent"></div>
+      </div>
+
+      <!-- TUTOR TAB -->
+      <div class="tc" id="tab-tutor">
+        <div class="tw">
+          <div class="tm" id="tutorMsgs">
+            <div class="mg a"><div class="mb">👋 Hey Allen! I'm your Python tutor. Ask me anything about the current chapter — I'll explain it with fun analogies and real examples that actually stick. What's on your mind?</div></div>
+          </div>
+          <div class="tia">
+            <div class="qbs" id="quickBtns"></div>
+            <div class="tir">
+              <input class="ti" id="tutorIn" placeholder="Ask anything about this chapter..."/>
+              <button class="btn pr" onclick="sendMsg()">Send ↗</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROGRESS VIEW -->
+    <div class="vw" id="v-progress">
+      <div class="pv">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+          <h2 style="margin:0">📊 Your Progress</h2>
+          <button class="btn sm" onclick="showView('chapter')">← Back</button>
+        </div>
+        <div class="sg" id="statsGrid"></div>
+        <h3 style="font-size:13px;font-weight:600;color:var(--t2);margin-bottom:10px">Chapter breakdown</h3>
+        <div class="cpl" id="chProgList"></div>
+        <button class="btn dn" style="margin-top:18px" onclick="if(confirm('Reset all progress?')){resetAll();}">Reset all progress</button>
+      </div>
+    </div>
+
+    <!-- SETTINGS VIEW -->
+    <div class="vw" id="v-settings">
+      <div class="pv">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+          <h2 style="margin:0">⚙️ Settings & Credits</h2>
+          <button class="btn sm" onclick="showView('chapter')">← Back</button>
+        </div>
+        <div class="apib">
+          <strong>AI Tutor & Script Generator — Anthropic API Key</strong><br>
+          Required for the AI Tutor and Chapter Script Generator. Get a free key at
+          <a href="https://console.anthropic.com" target="_blank" style="color:var(--ac2)">console.anthropic.com</a>
+          <div class="apir">
+            <input class="apii" id="apiIn" type="password" placeholder="sk-ant-..."/>
+            <button class="btn pr" onclick="saveKey()">Save</button>
+            <button class="btn" onclick="clearKey()">Clear</button>
+          </div>
+          <div id="keyStatus" style="font-size:12px;color:var(--gr);margin-top:7px"></div>
+        </div>
+        <div class="credits-box">
+          <strong>About Python: A Crash Course — A Beginner's Journey</strong><br><br>
+          This app was inspired by two fantastic books by <em>Eric Matthes</em>:<br>
+          &nbsp;&nbsp;• <em>Python Crash Course</em> (No Starch Press)<br>
+          &nbsp;&nbsp;• <em>The Big Book of Small Python Projects</em> (No Starch Press)<br><br>
+          All lesson content, explanations, and code examples in this app are original.<br>
+          We gratefully acknowledge Eric Matthes for inspiring this learning journey.<br><br>
+          <strong>Version:</strong> 2.0 &nbsp;|&nbsp; <strong>Built with:</strong> Python, Flask, CodeMirror<br>
+          <strong>Sandbox:</strong> Runs real Python on your machine via Flask
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- FLOATING POP-OUT PANEL -->
+<div class="popout hidden" id="popoutPanel" style="width:420px;height:480px;top:80px;right:20px;">
+  <div class="popout-bar" id="popoutBar">
+    <span class="title" id="popoutTitle">📖 Lesson Reference</span>
+    <button class="popout-btn" onclick="minimizePopout()" title="Minimize">─</button>
+    <button class="popout-btn" onclick="closePopout()" title="Close">✕</button>
+  </div>
+  <div class="popout-body" id="popoutBody"></div>
+</div>
+
+<!-- SCRIPT MODAL -->
+<div class="modal-overlay hidden" id="scriptModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>📝 Chapter Video Script</h3>
+      <span style="font-size:12px;color:var(--t3)" id="scriptChapterName"></span>
+      <button class="btn sm" onclick="copyScript()" style="margin-left:auto">Copy script</button>
+      <button class="btn sm dn" onclick="closeScript()">Close</button>
+    </div>
+    <div class="modal-body" id="scriptBody">Generating script...</div>
+    <div class="modal-foot">
+      <span style="font-size:12px;color:var(--t3)">Paste into CapCut or Synthesia to create your video</span>
+      <button class="btn pr" onclick="copyScript()">Copy to clipboard</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════ CHAPTERS DATA ══════════════════════
+var CHAPTERS = [
+  {
+    id:0, icon:'🖨️', title:'Ch 1 — Hello World', sub:'Setup & first program', xpNeeded:0, xpReward:15,
+    lessonHeading:'Chapter 1: Getting Started',
+    lessonMeta:'Your very first Python program',
+    sandboxCode:'# Chapter 1 — Try it yourself!\nprint("Hello, world!")\nprint("My name is Allen")\nprint("Python is awesome!")',
+    lessonHTML:'<p>Python is one of the world\'s most popular languages — readable, powerful, and beginner-friendly. Your first task: the legendary <strong>Hello World</strong> — one line that proves Python is running on your machine.</p><div class="cb"><span class="fn">print</span>(<span class="str">"Hello, world!"</span>)</div><p>That single line calls the built-in <code>print()</code> function and displays whatever is inside the parentheses on screen. Simple — but this exact pattern is used in programs with millions of lines of code.</p><div class="cl"><div class="clt">💡 Key idea</div><p>Python files end in <code>.py</code>. Python reads them top-to-bottom, executing every line in order.</p></div><p>The <strong>interactive interpreter</strong> lets you experiment live. Type <code>python</code> in your terminal and Python responds instantly:</p><div class="cb"><span class="cm"># The >>> is Python\'s interactive prompt</span>\n>>> <span class="fn">print</span>(<span class="str">"Hello!"</span>)\nHello!\n>>> <span class="nm">2</span> + <span class="nm">2</span>\n<span class="nm">4</span></div><p>Think of the interpreter as a calculator that speaks Python — type any expression and get the answer immediately. Great for experimenting!</p><div class="video-placeholder"><span>🎬</span>Video lesson coming soon!<br><small>Check back after upload to our YouTube channel.</small></div><div class="la"><button class="btn pr" onclick="loadSandboxAndSwitch()">▶ Try in sandbox</button><button class="btn pu" onclick="genScript()">📝 Generate video script</button><button class="btn" onclick="markDone(0)">✓ Mark complete +15 XP</button></div>',
+    challengeTitle:'Ch 1 Challenge',
+    challengeDesc:'Print your name and favourite animal on two separate lines. Bonus: do it in ONE print() call!',
+    challengeCode:'# Ch 1 challenge!\n# 1. Print your name\n# 2. Print your favourite animal\n# Bonus: do it in one line!\n\nprint("Your Name")\nprint("Your Animal")\n',
+    quizzes:[
+      {q:'Which function displays text on screen?',opts:['input()','print()','show()','display()'],ans:1},
+      {q:'What does >>> mean in Python?',opts:['A comparison operator','A comment','The interactive interpreter prompt','An error'],ans:2},
+      {q:'What extension do Python files use?',opts:['.python','.pt','.py','.code'],ans:2},
+      {q:'What does print("Hi") do?',opts:['Stores Hi in memory','Deletes Hi','Displays Hi on screen','Creates a variable called Hi'],ans:2}
+    ],
+    prompts:["Explain print() like I'm 10",'What is the Python interpreter?','Give me a Ch 1 mini-challenge','Why do we always start with Hello World?']
+  },
+  {
+    id:1, icon:'📦', title:'Ch 2 — Variables', sub:'Strings, numbers, types', xpNeeded:10, xpReward:15,
+    lessonHeading:'Chapter 2: Variables and Simple Data Types',
+    lessonMeta:'Storing and working with values',
+    sandboxCode:'# Chapter 2 — Variables!\nname = "Allen"\nage = 25\npi = 3.14159\n\nprint("Name:", name)\nprint("Age:", age)\nprint("Pi:", pi)\n\n# String methods\nprint(name.upper())\nprint(name.lower())\n\n# Math\nprint(2 ** 8)   # 2 to the power of 8\nprint(10 % 3)   # remainder',
+    lessonHTML:'<p>A <strong>variable</strong> is like a labelled box — put a value in, give it a name, use that name later. In Python, no type declarations needed!</p><div class="cb">name = <span class="str">"Allen"</span>     <span class="cm"># str — text</span>\nage  = <span class="nm">25</span>         <span class="cm"># int — whole number</span>\npi   = <span class="nm">3.14159</span>    <span class="cm"># float — decimal</span>\n\n<span class="fn">print</span>(name)\n<span class="fn">print</span>(age)</div><p><strong>String methods</strong> are built-in tools attached to every string:</p><div class="cb">name = <span class="str">"allen"</span>\n<span class="fn">print</span>(name.<span class="fn">title</span>())   <span class="cm"># Allen</span>\n<span class="fn">print</span>(name.<span class="fn">upper</span>())   <span class="cm"># ALLEN</span>\n\nfull = <span class="str">"Allen"</span> + <span class="str">" "</span> + <span class="str">"Smith"</span>   <span class="cm"># concatenation</span>\n<span class="fn">print</span>(full)</div><div class="cl"><div class="clt">🔢 Number Operators</div><p>+ add &nbsp;· &nbsp;- subtract &nbsp;· &nbsp;* multiply &nbsp;· &nbsp;/ divide &nbsp;· &nbsp;** power &nbsp;· &nbsp;% remainder</p></div><div class="cb"><span class="fn">print</span>(<span class="nm">2</span> ** <span class="nm">8</span>)   <span class="cm"># 256 — 2 to the power of 8</span>\n<span class="fn">print</span>(<span class="nm">10</span> % <span class="nm">3</span>)  <span class="cm"># 1 — remainder of 10 divided by 3</span></div><div class="video-placeholder"><span>🎬</span>Video lesson coming soon!<br><small>Check back after upload to our YouTube channel.</small></div><div class="la"><button class="btn pr" onclick="loadSandboxAndSwitch()">▶ Try in sandbox</button><button class="btn pu" onclick="genScript()">📝 Generate video script</button><button class="btn" onclick="markDone(1)">✓ Mark complete +15 XP</button></div>',
+    challengeTitle:'Ch 2 Challenge',
+    challengeDesc:'Create variables for your first name, last name, and age. Print a greeting: "Hello, Allen Smith! You are 25 years old."',
+    challengeCode:'# Ch 2 challenge: variables!\nfirst_name = "Your"\nlast_name = "Name"\nage = 0\n\nprint("Hello, " + first_name + " " + last_name + "! You are " + str(age) + " years old.")\n',
+    quizzes:[
+      {q:'How do you create a variable score with value 100?',opts:['var score = 100','score := 100','score = 100','int score = 100'],ans:2},
+      {q:'What does "Allen".upper() return?',opts:['"allen"','"Allen"','"ALLEN"','Error'],ans:2},
+      {q:'What is 2 ** 3 in Python?',opts:['6','8','5','23'],ans:1},
+      {q:'Which is NOT a valid Python data type?',opts:['str','int','float','text'],ans:3}
+    ],
+    prompts:['What is a variable? Give me a fun analogy','Difference between int and float?','How do f-strings work?','Give me a variables challenge']
+  },
+  {
+    id:2, icon:'📋', title:'Ch 3 — Lists', sub:'Collections of data', xpNeeded:20, xpReward:20,
+    lessonHeading:'Chapter 3: Introducing Lists',
+    lessonMeta:'Storing multiple values in one place',
+    sandboxCode:"# Chapter 3 — Lists!\nfruits = ['apple', 'banana', 'cherry', 'mango']\n\nprint('First:', fruits[0])   # index 0 = first!\nprint('Last:', fruits[-1])   # -1 = last!\nprint('Count:', len(fruits))\n\n# Add and remove\nfruits.append('grape')\nprint('After append:', fruits)\n\nfruits.remove('banana')\nprint('After remove:', fruits)",
+    lessonHTML:'<p>A <strong>list</strong> stores many values in one variable, in order. Position numbers (indexes) start at 0, not 1!</p><div class="cb">fruits = [<span class="str">\'apple\'</span>, <span class="str">\'banana\'</span>, <span class="str">\'cherry\'</span>]\n<span class="fn">print</span>(fruits[<span class="nm">0</span>])    <span class="cm"># apple   (index 0 = first!)</span>\n<span class="fn">print</span>(fruits[<span class="nm">-1</span>])   <span class="cm"># cherry  (-1 = last item)</span></div><div class="cl"><div class="clt">⚠️ Indexes start at 0!</div><p>The first item is [0], second is [1]. Use [-1] to always get the last item without knowing the list length.</p></div><p>Lists are <strong>dynamic</strong> — add and remove items freely:</p><div class="cb">fruits.<span class="fn">append</span>(<span class="str">\'mango\'</span>)      <span class="cm"># add to end</span>\nfruits.<span class="fn">insert</span>(<span class="nm">0</span>, <span class="str">\'grape\'</span>)   <span class="cm"># insert at position 0</span>\nfruits.<span class="fn">remove</span>(<span class="str">\'banana\'</span>)     <span class="cm"># remove by value</span>\n<span class="kw">del</span> fruits[<span class="nm">0</span>]               <span class="cm"># remove by index</span>\nlast = fruits.<span class="fn">pop</span>()         <span class="cm"># remove and return last</span>\n<span class="fn">print</span>(<span class="fn">len</span>(fruits))           <span class="cm"># count items</span></div><div class="video-placeholder"><span>🎬</span>Video lesson coming soon!<br><small>Check back after upload to our YouTube channel.</small></div><div class="la"><button class="btn pr" onclick="loadSandboxAndSwitch()">▶ Try in sandbox</button><button class="btn pu" onclick="genScript()">📝 Generate video script</button><button class="btn" onclick="markDone(2)">✓ Mark complete +20 XP</button></div>',
+    challengeTitle:'Ch 3 Challenge',
+    challengeDesc:"Create a list of your top 3 favourite foods. Print the first and last. Add a 4th food and print the full list.",
+    challengeCode:"# Ch 3 challenge: lists!\nfoods = ['pizza', 'tacos', 'sushi']\n\nprint('First:', foods[0])\nprint('Last:', foods[-1])\n\nfoods.append('ramen')\nprint('Full list:', foods)\n",
+    quizzes:[
+      {q:'What index does the first item in a list have?',opts:['1','-1','0','start'],ans:2},
+      {q:'How do you add an item to the END of a list?',opts:['list.add()','list.push()','list.append()','list.insert()'],ans:2},
+      {q:'How do you get the LAST item without knowing the length?',opts:['list[last]','list[-1]','list[end]','list.last()'],ans:1},
+      {q:'What does len(my_list) return?',opts:['The last item','The number of items','The list reversed','0'],ans:1}
+    ],
+    prompts:['Why do indexes start at 0?','pop() vs remove() — what is the difference?','What is list slicing?','Give me a list challenge']
+  },
+  {
+    id:3, icon:'🔁', title:'Ch 4 — Loops', sub:'For loops & comprehensions', xpNeeded:50, xpReward:20,
+    lessonHeading:'Chapter 4: Working with Lists',
+    lessonMeta:'Loops, slices, and list comprehensions',
+    sandboxCode:'# Chapter 4 — Loops!\nanimals = ["cat", "dog", "rabbit", "parrot"]\n\n# For loop\nfor animal in animals:\n    print("I love my", animal)\n\nprint("---")\n\n# Range loop\nfor i in range(1, 6):\n    print(i, "squared =", i**2)\n\nprint("---")\n\n# List comprehension — one line!\nsquares = [x**2 for x in range(1, 11)]\nprint(squares)',
+    lessonHTML:'<p>The <strong>for loop</strong> visits each item in a list automatically — like a conveyor belt moving each item to your code one at a time:</p><div class="cb">animals = [<span class="str">\'cat\'</span>, <span class="str">\'dog\'</span>, <span class="str">\'rabbit\'</span>]\n<span class="kw">for</span> animal <span class="kw">in</span> animals:\n    <span class="fn">print</span>(<span class="str">"I love my"</span>, animal)</div><p>Use <code>range()</code> to loop through number sequences:</p><div class="cb"><span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">1</span>, <span class="nm">6</span>):\n    <span class="fn">print</span>(i)   <span class="cm"># 1 2 3 4 5 (stops BEFORE 6)</span></div><div class="cl"><div class="clt">✨ List Comprehension — one-liner superpower</div><p>Build an entire list in one readable line — like writing English!</p></div><div class="cb">squares = [x**<span class="nm">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">1</span>, <span class="nm">11</span>)]\n<span class="fn">print</span>(squares)   <span class="cm"># [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]</span></div><p><strong>Slices</strong> grab a portion of a list:</p><div class="cb">p = [<span class="str">\'a\'</span>, <span class="str">\'b\'</span>, <span class="str">\'c\'</span>, <span class="str">\'d\'</span>]\n<span class="fn">print</span>(p[<span class="nm">0</span>:<span class="nm">3</span>])   <span class="cm"># [\'a\', \'b\', \'c\'] — first 3</span>\n<span class="fn">print</span>(p[<span class="nm">1</span>:])    <span class="cm"># from index 1 onwards</span></div><div class="video-placeholder"><span>🎬</span>Video lesson coming soon!<br><small>Check back after upload to our YouTube channel.</small></div><div class="la"><button class="btn pr" onclick="loadSandboxAndSwitch()">▶ Try in sandbox</button><button class="btn pu" onclick="genScript()">📝 Generate video script</button><button class="btn" onclick="markDone(3)">✓ Mark complete +20 XP</button></div>',
+    challengeTitle:'Ch 4 Challenge',
+    challengeDesc:'Print the squares of 1–10 using a for loop. Then do the SAME in one line using a list comprehension!',
+    challengeCode:'# Ch 4 challenge: loops!\n# Method 1: for loop\nfor i in range(1, 11):\n    print(i ** 2)\n\nprint("---")\n\n# Method 2: list comprehension (one line!)\nsquares = [x**2 for x in range(1, 11)]\nprint(squares)\n',
+    quizzes:[
+      {q:'What does a for loop do?',opts:['Repeats code forever','Runs code once','Visits each item in a sequence','Skips items'],ans:2},
+      {q:'What does range(1, 5) produce?',opts:['1,2,3,4,5','1,2,3,4','0,1,2,3,4','2,3,4,5'],ans:1},
+      {q:'What does [x**2 for x in range(3)] produce?',opts:['[1,4,9]','[0,1,4]','[0,1,2]','[1,2,3]'],ans:1},
+      {q:'What does players[1:3] return?',opts:['Items at 0,1,2','Items at 1,2','Items at 1,2,3','The whole list'],ans:1}
+    ],
+    prompts:['Explain for loops with a real-world analogy','What is a list comprehension?','Difference between for and while loops?','Give me a loops challenge']
+  },
+  {
+    id:4, icon:'🤔', title:'Ch 5 — if Statements', sub:'Making decisions in code', xpNeeded:90, xpReward:20,
+    lessonHeading:'Chapter 5: if Statements',
+    lessonMeta:'Giving your code a brain',
+    sandboxCode:"# Chapter 5 — if Statements!\nage = 20\nhas_ticket = True\n\nif age >= 18 and has_ticket:\n    print('Welcome to the show!')\nelif age >= 18:\n    print('You need a ticket!')\nelse:\n    print('Too young!')\n\nprint('---')\n\n# Check list membership\nfavourites = ['python', 'javascript', 'rust']\nlanguage = 'python'\n\nif language in favourites:\n    print(language, 'is a favourite!')\nelse:\n    print(language, 'is not in the list')",
+    lessonHTML:'<p>An <strong>if statement</strong> makes your code take different paths based on a condition — this is how programs become intelligent!</p><div class="cb">age = <span class="nm">17</span>\n<span class="kw">if</span> age >= <span class="nm">18</span>:\n    <span class="fn">print</span>(<span class="str">"You can vote!"</span>)\n<span class="kw">elif</span> age >= <span class="nm">16</span>:\n    <span class="fn">print</span>(<span class="str">"Almost! Two more years."</span>)\n<span class="kw">else</span>:\n    <span class="fn">print</span>(<span class="str">"Too young to vote."</span>)</div><div class="cl"><div class="clt">📐 Comparison Operators</div><p><code>==</code> equal &nbsp;· &nbsp;<code>!=</code> not equal &nbsp;· &nbsp;<code>&gt;</code> greater &nbsp;· &nbsp;<code>&lt;</code> less &nbsp;· &nbsp;<code>&gt;=</code> ≥ &nbsp;· &nbsp;<code>&lt;=</code> ≤</p></div><p>Combine conditions or check list membership:</p><div class="cb">age = <span class="nm">22</span>\nhas_ticket = <span class="kw">True</span>\n<span class="kw">if</span> age >= <span class="nm">18</span> <span class="kw">and</span> has_ticket:\n    <span class="fn">print</span>(<span class="str">"Welcome!"</span>)\n\nbanned = [<span class="str">\'frank\'</span>, <span class="str">\'mallory\'</span>]\n<span class="kw">if</span> <span class="str">\'alice\'</span> <span class="kw">not in</span> banned:\n    <span class="fn">print</span>(<span class="str">"Access granted"</span>)</div><div class="video-placeholder"><span>🎬</span>Video lesson coming soon!<br><small>Check back after upload to our YouTube channel.</small></div><div class="la"><button class="btn pr" onclick="loadSandboxAndSwitch()">▶ Try in sandbox</button><button class="btn pu" onclick="genScript()">📝 Generate video script</button><button class="btn" onclick="markDone(4)">✓ Mark complete +20 XP</button></div>',
+    challengeTitle:'Ch 5 Challenge',
+    challengeDesc:"Loop through [3,7,12,7,4,9]. Print 'Even' or 'Odd' for each number. Bonus: if it's 7, print 'Lucky!' instead.",
+    challengeCode:"# Ch 5 challenge: if statements!\nnumbers = [3, 7, 12, 7, 4, 9]\n\nfor num in numbers:\n    if num == 7:\n        print(str(num) + ' - Lucky!')\n    elif num % 2 == 0:\n        print(str(num) + ' - Even')\n    else:\n        print(str(num) + ' - Odd')\n",
+    quizzes:[
+      {q:'What operator checks if two values are EQUAL?',opts:['=','==','===','equals'],ans:1},
+      {q:'What does elif mean?',opts:['else if — try another condition','A typo of else','Always runs','Ends the if block'],ans:0},
+      {q:'What does (5 > 3) and (2 < 1) evaluate to?',opts:['True','False','Error','5'],ans:1},
+      {q:'How do you check if "apple" is in list fruits?',opts:['"apple" in fruits','fruits.has("apple")','fruits.contains("apple")','apple in fruits'],ans:0}
+    ],
+    prompts:['Explain if/elif/else with a real example','Difference between = and ==?','How does "in" work with lists?','Give me an if-statement challenge']
+  },
+  {
+    id:5, icon:'📖', title:'Ch 6 — Dictionaries', sub:'Key-value pairs', xpNeeded:130, xpReward:25,
+    lessonHeading:'Chapter 6: Dictionaries',
+    lessonMeta:'Labelled data storage',
+    sandboxCode:"# Chapter 6 — Dictionaries!\nperson = {\n    'name': 'Allen',\n    'age': 25,\n    'city': 'Your City',\n    'hobby': 'coding'\n}\n\n# Access values\nprint('Name:', person['name'])\nprint('Age:', person['age'])\n\n# Update and add\nperson['age'] = 26\nperson['language'] = 'Python'\n\n# Loop through\nprint('---')\nfor key, value in person.items():\n    print(key + ':', value)",
+    lessonHTML:'<p>A <strong>dictionary</strong> stores data as <em>key: value</em> pairs — like a real dictionary where you look up a word (key) to find its meaning (value).</p><div class="cb">person = {<span class="str">\'name\'</span>: <span class="str">\'Allen\'</span>, <span class="str">\'age\'</span>: <span class="nm">25</span>}\n\n<span class="fn">print</span>(person[<span class="str">\'name\'</span>])      <span class="cm"># Allen</span>\nperson[<span class="str">\'age\'</span>] = <span class="nm">26</span>        <span class="cm"># update value</span>\nperson[<span class="str">\'city\'</span>] = <span class="str">\'Austin\'</span>  <span class="cm"># add new key</span>\n<span class="kw">del</span> person[<span class="str">\'age\'</span>]          <span class="cm"># delete a key</span></div><p>Loop through key-value pairs with <code>.items()</code>:</p><div class="cb"><span class="kw">for</span> key, value <span class="kw">in</span> person.<span class="fn">items</span>():\n    <span class="fn">print</span>(key + <span class="str">\': \'</span> + <span class="fn">str</span>(value))</div><div class="cl"><div class="clt">🧠 Dict vs List — which one?</div><p>Use a <strong>list</strong> when order matters (steps, rankings). Use a <strong>dict</strong> when you label your data (user profile, settings). Both can nest inside each other!</p></div><div class="video-placeholder"><span>🎬</span>Video lesson coming soon!<br><small>Check back after upload to our YouTube channel.</small></div><div class="la"><button class="btn pr" onclick="loadSandboxAndSwitch()">▶ Try in sandbox</button><button class="btn pu" onclick="genScript()">📝 Generate video script</button><button class="btn" onclick="markDone(5)">✓ Mark complete +25 XP</button></div>',
+    challengeTitle:'Ch 6 Challenge',
+    challengeDesc:"Create a dictionary about yourself (name, age, city, favourite_food). Print each key-value. Then add a 'hobby' key and print it.",
+    challengeCode:"# Ch 6 challenge: dictionaries!\nme = {\n    'name': 'Your Name',\n    'age': 25,\n    'city': 'Your City',\n    'favourite_food': 'pizza'\n}\n\nfor key, value in me.items():\n    print(key + ': ' + str(value))\n\nme['hobby'] = 'coding'\nprint('\\nNew hobby:', me['hobby'])\n",
+    quizzes:[
+      {q:'How do you access the value for key "name" in dict d?',opts:['d.name','d("name")','d["name"]','d->name'],ans:2},
+      {q:'How do you add a new key "age" = 25 to dict person?',opts:['person.add("age",25)','person["age"] = 25','person.append("age":25)','add person["age"]=25'],ans:1},
+      {q:'Which method loops through both keys AND values?',opts:['.keys()','.values()','.items()','.pairs()'],ans:2},
+      {q:'What is a dictionary in Python?',opts:['A sorted list','Key-value pairs for labelled data','A type of loop','A list of strings'],ans:1}
+    ],
+    prompts:['Dict vs list — when do I use which?','How do I check if a key exists?','What are nested dictionaries?','Give me a dictionary challenge']
+  },
+  {
+    id:6, icon:'🔄', title:'Ch 7 — While Loops', sub:'Looping with conditions', xpNeeded:180, xpReward:25,
+    lessonHeading:'Chapter 7: While Loops & User Input',
+    lessonMeta:'Loops that run until a condition is met',
+    sandboxCode:"# Chapter 7 — While Loops!\n# Count up\ncount = 1\nwhile count <= 5:\n    print('Count:', count)\n    count += 1\n\nprint('Done!')\nprint('---')\n\n# Loop with a list\nfruits = ['apple', 'banana', 'cherry']\nwhile fruits:\n    eaten = fruits.pop()\n    print('Eating:', eaten)\nprint('All eaten!')",
+    lessonHTML:'<p>A <strong>while loop</strong> keeps running as long as a condition is true — unlike a for loop which visits a fixed list, a while loop keeps going until something changes.</p><div class="cb">count = <span class="nm">1</span>\n<span class="kw">while</span> count <= <span class="nm">5</span>:\n    <span class="fn">print</span>(<span class="str">"Count:"</span>, count)\n    count += <span class="nm">1</span>   <span class="cm"># IMPORTANT: always update the counter!</span>\n<span class="fn">print</span>(<span class="str">"Done!"</span>)</div><div class="cl"><div class="clt">⚠️ Avoid infinite loops!</div><p>Always make sure your while loop condition will eventually become False — otherwise it runs forever! Use <code>count += 1</code> or similar to change the condition each loop.</p></div><p>Use <code>break</code> to exit a loop early, and <code>continue</code> to skip to the next iteration:</p><div class="cb"><span class="kw">while</span> <span class="kw">True</span>:\n    answer = <span class="str">\'quit\'</span>   <span class="cm"># simulating user input</span>\n    <span class="kw">if</span> answer == <span class="str">\'quit\'</span>:\n        <span class="kw">break</span>           <span class="cm"># exit the loop</span>\n    <span class="fn">print</span>(<span class="str">"You said:"</span>, answer)\n\n<span class="cm"># Skip even numbers</span>\n<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">10</span>):\n    <span class="kw">if</span> i % <span class="nm">2</span> == <span class="nm">0</span>:\n        <span class="kw">continue</span>   <span class="cm"># skip evens</span>\n    <span class="fn">print</span>(i)       <span class="cm"># prints 1 3 5 7 9</span></div><div class="video-placeholder"><span>🎬</span>Video lesson coming soon!<br><small>Check back after upload to our YouTube channel.</small></div><div class="la"><button class="btn pr" onclick="loadSandboxAndSwitch()">▶ Try in sandbox</button><button class="btn pu" onclick="genScript()">📝 Generate video script</button><button class="btn" onclick="markDone(6)">✓ Mark complete +25 XP</button></div>',
+    challengeTitle:'Ch 7 Challenge',
+    challengeDesc:'Use a while loop to print a countdown from 10 to 1, then print "Blast off!". Bonus: use a while loop to empty a list one item at a time.',
+    challengeCode:'# Ch 7 challenge: while loops!\n# Countdown\ncount = 10\nwhile count >= 1:\n    print(count)\n    count -= 1\nprint("Blast off!")\n\nprint("---")\n\n# Bonus: empty a list\nrockets = ["Apollo", "Falcon", "Starship"]\nwhile rockets:\n    launched = rockets.pop()\n    print("Launched:", launched)\nprint("All rockets launched!")\n',
+    quizzes:[
+      {q:'When does a while loop stop?',opts:['After 10 iterations','When its condition becomes False','When you press Enter','Never — it runs forever'],ans:1},
+      {q:'What does "break" do inside a loop?',opts:['Skips to next iteration','Exits the loop immediately','Pauses the loop','Causes an error'],ans:1},
+      {q:'What does "continue" do inside a loop?',opts:['Exits the loop','Pauses execution','Skips the rest of this iteration and goes to next','Restarts the loop'],ans:2},
+      {q:'What is count += 1 shorthand for?',opts:['count = 1','count == count + 1','count = count + 1','count + 1'],ans:2}
+    ],
+    prompts:['While loop vs for loop — when to use which?','What is an infinite loop and how do I avoid it?','Explain break and continue with examples','Give me a while loop challenge']
+  },
+  {
+    id:7, icon:'⚙️', title:'Ch 8 — Functions', sub:'Reusable code blocks', xpNeeded:230, xpReward:30,
+    lessonHeading:'Chapter 8: Functions',
+    lessonMeta:'Writing reusable, organised code',
+    sandboxCode:'# Chapter 8 — Functions!\ndef greet(name, greeting="Hello"):\n    """Greet someone with a custom message."""\n    print(greeting + ", " + name.title() + "!")\n\ngreet("allen")\ngreet("allen", "Welcome")\n\nprint("---")\n\n# Function with return value\ndef square(number):\n    """Return the square of a number."""\n    return number ** 2\n\nfor i in range(1, 6):\n    print(i, "squared =", square(i))\n\nprint("---")\n\n# *args — accept any number of arguments\ndef make_sandwich(*fillings):\n    print("Making sandwich with:")\n    for filling in fillings:\n        print(" -", filling)\n\nmake_sandwich("cheese", "tomato", "lettuce")',
+    lessonHTML:'<p>A <strong>function</strong> is a named block of reusable code. Define it once, call it anywhere — like saving a recipe you can cook any time.</p><div class="cb"><span class="kw">def</span> <span class="fn">greet</span>(name):\n    <span class="str">"""Greet someone by name."""</span>\n    <span class="fn">print</span>(<span class="str">"Hello, "</span> + name.<span class="fn">title</span>() + <span class="str">"!"</span>)\n\n<span class="fn">greet</span>(<span class="str">\'allen\'</span>)   <span class="cm"># Hello, Allen!</span>\n<span class="fn">greet</span>(<span class="str">\'maya\'</span>)    <span class="cm"># Hello, Maya!</span></div><p>Functions can <strong>return</strong> a value back to the caller:</p><div class="cb"><span class="kw">def</span> <span class="fn">square</span>(number):\n    <span class="kw">return</span> number ** <span class="nm">2</span>\n\nresult = <span class="fn">square</span>(<span class="nm">5</span>)\n<span class="fn">print</span>(result)   <span class="cm"># 25</span></div><div class="cl"><div class="clt">🌟 Default values & *args</div><p>Give parameters defaults so callers can skip them. Use <code>*args</code> to accept any number of arguments.</p></div><div class="cb"><span class="kw">def</span> <span class="fn">greet</span>(name, greeting=<span class="str">"Hello"</span>):\n    <span class="fn">print</span>(greeting + <span class="str">", "</span> + name + <span class="str">"!"</span>)\n\n<span class="fn">greet</span>(<span class="str">\'Allen\'</span>)              <span class="cm"># Hello, Allen!</span>\n<span class="fn">greet</span>(<span class="str">\'Allen\'</span>, <span class="str">\'Welcome\'</span>)   <span class="cm"># Welcome, Allen!</span></div><div class="video-placeholder"><span>🎬</span>Video lesson coming soon!<br><small>Check back after upload to our YouTube channel.</small></div><div class="la"><button class="btn pr" onclick="loadSandboxAndSwitch()">▶ Try in sandbox</button><button class="btn pu" onclick="genScript()">📝 Generate video script</button><button class="btn" onclick="markDone(7)">✓ Mark complete +30 XP</button></div>',
+    challengeTitle:'Ch 8 Challenge',
+    challengeDesc:"Write a function describe_pet(animal, name) that prints 'I have a [animal] named [Name].' Give 'animal' a default value of 'dog'. Call it 3 times.",
+    challengeCode:"# Ch 8 challenge: functions!\ndef describe_pet(name, animal='dog'):\n    \"\"\"Describe a pet.\"\"\"\n    print('I have a ' + animal + ' named ' + name.title() + '.')\n\ndescribe_pet('rex')              # uses default animal\ndescribe_pet('whiskers', 'cat')\ndescribe_pet('polly', 'parrot')\n",
+    quizzes:[
+      {q:'What keyword defines a function in Python?',opts:['function','func','def','define'],ans:2},
+      {q:'What does the return statement do?',opts:['Prints a value','Ends the program','Sends a value back to the caller','Loops back to start'],ans:2},
+      {q:'What does *args in a function do?',opts:['One required argument','Accept any number of arguments','A keyword argument','Causes an error'],ans:1},
+      {q:'What is the triple-quoted string right after def called?',opts:['A comment','A docstring','A return value','A parameter'],ans:1}
+    ],
+    prompts:['Explain functions with a cooking analogy','Parameters vs arguments — what is the difference?','When should I use return?','Give me a functions challenge']
+  },
+  {
+    id:8, icon:'🏗️', title:'Ch 9 — Classes', sub:'Object-oriented programming', xpNeeded:290, xpReward:35,
+    lessonHeading:'Chapter 9: Classes',
+    lessonMeta:'Building your own data types',
+    sandboxCode:'# Chapter 9 — Classes!\nclass Dog:\n    """A simple model of a dog."""\n\n    def __init__(self, name, breed, age):\n        """Initialize dog attributes."""\n        self.name = name\n        self.breed = breed\n        self.age = age\n\n    def sit(self):\n        print(self.name.title() + " is now sitting.")\n\n    def roll_over(self):\n        print(self.name.title() + " rolled over!")\n\n    def describe(self):\n        print(f"{self.name} is a {self.age}-year-old {self.breed}.")\n\n# Create instances\nmy_dog = Dog("rex", "labrador", 3)\nyour_dog = Dog("bella", "poodle", 5)\n\nmy_dog.describe()\nmy_dog.sit()\nyour_dog.describe()\nyour_dog.roll_over()',
+    lessonHTML:'<p>A <strong>class</strong> is a blueprint for creating objects. Think of it like a cookie cutter — the class is the cutter, each object (instance) is a cookie made from it.</p><div class="cb"><span class="kw">class</span> <span class="fn">Dog</span>:\n    <span class="str">"""A simple model of a dog."""</span>\n\n    <span class="kw">def</span> <span class="fn">__init__</span>(self, name, breed):\n        <span class="str">"""Set up the dog\'s attributes."""</span>\n        self.name = name\n        self.breed = breed\n\n    <span class="kw">def</span> <span class="fn">sit</span>(self):\n        <span class="fn">print</span>(self.name + <span class="str">" is sitting."</span>)</div><p>Create instances (individual dogs) from the class:</p><div class="cb">my_dog = <span class="fn">Dog</span>(<span class="str">"Rex"</span>, <span class="str">"Labrador"</span>)\n<span class="fn">print</span>(my_dog.name)    <span class="cm"># Rex</span>\nmy_dog.<span class="fn">sit</span>()          <span class="cm"># Rex is sitting.</span></div><div class="cl"><div class="clt">🔑 Key terms</div><p><code>__init__</code> runs automatically when you create an instance. <code>self</code> refers to the instance itself — it connects attributes and methods to each individual object.</p></div><p>Classes support <strong>inheritance</strong> — a child class gets all the parent\'s features plus its own:</p><div class="cb"><span class="kw">class</span> <span class="fn">GuideDog</span>(<span class="fn">Dog</span>):   <span class="cm"># inherits from Dog</span>\n    <span class="kw">def</span> <span class="fn">guide</span>(self):\n        <span class="fn">print</span>(self.name + <span class="str">" is guiding safely."</span>)</div><div class="video-placeholder"><span>🎬</span>Video lesson coming soon!<br><small>Check back after upload to our YouTube channel.</small></div><div class="la"><button class="btn pr" onclick="loadSandboxAndSwitch()">▶ Try in sandbox</button><button class="btn pu" onclick="genScript()">📝 Generate video script</button><button class="btn" onclick="markDone(8)">✓ Mark complete +35 XP</button></div>',
+    challengeTitle:'Ch 9 Challenge',
+    challengeDesc:"Create a Car class with attributes make, model, and year. Add a describe() method that prints 'My car is a [year] [make] [model].' Create 2 car instances.",
+    challengeCode:'# Ch 9 challenge: classes!\nclass Car:\n    """A simple model of a car."""\n\n    def __init__(self, make, model, year):\n        self.make = make\n        self.model = model\n        self.year = year\n\n    def describe(self):\n        print(f"My car is a {self.year} {self.make} {self.model}.")\n\ncar1 = Car("Toyota", "Camry", 2022)\ncar2 = Car("Ford", "Mustang", 2023)\n\ncar1.describe()\ncar2.describe()\n',
+    quizzes:[
+      {q:'What is a class in Python?',opts:['A school subject','A blueprint for creating objects','A type of loop','A function with no return'],ans:1},
+      {q:'What does __init__ do?',opts:['Deletes the object','Prints the object','Runs automatically when an instance is created','Returns a value'],ans:2},
+      {q:'What does "self" refer to?',opts:['The class itself','The parent class','The specific instance being used','The Python interpreter'],ans:2},
+      {q:'What is inheritance?',opts:['Copying code manually','A child class receiving features from a parent class','A type of variable','A loop inside a class'],ans:1}
+    ],
+    prompts:['Explain classes with a real-world analogy','What is self and why do I need it?','What is the difference between a class and an instance?','Give me a classes challenge']
+  },
+  {
+    id:9, icon:'📁', title:'Ch 10 — Files & Exceptions', sub:'Reading files, handling errors', xpNeeded:360, xpReward:35,
+    lessonHeading:'Chapter 10: Files and Exceptions',
+    lessonMeta:'Reading files and handling errors gracefully',
+    sandboxCode:'# Chapter 10 — Files & Exceptions!\n# Writing to a file\nwith open("test_output.txt", "w") as f:\n    f.write("Hello from Python!\\n")\n    f.write("This is line 2.\\n")\n    f.write("Allen is learning Python!\\n")\n\nprint("File written!")\n\n# Reading it back\nwith open("test_output.txt", "r") as f:\n    contents = f.read()\n\nprint("File contents:")\nprint(contents)\n\n# Exception handling\nprint("---")\ntry:\n    result = 10 / 0\nexcept ZeroDivisionError:\n    print("Cannot divide by zero!")\nfinally:\n    print("This always runs.")',
+    lessonHTML:'<p>Python can <strong>read and write files</strong> making your programs store data permanently. Use the <code>with</code> statement — it automatically closes the file when done.</p><div class="cb"><span class="cm"># Writing a file</span>\n<span class="kw">with</span> <span class="fn">open</span>(<span class="str">"notes.txt"</span>, <span class="str">"w"</span>) <span class="kw">as</span> f:\n    f.<span class="fn">write</span>(<span class="str">"Hello from Python!\\n"</span>)\n\n<span class="cm"># Reading a file</span>\n<span class="kw">with</span> <span class="fn">open</span>(<span class="str">"notes.txt"</span>, <span class="str">"r"</span>) <span class="kw">as</span> f:\n    contents = f.<span class="fn">read</span>()\n<span class="fn">print</span>(contents)</div><div class="cl"><div class="clt">📂 File modes</div><p><code>"w"</code> write (creates/overwrites) &nbsp;· &nbsp;<code>"r"</code> read &nbsp;· &nbsp;<code>"a"</code> append (adds to end)</p></div><p><strong>Exceptions</strong> let you handle errors gracefully instead of crashing:</p><div class="cb"><span class="kw">try</span>:\n    result = <span class="nm">10</span> / <span class="nm">0</span>\n<span class="kw">except</span> ZeroDivisionError:\n    <span class="fn">print</span>(<span class="str">"Cannot divide by zero!"</span>)\n<span class="kw">finally</span>:\n    <span class="fn">print</span>(<span class="str">"This always runs."</span>)</div><div class="video-placeholder"><span>🎬</span>Video lesson coming soon!<br><small>Check back after upload to our YouTube channel.</small></div><div class="la"><button class="btn pr" onclick="loadSandboxAndSwitch()">▶ Try in sandbox</button><button class="btn pu" onclick="genScript()">📝 Generate video script</button><button class="btn" onclick="markDone(9)">✓ Mark complete +35 XP</button></div>',
+    challengeTitle:'Ch 10 Challenge',
+    challengeDesc:"Write a program that creates a file called 'favourites.txt', writes your top 3 favourite things to it (one per line), then reads it back and prints each line.",
+    challengeCode:"# Ch 10 challenge: files!\n# Write favourites to a file\nfavourites = ['Python programming', 'Bald Eagles', 'Learning new things']\n\nwith open('favourites.txt', 'w') as f:\n    for item in favourites:\n        f.write(item + '\\n')\n\nprint('File written!')\n\n# Read it back\nwith open('favourites.txt', 'r') as f:\n    print('\\nMy favourites:')\n    for line in f:\n        print(' -', line.strip())\n",
+    quizzes:[
+      {q:'What does open("file.txt", "w") do?',opts:['Reads the file','Opens for writing (creates or overwrites)','Appends to the file','Deletes the file'],ans:1},
+      {q:'Why use the "with" statement for files?',opts:['It is faster','It automatically closes the file when done','It is required by Python','It encrypts the file'],ans:1},
+      {q:'What does a try/except block do?',opts:['Speeds up code','Tests if code is correct','Handles errors gracefully without crashing','Runs code twice'],ans:2},
+      {q:'What file mode appends to an existing file?',opts:['"w"','"r"','"a"','"x"'],ans:2}
+    ],
+    prompts:['Explain try/except with a real-world analogy','Difference between "w" and "a" file modes?','What is a FileNotFoundError and how do I handle it?','Give me a files challenge']
+  },
+  {
+    id:10, icon:'🧪', title:'Ch 11 — Testing', sub:'Writing tests for your code', xpNeeded:430, xpReward:40,
+    lessonHeading:'Chapter 11: Testing Your Code',
+    lessonMeta:'Writing tests to make sure your code works',
+    sandboxCode:'# Chapter 11 — Testing!\n# A function to test\ndef get_full_name(first, last):\n    """Return a full name, neatly formatted."""\n    return first.strip().title() + " " + last.strip().title()\n\n# Manual tests (before using unittest)\nprint("Testing get_full_name()...")\n\nresult = get_full_name("allen", "smith")\nassert result == "Allen Smith", f"Expected \'Allen Smith\', got \'{result}\'"\nprint("Test 1 passed:", result)\n\nresult = get_full_name("  ada  ", "lovelace")\nassert result == "Ada Lovelace", f"Expected \'Ada Lovelace\', got \'{result}\'"\nprint("Test 2 passed:", result)\n\nprint("All tests passed! ✅")',
+    lessonHTML:'<p>Testing your code means writing small checks that verify your functions work correctly. It catches bugs early and gives you confidence when making changes.</p><div class="cb"><span class="cm"># A function we want to test</span>\n<span class="kw">def</span> <span class="fn">get_full_name</span>(first, last):\n    <span class="kw">return</span> first.<span class="fn">title</span>() + <span class="str">" "</span> + last.<span class="fn">title</span>()\n\n<span class="cm"># A simple assertion test</span>\nresult = <span class="fn">get_full_name</span>(<span class="str">"ada"</span>, <span class="str">"lovelace"</span>)\n<span class="kw">assert</span> result == <span class="str">"Ada Lovelace"</span>, <span class="str">f"Got {result}"</span>\n<span class="fn">print</span>(<span class="str">"Test passed!"</span>)</div><div class="cl"><div class="clt">🧪 Why test?</div><p>Tests are like a safety net — when you change code, tests instantly tell you if you broke something. Professional programmers write tests for every function they build.</p></div><p>Python has a built-in testing library called <code>unittest</code>:</p><div class="cb"><span class="kw">import</span> unittest\n\n<span class="kw">class</span> <span class="fn">TestNames</span>(unittest.<span class="fn">TestCase</span>):\n    <span class="kw">def</span> <span class="fn">test_full_name</span>(self):\n        result = <span class="fn">get_full_name</span>(<span class="str">"ada"</span>, <span class="str">"lovelace"</span>)\n        self.<span class="fn">assertEqual</span>(result, <span class="str">"Ada Lovelace"</span>)\n\n<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:\n    unittest.<span class="fn">main</span>()</div><div class="video-placeholder"><span>🎬</span>Video lesson coming soon!<br><small>Check back after upload to our YouTube channel.</small></div><div class="la"><button class="btn pr" onclick="loadSandboxAndSwitch()">▶ Try in sandbox</button><button class="btn pu" onclick="genScript()">📝 Generate video script</button><button class="btn" onclick="markDone(10)">✓ Mark complete +40 XP</button></div>',
+    challengeTitle:'Ch 11 Challenge',
+    challengeDesc:"Write a function called add_numbers(a, b) that returns a + b. Then write 3 assert tests for it: adding positives, adding negatives, and adding zero.",
+    challengeCode:'# Ch 11 challenge: testing!\ndef add_numbers(a, b):\n    """Return the sum of two numbers."""\n    return a + b\n\n# Write your tests\nprint("Running tests...")\n\nassert add_numbers(2, 3) == 5, "Test 1 failed"\nprint("Test 1 passed: 2 + 3 = 5")\n\nassert add_numbers(-1, -1) == -2, "Test 2 failed"\nprint("Test 2 passed: -1 + -1 = -2")\n\nassert add_numbers(0, 5) == 5, "Test 3 failed"\nprint("Test 3 passed: 0 + 5 = 5")\n\nprint("All tests passed! ✅")\n',
+    quizzes:[
+      {q:'Why should you test your code?',opts:['To make it run faster','To catch bugs early and verify functions work','To make it look professional','Testing is not necessary'],ans:1},
+      {q:'What does assert do?',opts:['Prints a value','Raises an error if a condition is False','Runs a function','Imports a module'],ans:1},
+      {q:'What Python module provides a testing framework?',opts:['testlib','pytest','unittest','checktest'],ans:2},
+      {q:'What method checks if two values are equal in unittest?',opts:['assertEqual()','checkEqual()','assertSame()','verify()'],ans:0}
+    ],
+    prompts:['Why do professional programmers write tests?','Explain assert in simple terms','What is unittest and how do I use it?','Give me a testing challenge']
+  }
+];
+
+// ═══════════════════════════════════════ STATE ══════════════════════════════
+var S = {xp:0,streak:1,lastActiveDate:null,completed:[],quizScores:{},cur:0};
+var apiKey = '';
+var sidebarOpen = true;
+var editor = null;
+
+async function loadState() {
+  try {
+    var r = await fetch('/api/progress');
+    if (r.ok) { var d = await r.json(); Object.assign(S, d); }
+  } catch(e) {}
+  var today = new Date().toDateString();
+  if (S.lastActiveDate !== today) {
+    var yesterday = new Date(Date.now()-86400000).toDateString();
+    if (S.lastActiveDate === yesterday) S.streak = (S.streak||0)+1;
+    else if (!S.lastActiveDate) S.streak = 1;
+    S.lastActiveDate = today;
+    saveState();
+  }
+  apiKey = localStorage.getItem('pcc_key') || '';
+}
+
+function saveState() {
+  fetch('/api/progress',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(S)}).catch(function(){});
+}
+
+function resetAll() {
+  S = {xp:0,streak:1,lastActiveDate:new Date().toDateString(),completed:[],quizScores:{},cur:0};
+  saveState(); location.reload();
+}
+
+// ═══════════════════════════════════════ XP ══════════════════════════════════
+function refreshXP() {
+  document.getElementById('xpBar').style.width = Math.round(S.xp/500*100)+'%';
+  document.getElementById('xpText').textContent = S.xp+' / 500 XP';
+  document.getElementById('strk').textContent = S.streak||1;
+}
+function addXP(n) { S.xp = Math.min(S.xp+n,500); saveState(); refreshXP(); renderNav(); }
+
+// ═══════════════════════════════════════ SIDEBAR ═════════════════════════════
+function toggleSidebar() {
+  sidebarOpen = !sidebarOpen;
+  document.getElementById('app').className = 'app ' + (sidebarOpen ? 'sb-open' : 'sb-closed');
+}
+
+// ═══════════════════════════════════════ NAV ══════════════════════════════════
+function renderNav() {
+  var html = '';
+  CHAPTERS.forEach(function(ch) {
+    var locked = S.xp < ch.xpNeeded && !S.completed.includes(ch.id);
+    var done = S.completed.includes(ch.id);
+    var active = S.cur === ch.id && !locked;
+    var cls = 'ci'+(locked?' lk':'')+(active?' ac':'');
+    var sub = locked ? ('🔒 Need '+ch.xpNeeded+' XP') : ch.sub;
+    var tick = done ? '<span style="color:var(--gr);font-size:13px">✓</span>' : (locked?'<span style="font-size:11px;color:var(--t3)">🔒</span>':'');
+    var click = locked ? '' : 'onclick="selectChapter('+ch.id+')"';
+    html += '<div class="'+cls+'" '+click+'><span class="ico">'+ch.icon+'</span><div class="inf"><div class="ct">'+ch.title+'</div><div class="cs">'+sub+'</div></div>'+tick+'</div>';
+  });
+  document.getElementById('nav').innerHTML = html;
+}
+
+function selectChapter(id) {
+  var ch = CHAPTERS[id];
+  if (!ch || (S.xp < ch.xpNeeded && !S.completed.includes(id))) return;
+  S.cur = id; saveState();
+  showView('chapter'); renderNav();
+  renderLesson(); renderQuiz(); renderPrompts();
+  switchTab('lesson');
+  if (editor) editor.setValue(ch.sandboxCode || '# Write your Python here\nprint("Hello!")');
+}
+
+// ═══════════════════════════════════════ VIEWS ════════════════════════════════
+function showView(name) {
+  document.querySelectorAll('.vw').forEach(function(v){ v.classList.remove('on'); });
+  var el = document.getElementById('v-'+name);
+  if (el) el.classList.add('on');
+  if (name==='progress') renderProgress();
+  if (name==='settings') {
+    document.getElementById('apiIn').value = apiKey ? '••••••••' : '';
+    document.getElementById('keyStatus').textContent = apiKey ? '✅ API key saved' : '';
+  }
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tc').forEach(function(t){ t.classList.remove('on'); });
+  document.querySelectorAll('.tb button').forEach(function(b){ b.classList.remove('on'); });
+  var tc = document.getElementById('tab-'+tab);
+  if (tc) tc.classList.add('on');
+  var idx = ['lesson','sandbox','quiz','tutor'].indexOf(tab);
+  if (idx>=0) document.querySelectorAll('.tb button')[idx].classList.add('on');
+  if (tab === 'sandbox' && editor) setTimeout(function(){ editor.refresh(); }, 50);
+}
+
+// ═══════════════════════════════════════ LESSON ═══════════════════════════════
+function renderLesson() {
+  var ch = CHAPTERS[S.cur];
+  document.getElementById('lessonContent').innerHTML =
+    '<h2>'+ch.lessonHeading+'</h2><p class="lm">'+ch.lessonMeta+'</p>'+ch.lessonHTML;
+}
+
+function markDone(id) {
+  if (!S.completed.includes(id)) {
+    S.completed.push(id); addXP(CHAPTERS[id].xpReward);
+    alert('🎉 +'+CHAPTERS[id].xpReward+' XP! Chapter complete!');
+  } else { alert('Already completed — great work! 🙌'); }
+}
+
+function loadSandboxAndSwitch() {
+  var ch = CHAPTERS[S.cur];
+  if (editor) editor.setValue(ch.sandboxCode || '# Write your Python here\nprint("Hello!")');
+  document.getElementById('challengeStrip').innerHTML = '💡 <strong>'+ch.lessonHeading+'</strong> — example code loaded! Click Run to see it in action.';
+  document.getElementById('outputBox').textContent = 'Click Run to execute the code!';
+  document.getElementById('outputBox').className = 'ob';
+  switchTab('sandbox');
+}
+
+// ═══════════════════════════════════════ SANDBOX ══════════════════════════════
+function loadChallenge() {
+  var ch = CHAPTERS[S.cur];
+  if (editor) editor.setValue(ch.challengeCode);
+  document.getElementById('challengeStrip').innerHTML = '🎯 <strong>'+ch.challengeTitle+':</strong> '+ch.challengeDesc;
+  document.getElementById('outputBox').textContent = 'Challenge loaded! Edit the code and click Run.';
+  document.getElementById('outputBox').className = 'ob';
+}
+
+function clearCode() {
+  if (editor) editor.setValue('');
+  document.getElementById('outputBox').textContent = 'Cleared.';
+  document.getElementById('outputBox').className = 'ob';
+}
+
+function copyCode() {
+  if (editor) navigator.clipboard.writeText(editor.getValue()).catch(function(){});
+}
+
+async function runCode() {
+  var code = editor ? editor.getValue() : '';
+  var out = document.getElementById('outputBox');
+  var st = document.getElementById('runSt');
+  out.className = 'ob'; out.textContent = ''; st.textContent = '⏳';
+  try {
+    var r = await fetch('/api/run', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({code:code})
+    });
+    var d = await r.json();
+    if (d.error && d.error.trim()) {
+      out.textContent = d.error; out.className = 'ob er'; st.textContent = '❌';
+    } else {
+      out.textContent = d.output || '(no output)'; st.textContent = '✅';
+    }
+  } catch(e) {
+    out.textContent = 'Could not run code. Is the app server still running?';
+    out.className = 'ob er'; st.textContent = '❌';
+  }
+}
+
+// ═══════════════════════════════════════ QUIZ ════════════════════════════════
+var QS = {ans:[], xpDone:false};
+
+function renderQuiz() {
+  var ch = CHAPTERS[S.cur]; QS = {ans:[], xpDone:false};
+  var xpEarn = Math.round(ch.xpReward*0.7);
+  var html = '<h2>Quiz — '+ch.title+'</h2><p class="qm">'+ch.quizzes.length+' questions · Pass 3/'+ch.quizzes.length+' to earn +'+xpEarn+' XP</p>';
+  ch.quizzes.forEach(function(q,qi){
+    html += '<div class="qb" id="qb'+qi+'"><p class="qt">'+(qi+1)+'. '+q.q+'</p>';
+    q.opts.forEach(function(o,oi){
+      html += '<button class="qo" id="qo'+qi+'_'+oi+'" onclick="pickQ('+qi+','+oi+')">'+o+'</button>';
+    });
+    html += '</div>';
+  });
+  html += '<div id="qResult" style="display:none"></div>';
+  document.getElementById('quizContent').innerHTML = html;
+}
+
+function pickQ(qi,oi) {
+  if (QS.ans[qi]!==undefined) return;
+  QS.ans[qi] = oi;
+  var ch = CHAPTERS[S.cur]; var correct = ch.quizzes[qi].ans;
+  document.querySelectorAll('#qb'+qi+' .qo').forEach(function(b){ b.disabled=true; });
+  document.getElementById('qo'+qi+'_'+correct).classList.add('ok');
+  if (oi!==correct) document.getElementById('qo'+qi+'_'+oi).classList.add('ng');
+  if (QS.ans.filter(function(a){ return a!==undefined; }).length===ch.quizzes.length) showQResult();
+}
+
+function showQResult() {
+  var ch = CHAPTERS[S.cur];
+  var score = QS.ans.filter(function(a,i){ return a===ch.quizzes[i].ans; }).length;
+  var xpEarn = score>=3 ? Math.round(ch.xpReward*0.7) : 0;
+  var res = document.getElementById('qResult');
+  res.style.display = 'block';
+  res.innerHTML = '<div class="qr"><div class="qrs">'+score+'/'+ch.quizzes.length+'</div>'
+    +'<div class="qrss">'+(score>=3?'🎉 Passed! +'+xpEarn+' XP!':'💪 Review the lesson and retry!')+'</div>'
+    +'<div style="margin-top:14px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">'
+    +'<button class="btn" onclick="renderQuiz()">Retry quiz</button>'
+    +(score>=3?'<button class="btn pr" onclick="loadSandboxAndSwitch()">▶ Try the challenge</button>':'')
+    +'</div></div>';
+  if (score>=3 && !QS.xpDone) { addXP(xpEarn); QS.xpDone=true; S.quizScores[S.cur]=score; saveState(); }
+}
+
+// ═══════════════════════════════════════ TUTOR ═══════════════════════════════
+var tutorHistory = [];
+
+function renderPrompts() {
+  var ch = CHAPTERS[S.cur];
+  document.getElementById('quickBtns').innerHTML = ch.prompts.map(function(p){
+    return '<button class="qb2" onclick="document.getElementById(\'tutorIn\').value=this.textContent">'+p+'</button>';
+  }).join('');
+}
+
+async function sendMsg() {
+  var input = document.getElementById('tutorIn');
+  var q = input.value.trim(); if (!q) return;
+  input.value = '';
+  var ch = CHAPTERS[S.cur];
+  addBubble(q,'u'); tutorHistory.push({role:'user',content:q});
+  var tid='t_'+Date.now(); addBubble('<span class="dots">Thinking</span>','a',tid);
+  var sys = 'You are an enthusiastic Python tutor for an app called "Python: A Crash Course — A Beginner\'s Journey", inspired by the works of Eric Matthes. The student (Allen) finds it hard to retain information so: use vivid real-world analogies, keep responses SHORT (3-5 sentences max unless asked for more), use emojis for warmth, include tiny runnable code snippets when helpful (triple backtick python), end with one encouraging line. Current chapter: "'+ch.lessonHeading+'" — '+ch.lessonMeta;
+  try {
+    var r = await fetch('/api/tutor',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({system:sys,messages:tutorHistory.slice(-10),apiKey:apiKey})});
+    var d = await r.json();
+    if (d.error){ updateBubble(tid,'❌ '+d.error); return; }
+    tutorHistory.push({role:'assistant',content:d.text});
+    updateBubble(tid,fmt(d.text));
+  } catch(e){ updateBubble(tid,'❌ Connection error — is the server still running?'); }
+}
+
+function fmt(t){ return t.replace(/```python\n?([\s\S]*?)```/g,'<pre>$1</pre>').replace(/```\n?([\s\S]*?)```/g,'<pre>$1</pre>'); }
+function addBubble(html,role,id){
+  var msgs=document.getElementById('tutorMsgs');
+  var d=document.createElement('div'); d.className='mg '+role; if(id)d.id=id;
+  d.innerHTML='<div class="mb">'+html+'</div>'; msgs.appendChild(d); msgs.scrollTop=msgs.scrollHeight;
+}
+function updateBubble(id,html){
+  var el=document.getElementById(id); if(el)el.querySelector('.mb').innerHTML=html;
+  document.getElementById('tutorMsgs').scrollTop=999999;
+}
+
+// ═══════════════════════════════════════ PROGRESS ════════════════════════════
+function renderProgress() {
+  var done=S.completed.length; var qp=Object.keys(S.quizScores).length;
+  document.getElementById('statsGrid').innerHTML=[
+    ['Total XP',S.xp,'/ 500'],['Chapters done',done,'/ '+CHAPTERS.length],
+    ['Quizzes passed',qp,''],['Day streak',S.streak||1,'🔥']
+  ].map(function(x){ return '<div class="sc"><div class="sl">'+x[0]+'</div><div class="sv">'+x[1]+(x[2]?'<span>'+x[2]+'</span>':'')+'</div></div>'; }).join('');
+  document.getElementById('chProgList').innerHTML=CHAPTERS.map(function(ch){
+    var done=S.completed.includes(ch.id);
+    var locked=S.xp<ch.xpNeeded&&!done;
+    var pct=done?100:(locked?0:(S.quizScores[ch.id]?60:15));
+    return '<div class="cpi"><span style="font-size:17px">'+ch.icon+'</span>'
+      +'<div style="flex:1"><div style="font-size:13px;font-weight:500">'+ch.title+' '+(done?'✓':locked?'🔒':'')+'</div>'
+      +'<div class="cpbw"><div class="cpb" style="width:'+pct+'%"></div></div></div>'
+      +'<span style="font-size:12px;color:var(--t3)">'+pct+'%</span></div>';
+  }).join('');
+}
+
+// ═══════════════════════════════════════ SETTINGS ════════════════════════════
+function saveKey() {
+  var v=document.getElementById('apiIn').value.trim();
+  if(v&&v!=='••••••••'){ apiKey=v; localStorage.setItem('pcc_key',v); }
+  document.getElementById('keyStatus').textContent='✅ API key saved!';
+  document.getElementById('apiIn').value='••••••••';
+}
+function clearKey() {
+  apiKey=''; localStorage.removeItem('pcc_key');
+  document.getElementById('apiIn').value='';
+  document.getElementById('keyStatus').textContent='Key cleared.';
+}
+
+// ═══════════════════════════════════════ POP-OUT ══════════════════════════════
+var popoutMinimized = false;
+
+function openPopout() {
+  var ch = CHAPTERS[S.cur];
+  document.getElementById('popoutTitle').textContent = '📖 '+ch.lessonHeading;
+  document.getElementById('popoutBody').innerHTML = ch.lessonHTML;
+  var panel = document.getElementById('popoutPanel');
+  panel.classList.remove('hidden','minimized');
+  popoutMinimized = false;
+}
+
+function closePopout() {
+  document.getElementById('popoutPanel').classList.add('hidden');
+}
+
+function minimizePopout() {
+  popoutMinimized = !popoutMinimized;
+  var panel = document.getElementById('popoutPanel');
+  panel.classList.toggle('minimized', popoutMinimized);
+  panel.querySelector('.popout-btn').textContent = popoutMinimized ? '□' : '─';
+}
+
+// Draggable pop-out
+(function(){
+  var panel, isDragging=false, ox=0, oy=0;
+  document.addEventListener('DOMContentLoaded', function(){
+    panel = document.getElementById('popoutPanel');
+    var bar = document.getElementById('popoutBar');
+    bar.addEventListener('mousedown', function(e){
+      if (e.target.classList.contains('popout-btn')) return;
+      isDragging=true; ox=e.clientX-panel.offsetLeft; oy=e.clientY-panel.offsetTop;
+      e.preventDefault();
+    });
+    document.addEventListener('mousemove', function(e){
+      if (!isDragging) return;
+      var x=e.clientX-ox; var y=e.clientY-oy;
+      x=Math.max(0,Math.min(x,window.innerWidth-panel.offsetWidth));
+      y=Math.max(0,Math.min(y,window.innerHeight-40));
+      panel.style.left=x+'px'; panel.style.top=y+'px'; panel.style.right='auto';
+    });
+    document.addEventListener('mouseup', function(){ isDragging=false; });
+  });
+})();
+
+// ═══════════════════════════════════════ SCRIPT GENERATOR ════════════════════
+async function genScript() {
+  var ch = CHAPTERS[S.cur];
+  if (!apiKey) {
+    alert('Please add your Anthropic API key in Settings first!');
+    return;
+  }
+  document.getElementById('scriptChapterName').textContent = ch.lessonHeading;
+  document.getElementById('scriptBody').textContent = 'Generating your video script... this may take 30-60 seconds ✍️';
+  document.getElementById('scriptModal').classList.remove('hidden');
+  try {
+    var r = await fetch('/api/generate-script', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({chapter: ch.lessonHeading+' — '+ch.lessonMeta, apiKey: apiKey})
+    });
+    var d = await r.json();
+    if (d.error) { document.getElementById('scriptBody').textContent = '❌ Error: '+d.error; return; }
+    document.getElementById('scriptBody').textContent = d.script;
+  } catch(e) {
+    document.getElementById('scriptBody').textContent = '❌ Connection error — is the server running?';
+  }
+}
+
+function closeScript() { document.getElementById('scriptModal').classList.add('hidden'); }
+function copyScript() {
+  navigator.clipboard.writeText(document.getElementById('scriptBody').textContent)
+    .then(function(){ alert('Script copied to clipboard! Paste into CapCut or Synthesia.'); })
+    .catch(function(){ alert('Copy failed — please select the text manually.'); });
+}
+
+// ═══════════════════════════════════════ INIT ════════════════════════════════
+document.addEventListener('DOMContentLoaded', function(){
+  // Init CodeMirror editor
+  var cmWrap = document.getElementById('cmWrap');
+  editor = CodeMirror(cmWrap, {
+    value: CHAPTERS[0].sandboxCode || '# Write Python here\nprint("Hello!")',
+    mode: 'python',
+    theme: 'dracula',
+    lineNumbers: true,
+    indentUnit: 4,
+    indentWithTabs: false,
+    lineWrapping: false,
+    autofocus: false,
+    extraKeys: {"Tab": function(cm){ cm.replaceSelection("    ","end"); }}
+  });
+  editor.setSize('100%','100%');
+
+  loadState().then(function(){
+    refreshXP(); renderNav(); renderLesson(); renderQuiz(); renderPrompts();
+    editor.setValue(CHAPTERS[S.cur].sandboxCode || '# Write Python here\nprint("Hello!")');
+  });
+});
+
+document.getElementById('tutorIn').addEventListener('keydown', function(e){
+  if(e.key==='Enter') sendMsg();
+});
+</script>
+</body>
+</html>
