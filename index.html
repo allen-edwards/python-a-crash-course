@@ -4,12 +4,12 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Python: A Crash Course — A Beginner's Journey</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/skulpt/1.2.0/skulpt.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/skulpt/1.2.0/skulpt-stdlib.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script src="vendor/skulpt.min.js"></script>
+<script src="vendor/skulpt-stdlib.js"></script>
+<link rel="stylesheet" href="vendor/codemirror.min.css"/>
+<link rel="stylesheet" href="vendor/dracula.min.css"/>
+<script src="vendor/codemirror.min.js"></script>
+<script src="vendor/python.min.js"></script>
 <style>
 :root{
   --bg:#0f1117;--surface:#1a1d27;--s2:#23273a;--s3:#2d3148;
@@ -952,24 +952,44 @@ function copyScript() {
 
 // ═══════════════════════════════════════ INIT ════════════════════════════════
 document.addEventListener('DOMContentLoaded', function(){
-  // Init CodeMirror editor
+  // Init CodeMirror editor — wrapped so a missing/offline CDN asset can't
+  // block the rest of the app (lessons, quiz, progress, XP) from loading.
   var cmWrap = document.getElementById('cmWrap');
-  editor = CodeMirror(cmWrap, {
-    value: CHAPTERS[0].sandboxCode || '# Write Python here\nprint("Hello!")',
-    mode: 'python',
-    theme: 'dracula',
-    lineNumbers: true,
-    indentUnit: 4,
-    indentWithTabs: false,
-    lineWrapping: false,
-    autofocus: false,
-    extraKeys: {"Tab": function(cm){ cm.replaceSelection("    ","end"); }}
-  });
-  editor.setSize('100%','100%');
+  try {
+    if (typeof CodeMirror === 'undefined') {
+      throw new Error('CodeMirror not loaded (offline or CDN unreachable)');
+    }
+    editor = CodeMirror(cmWrap, {
+      value: CHAPTERS[0].sandboxCode || '# Write Python here\nprint("Hello!")',
+      mode: 'python',
+      theme: 'dracula',
+      lineNumbers: true,
+      indentUnit: 4,
+      indentWithTabs: false,
+      lineWrapping: false,
+      autofocus: false,
+      extraKeys: {"Tab": function(cm){ cm.replaceSelection("    ","end"); }}
+    });
+    editor.setSize('100%','100%');
+  } catch (e) {
+    console.warn('Sandbox editor unavailable:', e);
+    editor = null;
+    if (cmWrap) {
+      cmWrap.innerHTML = '<div style="padding:16px;color:var(--t3);font-size:13px">'
+        + '⚠️ The code editor library didn\'t load (this usually means no internet the first '
+        + 'time it needed to fetch it). Everything else in the app still works — reconnect and '
+        + 'reload to get the Sandbox back.</div>';
+    }
+  }
 
+  // Always run this, whether or not the editor above succeeded, so a CDN
+  // hiccup can never blank out lessons, quiz, progress, or XP again.
   loadState().then(function(){
     refreshXP(); renderNav(); renderLesson(); renderQuiz(); renderPrompts();
-    editor.setValue(CHAPTERS[S.cur].sandboxCode || '# Write Python here\nprint("Hello!")');
+    if (editor) editor.setValue(CHAPTERS[S.cur].sandboxCode || '# Write Python here\nprint("Hello!")');
+  }).catch(function(e){
+    console.error('loadState failed:', e);
+    refreshXP(); renderNav(); renderLesson(); renderQuiz(); renderPrompts();
   });
 });
 

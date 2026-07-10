@@ -4,6 +4,21 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## [v6.0] — 2026-07-06 — Offline Support & Fixes
+
+### Added
+- `vendor/` folder with local copies of CodeMirror, Skulpt, and themes — sandbox and syntax highlighting now work fully offline (previously loaded from CDNs)
+- `/vendor/<file>` route to serve the bundled libraries
+
+### Fixed
+- `/api/generate-script` route returning 404 — route was defined after `app.run()` and never registered. All routes now sit above the `__main__` block.
+- Verified 2026-07-09: server started, all 6 routes tested — `/` 200, `/vendor/*` 200, `/api/progress` 200, `/api/run` executes code, `/api/tutor` and `/api/generate-script` respond (401 without an API key, as expected). No regressions.
+
+### Changed
+- Video-script system prompt reformatted (no behavior change)
+
+---
+
 ## [v5.0] — 2026-07-04 — Major Feature Update
 
 ### Added

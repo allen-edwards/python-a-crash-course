@@ -31,6 +31,7 @@ All lesson content, explanations, and code examples in this app are original. We
 - 🎬 **YouTube video slots** — ready to embed your own lesson videos
 - ☰ **Collapsible sidebar** — more screen space when you need it
 - 💾 **Persistent progress** — saves locally between sessions
+- 📴 **Fully offline core** — code editor and Python runner libraries are bundled, no CDN needed
 
 ---
 
