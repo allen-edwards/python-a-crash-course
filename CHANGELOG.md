@@ -4,6 +4,12 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-08-30 (doc fix) — REQUIREMENTS.md consistency
+### Corrected
+- F6 status changed from "Partially done" to **Done** — it contradicted F11 (Done, verified 2026-08-30) in the same file; the tutor chat is Professor Python with the full teaching-method prompt wired in. Also bumped the "Status reflects the code as of…" date from 2026-07-09 to 2026-08-30.
+
+---
+
 ## 2026-08-30 (session close) — F11 & F16 Verified Live; F17 Added; Voice Idea Parked
 ### Verified
 - F11 (Professor Python prompt swap): confirmed via live tutor conversation — analogy-first explanations, predict-before-run questions, no unprompted name use, ambiguous-spelling handling all present and matching the prompt document. Marked Done.

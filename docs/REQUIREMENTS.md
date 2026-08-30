@@ -4,7 +4,7 @@
 Python: A Crash Course — A Beginner's Journey is a self-contained desktop learning app that teaches Python fundamentals through interactive lessons, a live code sandbox, quizzes with XP rewards, and an AI tutor. It runs entirely on the learner's own machine; only the AI features require internet access.
 
 ## Functional requirements
-What the user can do. Status reflects the code as of 2026-07-09.
+What the user can do. Status reflects the code as of 2026-08-30.
 
 | ID | Requirement | Priority | Status |
 |----|-------------|----------|--------|
@@ -13,7 +13,7 @@ What the user can do. Status reflects the code as of 2026-07-09.
 | F3 | The user can take quizzes and earn XP; chapters unlock as XP grows | Must | Done |
 | F4 | The user's progress (XP, streak, completed chapters, quiz scores) is saved between sessions | Must | Done |
 | F5 | The user can maintain a day streak that tracks consecutive learning days | Must | Done |
-| F6 | The user can chat with Professor Python — the app's AI tutor persona and identity, powered by Claude — after entering their own API key | Must | Partially done — a tutor chat is live, but its current system prompt (in index.html) is a generic, personalized-to-one-user prompt, not Professor Python's actual teaching-method prompt. See F11. |
+| F6 | The user can chat with Professor Python — the app's AI tutor persona and identity, powered by Claude — after entering their own API key | Must | Done — the tutor chat is Professor Python; its system prompt is the full teaching-method prompt (see F11, verified 2026-08-30). |
 | F7 | The user can generate an original YouTube video script for any chapter | Must | Done (404 bug fixed in v6.0) |
 | F8 | The user can pop out a floating, draggable lesson panel while coding | Nice | Done |
 | F9 | The user can collapse the sidebar for more screen space | Nice | Done |
