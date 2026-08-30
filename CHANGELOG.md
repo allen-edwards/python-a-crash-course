@@ -4,34 +4,31 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
-## 2026-08-30 (later, pt. 3) — F16 (name / learning preference) + Ambiguous Spelling prompt rule
+## 2026-08-30 (session close) — F11 & F16 Verified Live; F17 Added; Voice Idea Parked
+### Verified
+- F11 (Professor Python prompt swap): confirmed via live tutor conversation — analogy-first explanations, predict-before-run questions, no unprompted name use, ambiguous-spelling handling all present and matching the prompt document. Marked Done.
+- F16 (name/learning preference): confirmed via live tutor conversation with real Settings input. Name used naturally, not forced. Noted limitation: stated brevity preference ("short explanations") did not meaningfully shorten responses — logged as a known soft-signal limitation, not a bug, for future revisiting. Marked Done.
+
 ### Added
-- **Ambiguous Spelling** section in `docs/PROFESSOR_PYTHON_PROMPT.md` (after "Error Messages"): Professor Python ignores ordinary typos, and only asks a natural clarifying question when a misspelling could plausibly be a different real word and context doesn't disambiguate. Copied verbatim into the `var sys` prompt in `index.html`.
-- **F16** — two optional fields in Settings → "About You": "What should Professor Python call you?" and "How do you learn best?". Stored as `studentName` / `learningPreference` in `progress.json` via the existing `/api/progress` POST; editable anytime. `app.py` `load_progress()` now merges saved data onto `DEFAULT_PROGRESS`, so older save files without these fields still load.
-- Tutor wiring: `sendMsg()` builds an `about` line — `The student's name is X. They've told you they learn best this way: "Y"` — and inserts it into `sys` **only when both fields are non-empty**, immediately before the chapter context. Never emits a partial line. Core teaching method / personality prompt is byte-for-byte unchanged regardless of these fields.
-- First-run nudge: skipped by design — the Settings entry is discoverable and the fields are optional.
-
-### Verified
-- `node --check` on the extracted `<script>` blocks passes.
-- Ran the app from `~/projects/python-a-crash-course` (`.venv/bin/python app.py`, port 5757): saved a name + learning preference in Settings, reloaded, confirmed the values persist in `progress.json` and repopulate the fields. `/api/progress` round-trip confirmed via curl. Confirmed `sys` contains the "About You" line only when both fields are set (empty-field case emits nothing). A full conversational check of tone/name usage with a live API key is the user's final step.
+- F17: readability fix — default text sizing required repeated manual zooming; scoped fix is better default font/line-height plus a persistent font-size control.
+- Roadmap note: new code examples appearing mid-conversation can be easy to miss — minor visual-distinction polish item, not urgent.
+- Roadmap (parked, Phase 3): natural voice-to-text/TTS tutor interaction — explicitly tied to a possible future **hosted web version** of the app, since local voice models conflict with N7 and the offline/USB-portable design. Not scoped or committed.
 
 ---
 
-## 2026-08-30 (later, pt. 2) — Professor Python branding in the UI
-### Changed
-- Renamed the tutor tab/button from "🤖 AI Tutor" to "🎓 Professor Python"; updated the API-key panel heading and helper text to match ("Professor Python & Script Generator", "Required for Professor Python and the Chapter Script Generator"). Route and function names (`/api/tutor`, `switchTab('tutor')`, etc.) are unchanged — display text only.
-- Replaced the hardcoded tutor greeting bubble ("Hey Allen! … fun analogies that actually stick") with a generic, non-personalized greeting in Professor Python's voice: "Hello! I'm Professor Python. What are we working on today?" — no student name, no emoji.
-- Verified by running the app locally: tab now reads "🎓 Professor Python" and fits the tab bar; the new greeting renders correctly. (This complements the F11 prompt swap in the entry below, which was verified with a live tutor test message.)
+## 2026-08-30 (absolute last) — Archived Historical CLAUDE.md
+### Docs
+- Archived the recovered 2026-07-06 CLAUDE.md as `docs/history/CLAUDE_2026-07-06.md`, unmodified except for a header note marking it historical and pointing to current docs. Kept for project history — not updated in place, since its value is showing design intent at that point in time.
+- Note: no live/current CLAUDE.md exists at the repo root as of this pull. If Claude Code maintains one elsewhere for session context, it should be updated separately to reflect current decisions (F11 done, F16 added, fixed-personality rule) — that would be a distinct, current-state file, not this archived snapshot.
 
 ---
 
-## 2026-08-30 (later) — Professor Python prompt wired in (F11 done)
-### Changed
-- Replaced the hardcoded `var sys` tutor system prompt in `index.html` (~line 825) with the full **Professor Python teaching-method prompt** from `docs/PROFESSOR_PYTHON_PROMPT.md`, verbatim (the `## Full Prompt` section). Removed the old student-specific personalization — hardcoded name, "keep responses SHORT (3-5 sentences)", and the emoji-tone instruction. The dynamic current-chapter context (`ch.lessonHeading` / `ch.lessonMeta`) is still appended to the end so the tutor knows which lesson the student is on.
-- F11 marked **Done**; F6 status updated to **Done** (the "partially done / generic prompt" caveat removed).
-
-### Verified
-- Ran the app locally and opened the AI Tutor. Confirmed `index.html` now serves the Professor Python prompt and `/api/tutor` forwards it to the Anthropic API (a request with an invalid key returns a clean auth error from Anthropic, proving the system prompt is passed through). A live message ("what is a variable?") was sent through the real tutor UI to confirm end-to-end wiring; a full style check with a valid API key is the user's final confirmation step.
+## 2026-08-30 (very last) — Reconciled with Original Project Notes (found on external drive, dated 2026-07-06)
+### Docs
+- Found and reviewed an earlier CLAUDE.md and PROFESSOR_PYTHON_PROMPT.md from before v6.0, recovered from the external drive.
+- Confirmed and made explicit: F16 (name/learning preference) does not let students customize Professor Python's core personality or teaching method — that stays fixed and identical for every student, per the original 2026-07-06 design intent. F16 only adds context (name, stated preference), the same category as already knowing the current chapter.
+- Corrected N4: the API key is stored client-side in browser localStorage (key: `pcc_key`), not just "not written to disk" as previously stated — confirmed against actual index.html code.
+- Noted for the record: the original 2026-07-06 plan envisioned a much more ambitious "Cinematic Lesson Player" (Canvas-API generative art, Web Speech API narration, motion-graphics feel). F14 is a deliberate scope-down from that vision, not an oversight — documented so a future session doesn't mistake the simpler version for a forgotten original plan.
 
 ---
 
