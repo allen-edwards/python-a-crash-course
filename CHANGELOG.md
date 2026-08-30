@@ -4,6 +4,13 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-08-30 — Added current CLAUDE.md
+### Docs
+- Added a live `CLAUDE.md` at the repo root — current project context for Claude Code (architecture rules, routes, Professor Python scope, chapters, planned features, known bugs incl. the stale-code-in-doc-merge risk, git workflow, user preferences). The archived `docs/history/CLAUDE_2026-07-06.md` remains the historical snapshot.
+- Note: the same update zip also carried older copies of `docs/REQUIREMENTS.md`, `docs/ROADMAP.md`, `CHANGELOG.md`, `index.html`, and `app.py` (frozen at the 2026-08-30 15:42 state — before the F6-consistency fix and the F17 work). Those were **not** applied; only the new `CLAUDE.md` was taken from this zip.
+
+---
+
 ## 2026-08-30 — F17 Readability Pass
 ### Changed
 - Base text size raised from 14px to 16px (body) with 1.6 line-height for prose areas (lesson text, tutor chat, quiz questions) — comfortably readable with no browser zoom. Lesson/quiz headings 18px → 21px.
