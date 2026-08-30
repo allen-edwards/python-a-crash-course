@@ -4,6 +4,16 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-08-30 (F14 spec) — F14 Fully Scoped: Toggleable Video/Text Panel, Phased Build
+### Docs
+- F14 redefined based on the original (older, "lost to file heaven") design intent: a single toggleable panel — not a separate video tab — accessible from anywhere in the app including the sandbox, replacing the current text-based pop-out. Two modes (Video/Text) render from one shared per-chapter script.
+- Added F14a (position-aware mode toggling — intentionally asymmetric: video→text lands near current position, text→video starts slightly before it) — explicitly deferred to v1.1, after v1's core mechanism is proven.
+- Added F14b (real narration via Speechify, produced by Allen per chapter from the same script) — explicitly deferred; not a v1 blocker, since audio production is independent, real-world work and the silent animation has standalone teaching value.
+- v1's animation timing to be built as a beat/timeline structure from the start, specifically so F14b's audio sync can be added later without reworking the mechanism.
+- Updated ARCHITECTURE.md and ROADMAP.md's v7.0 milestone description to match this fuller, finalized spec.
+
+---
+
 ## 2026-08-30 — Added current CLAUDE.md
 ### Docs
 - Added a live `CLAUDE.md` at the repo root — current project context for Claude Code (architecture rules, routes, Professor Python scope, chapters, planned features, known bugs incl. the stale-code-in-doc-merge risk, git workflow, user preferences). The archived `docs/history/CLAUDE_2026-07-06.md` remains the historical snapshot.

@@ -36,4 +36,4 @@ A self-contained, offline-first Python learning app — lessons, sandbox, quizze
 - New example code blocks in the tutor chat can be easy to miss mid-conversation, especially in longer responses — worth a visual treatment (border/label) to distinguish a new example from a reference to earlier code. Minor polish, not urgent.
 
 ## Next milestone
-**v7.0 target:** One chapter has a working F14 faux-video lesson, end to end (script → animation → scrubbable playback), as a proof of concept before building the remaining 10 chapters' lessons.
+**v7.0 target:** Chapter 1 has a working F14 panel end to end — the toggleable Video/Text lesson panel, accessible from anywhere including the sandbox, replacing the current text pop-out. Video mode: silent code-typing animation with captions, scrubbable progress bar. Text mode: readable script content. Simple reset-on-toggle (no position syncing yet — that's F14a, deferred). No audio yet (F14b, deferred — depends on Allen producing narration via Speechify). Proof of concept before building the remaining 10 chapters.

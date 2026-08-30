@@ -37,21 +37,27 @@ The app is a single-page web application served by a tiny local Flask server. Al
 | urllib (stdlib) for the AI proxy | Avoids adding a requests dependency; keeps requirements.txt to Flask only |
 | progress.json flat file | Single-user app; a database would be overkill |
 
-## Planned: F14 — In-app faux-video lesson player
+## Planned: F14 — In-app lesson panel (Video/Text toggle)
 
-**Decision:** lessons play as live browser animation, not as rendered video files. No video encoding library, no Node.js, no FFmpeg — everything runs in the same HTML/CSS/JS the rest of the app already uses.
+**Decision:** one panel, accessible from anywhere in the app (including mid-sandbox), replacing the current text-based pop-out. It has two modes the student can toggle between, both rendering from the same underlying per-chapter script:
 
-How it works, conceptually:
-- A "player shell" — a styled `<div>` that looks like a video player (dark frame, play/pause button, scrubbable progress bar).
-- Inside it, the actual "video" is a CSS/JS-driven animation: code appears to type itself, matching the chapter's script.
-- An `<audio>` element (if narration is added later) or synced captions plays alongside; the progress bar tracks `audio.currentTime` (or an internal clock if there's no audio) so scrubbing jumps the animation to the right point.
-- Because the "video" is just live code, a learner can pause and copy the code being typed — not possible with a real video file.
+- **Video mode:** a styled player-shell `<div>` (dark frame, play/pause, scrubbable progress bar) where code appears to type itself, paced against the script, with on-screen captions. No video encoding, no Node.js, no FFmpeg — pure HTML/CSS/JS, same as the rest of the app.
+- **Text mode:** the same lesson content shown as plain readable text — essentially what the current pop-out already does today.
 
-This was evaluated against HyperFrames (an open-source HTML-to-MP4 renderer used by AI coding agents) and deliberately rejected for this use case: HyperFrames is the right tool when a portable video *file* is the goal (e.g. for YouTube), but it requires Node.js 22+ and FFmpeg as local dependencies, which conflicts with N7 (no runtime beyond browser + Python) and the app's USB-portable design. Since this app's lessons only ever need to play inside the app itself, the live-animation approach is strictly simpler and avoids the new dependencies entirely.
+Because there's no real video file, switching modes is just swapping what's rendered inside the same `<div>` from the same source script — not two separate systems to maintain.
+
+**Build is phased — do not attempt all of this in v1:**
+
+1. **v1 (current target):** panel + toggle exist; Video mode is silent (captions only), timing driven by an internal clock structured as a **timeline of beats** (not raw fixed CSS animation durations) so audio can be added later without reworking the mechanism; Text mode shows the script as formatted text; toggling between modes simply resets to the top — no position syncing yet. Build and verify against ONE chapter before doing the rest.
+2. **v1.1 (deferred, F14a):** position-aware toggling. Video→Text opens text near the video's current beat. Text→Video starts slightly *before* the student's reading position (a small rewind buffer) — this asymmetry is intentional, not a bug: switching *to* video usually means "I want to see this in action," which reads better starting just before the moment in question, not exactly at it. Requires a shared position/beat index between both modes — deliberately deferred until v1's core timing mechanism is proven, since retrofitting shared position state is easier than designing it correctly before anything works.
+3. **Future audio (deferred, F14b):** narration recorded via Speechify per chapter, from the same script that drives the animation. Not a v1 blocker — it's real production work on Allen's side, independent of the coding, and the silent animation already has real teaching value alone. When added, the beat-timeline structure from v1 means playback timing switches to sync against `audio.currentTime` instead of the internal clock, without needing to rebuild the animation logic itself.
+
+This whole approach was evaluated against HyperFrames (an open-source HTML-to-MP4 renderer used by AI coding agents) and deliberately rejected: HyperFrames is the right tool when a portable video *file* is the goal (e.g. for YouTube), but it requires Node.js 22+ and FFmpeg as local dependencies, which conflicts with N7 (no runtime beyond browser + Python) and the app's USB-portable design. Since lessons only ever need to play inside the app itself, live animation is strictly simpler and avoids the dependency entirely — and it lets a learner pause and copy the code being "typed," which a real video file never could.
 
 ## Planned: F15 — Professor Python as an animated Lottie character
 
 **Decision:** use Lottie (JSON-based vector animations) for an animated Professor Python character, rendered via the `lottie-web` JavaScript library. This supports the **AI tutor chat and app identity** — it is not used in F14's video lessons (see decision note below).
+
 
 Why Lottie fits this project specifically:
 - Lottie files are JSON — tiny, resolution-independent, no video codec required.
