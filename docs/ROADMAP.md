@@ -24,7 +24,7 @@ A self-contained, offline-first Python learning app — lessons, sandbox, quizze
 - [ ] F15 Professor Python as an animated Lottie character (idle/thinking/wave), usable as the app icon and alongside the AI tutor chat — not used in F14 video lessons
 - [x] F11 Wire the full Professor Python teaching-method prompt into the `/api/tutor` system prompt — Done, verified 2026-08-30
 - [x] F16 Student-stated name and learning preference, passed to Professor Python as context — Done, verified 2026-08-30
-- [ ] F17 Readability pass — default font size and line-height are too small for comfortable reading without zooming in/out repeatedly. Fix: better defaults, plus a persistent font-size control (e.g. in Settings) so the student sets it once. Not a full redesign — scoped to sizing/spacing only.
+- [x] F17 Readability pass — Done. Base text raised to 16px / 1.6 line-height; Settings A−/A/A+ text-size control scales lessons, quizzes, tutor chat, and the code editor and persists (`fontSizePreference`).
 
 ### Phase 3 — Ideas / someday
 - ~~Cinematic lesson playback with rendered video / generated backgrounds (F12)~~ — superseded by F14; see docs/ARCHITECTURE.md decision note. Not pursued: would require Node.js/FFmpeg (HyperFrames or similar), conflicting with the app's zero-dependency design.

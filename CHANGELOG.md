@@ -4,6 +4,20 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-08-30 — F17 Readability Pass
+### Changed
+- Base text size raised from 14px to 16px (body) with 1.6 line-height for prose areas (lesson text, tutor chat, quiz questions) — comfortably readable with no browser zoom. Lesson/quiz headings 18px → 21px.
+- Content text now scales from a single `--fs-scale` CSS variable: lesson content, inline code blocks, callouts, quiz text/options, tutor chat + code snippets, sandbox output, the CodeMirror editor, the script-generator modal, and the pop-out lesson panel.
+
+### Added
+- **F17**: Settings → "Text size" with three buttons (A− / A / A+ = small 0.9× / medium 1× / large 1.15×). Adjusts `--fs-scale` at the document root, refreshes CodeMirror so the editor tracks the change, saves as `fontSizePreference` in progress.json via the existing `/api/progress` POST, and re-applies on page load. `app.py` `DEFAULT_PROGRESS` gains `fontSizePreference: "medium"`; older save files merge the default in.
+
+### Verified
+- `node --check` on extracted scripts passes; `app.py` parses.
+- Ran locally (port 5757): default renders at 16px/1.6 with no zoom. Toggled each size — computed `--fs-scale` and font sizes across lesson text, quiz, chat, and CodeMirror all track (small 14.4px / medium 16px / large 18.4px for lesson prose; CodeMirror 14→16.1px at large). Reloaded at "large" and confirmed it re-applies on load. Old progress.json without the field loaded fine with the default merged in.
+
+---
+
 ## 2026-08-30 (doc fix) — REQUIREMENTS.md consistency
 ### Corrected
 - F6 status changed from "Partially done" to **Done** — it contradicted F11 (Done, verified 2026-08-30) in the same file; the tutor chat is Professor Python with the full teaching-method prompt wired in. Also bumped the "Status reflects the code as of…" date from 2026-07-09 to 2026-08-30.

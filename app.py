@@ -14,7 +14,8 @@ VENDOR    = os.path.join(BASE, "vendor")
 # ── helpers ───────────────────────────────────────────────────────────────────
 DEFAULT_PROGRESS = {"xp":0,"streak":1,"lastActiveDate":None,
                     "completed":[],"quizScores":{},"currentChapter":0,
-                    "studentName":"","learningPreference":""}
+                    "studentName":"","learningPreference":"",
+                    "fontSizePreference":"medium"}
 
 def load_progress():
     try:
