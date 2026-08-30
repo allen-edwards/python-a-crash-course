@@ -51,15 +51,19 @@ This was evaluated against HyperFrames (an open-source HTML-to-MP4 renderer used
 
 ## Planned: F15 — Professor Python as an animated Lottie character
 
-**Decision:** use Lottie (JSON-based vector animations) for an animated Professor Python character, rendered via the `lottie-web` JavaScript library.
+**Decision:** use Lottie (JSON-based vector animations) for an animated Professor Python character, rendered via the `lottie-web` JavaScript library. This supports the **AI tutor chat and app identity** — it is not used in F14's video lessons (see decision note below).
 
 Why Lottie fits this project specifically:
 - Lottie files are JSON — tiny, resolution-independent, no video codec required.
 - `lottie-web` runs entirely client-side in the browser; no new system dependency (fits N7).
 - Animations are controllable from JS — play/pause/loop/jump-to-frame — so Professor Python can react to app state (idle loop, "thinking" while the AI tutor responds, a wave when a lesson starts).
-- Fits naturally alongside F14: Professor Python can appear inside the faux-video player shell as an animated presenter.
+
+Professor Python's personality (docs/PROFESSOR_PYTHON_PROMPT.md) should ground the animation style: calm, patient, curious, warm — not high-energy mascot motion. A gentle head-tilt for "thinking," a relaxed idle loop, a warm wave — not bouncing or exaggerated gestures.
 
 Note: creating the `.json` Lottie animation itself is an asset-creation task (needs an animation tool such as After Effects + Bodymovin, or LottieFiles' web editor) — it is not something written in Python or JS from scratch. The static app icon (`appIcon.png`) is unaffected and can continue to use the same Professor Python artwork as a still image.
+
+### Decision note: Professor Python's scope across features
+Professor Python is the app's overall identity, not a single feature. His full teaching-method prompt governs the **AI tutor chat only** (F6/F11) — Socratic pacing, hints before answers, patient tone. F14 (faux-video lessons) is a separate, non-interactive pipeline (script → animation → playback) and does not use the tutor prompt or require Professor Python's animated presence, though lesson scripts may still be written in a tone consistent with his teaching style.
 
 ## Data flow: running sandbox code
 1. User clicks Run; browser POSTs the code to `/api/run`.

@@ -4,6 +4,32 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-08-30 (final) — Code Review Correction + New Feature (F16)
+### Corrected
+- Verified against actual code (index.html ~line 825): F11 is **not** done. The live tutor system prompt is generic and hardcoded to a specific student by name, with short/emoji-tuned style — it is not Professor Python's teaching-method prompt. Docs previously implied ambiguity here; now corrected with the exact line reference.
+
+### Added
+- **F16**: student-stated name and learning preference (e.g. "lots of examples," "step-by-step"), passed into Professor Python's system prompt as plain context. Deliberately scoped to stated preferences only — no behavior tracking, no inferred learning style, no psychological profiling. Rationale: anyone using this app has already chosen to put in the effort; this is about helping them succeed, not studying them.
+
+---
+
+## 2026-08-30 (later still) — Professor Python Scope Clarified
+### Docs
+- Confirmed docs/PROFESSOR_PYTHON_PROMPT.md (the full teaching-method system prompt) governs the **AI tutor chat only** (F6/F11) — not F14's faux-video lessons, which stay a non-interactive script → animation → playback pipeline.
+- F6 relabeled: the existing tutor chat *is* Professor Python — he's the app's identity, not a separate planned feature. What's still Planned is wiring his actual system prompt in (tracked as F11, narrowed from "add a persona" to "apply this specific prompt").
+- F15 (Lottie animation) clarified as supporting the tutor/app identity, not F14 lessons; personality traits (calm, patient, curious) should ground the animation's motion style.
+
+---
+
+## 2026-08-30 (later) — Documentation Cleanup
+### Docs
+- README.md: split Features into "Available now" vs "Coming soon" — previously implied F10 (video embeds) was ready when it's only a placeholder, and listed no planned features at all.
+- README.md: removed its own separate, drifting roadmap list; it now points to docs/ROADMAP.md as the single source of truth.
+- Recovered two orphaned ideas from the old README roadmap that weren't tracked anywhere else (dark/light theme toggle, mobile-friendly layout) and "Chapters 12+" — added to docs/ROADMAP.md's Phase 3 (someday) so they aren't lost.
+- README.md: Project Structure diagram updated to include vendor/ and docs/, which existed in the repo but weren't listed.
+
+---
+
 ## 2026-08-30 — Planning
 ### Docs
 - Superseded F12 (rendered/cinematic lesson video) with **F14: in-app faux-video lesson player** — live browser animation (HTML/CSS/JS) inside a scrubbable player shell, instead of exporting real video files. Decision: HyperFrames (HTML-to-MP4 rendering) was evaluated and rejected for this use case since it requires Node.js/FFmpeg, which conflicts with the app's zero-install, USB-portable design.

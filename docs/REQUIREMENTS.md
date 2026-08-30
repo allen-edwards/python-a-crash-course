@@ -13,18 +13,23 @@ What the user can do. Status reflects the code as of 2026-07-09.
 | F3 | The user can take quizzes and earn XP; chapters unlock as XP grows | Must | Done |
 | F4 | The user's progress (XP, streak, completed chapters, quiz scores) is saved between sessions | Must | Done |
 | F5 | The user can maintain a day streak that tracks consecutive learning days | Must | Done |
-| F6 | The user can chat with an AI tutor (Claude) after entering their own API key | Must | Done |
+| F6 | The user can chat with Professor Python — the app's AI tutor persona and identity, powered by Claude — after entering their own API key | Must | Partially done — a tutor chat is live, but its current system prompt (in index.html) is a generic, personalized-to-one-user prompt, not Professor Python's actual teaching-method prompt. See F11. |
 | F7 | The user can generate an original YouTube video script for any chapter | Must | Done (404 bug fixed in v6.0) |
 | F8 | The user can pop out a floating, draggable lesson panel while coding | Nice | Done |
 | F9 | The user can collapse the sidebar for more screen space | Nice | Done |
 | F10 | The user can watch embedded lesson videos in each chapter | Nice | Superseded by F14 (see below) |
-| F11 | The user can talk to Professor Python, a persona-driven AI tutor | Nice | Planned (see PROFESSOR_PYTHON_PROMPT.md) |
+| F11 | The `/api/tutor` system prompt uses the full Professor Python teaching-method prompt verbatim (see docs/PROFESSOR_PYTHON_PROMPT.md), replacing the current generic prompt hardcoded in index.html (~line 825), which is personalized to one specific student and should be removed | Must | Planned |
+| F16 | The student can tell the app their name and describe how they learn best (e.g. "lots of examples," "short explanations," "step-by-step") in a simple, editable field. Both are passed into Professor Python's system prompt as stated context — no inference, no tracking, no behavior analysis. | Nice | Planned |
 | F12 | ~~The user can watch cinematic lesson playback (generated backgrounds, animated code typing, narration)~~ | Nice | Superseded by F14 — see decision note below |
 | F13 | The user can browse a Projects tab with hands-on practice projects | Nice | Planned |
 | F14 | The user can watch an in-app "faux video" lesson for each chapter — animated code-typing synced to a scrubbable progress bar, played inside a styled player shell, entirely in the browser | Nice | Planned |
-| F15 | The user sees Professor Python as an animated Lottie character (idle, thinking, wave) — usable as the static app icon and as an animated guide inside the lesson player and/or AI tutor chat | Nice | Planned |
+| F15 | Professor Python appears as an animated Lottie character (idle, thinking, wave) — reflecting his calm, patient, curious personality (see PROFESSOR_PYTHON_PROMPT.md) — usable as the static app icon and alongside the AI tutor chat. Not used in F14 video lessons. | Nice | Planned |
 
-### Decision note: F12 → F14
+### Decision note: F16's scope — stated, not inferred
+Anyone using this app has already chosen to learn and put in the effort — F16 exists to help them succeed, not to study them. The student states their name and learning preference directly (a simple field they fill in and can edit anytime); Professor Python just reads and respects it, the same way a human tutor would take a student at their word. There is no tracking of quiz performance, no inferring a "learning style" from behavior, and no psychological profiling. If this ever seems worth expanding, that expansion should be re-evaluated deliberately, not drifted into.
+
+### Decision note: Professor Python's scope
+Professor Python is the app's identity — its face and voice — not a single feature. His full teaching-method prompt (docs/PROFESSOR_PYTHON_PROMPT.md) governs the **AI tutor chat only** (F6/F11): Socratic pacing, hints before answers, predict-before-run questions, patient tone. It does **not** apply to F14 (faux-video lessons) — those are a straight script → animation → playback pipeline with no interactivity or pacing logic. The teaching *tone* may still inform how per-chapter lesson scripts are written, but the lesson player itself never needs to wait for a student's answer.
 F12 originally implied rendering real video files (generated backgrounds, narration, exported clips). After discussion, the app doesn't need portable video files — lessons only need to play inside the app itself. F14 replaces that idea with a lighter approach: play the animation live in the browser (HTML/CSS/JS) inside a fake video-player shell, instead of rendering to MP4. This avoids adding Node.js/FFmpeg as dependencies and preserves the app's zero-install, USB-portable design. It also lets a learner pause and copy the code being "typed," which a real video could never offer. Trade-off: this lesson format only plays inside the app — it can't be exported or uploaded elsewhere (e.g. YouTube). That's an accepted trade-off, not a gap, since portability was never the goal.
 
 ## Non-functional requirements

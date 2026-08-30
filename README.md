@@ -20,6 +20,7 @@ All lesson content, explanations, and code examples in this app are original. We
 
 ## ✨ Features
 
+### Available now
 - 📖 **11 interactive chapters** covering Python fundamentals — from Hello World through to Testing
 - 🖥️ **Live Python sandbox** with syntax highlighting — runs real Python on your machine
 - 🧠 **Quizzes with XP rewards** — earn points and unlock new chapters
@@ -28,10 +29,16 @@ All lesson content, explanations, and code examples in this app are original. We
 - 📝 **Video script generator** — create original YouTube scripts for each chapter
 - ⧉ **Floating pop-out lesson panel** — drag it anywhere while you code
 - 📊 **Progress dashboard** — track XP, completed chapters, and quiz scores
-- 🎬 **YouTube video slots** — ready to embed your own lesson videos
 - ☰ **Collapsible sidebar** — more screen space when you need it
 - 💾 **Persistent progress** — saves locally between sessions
 - 📴 **Fully offline core** — code editor and Python runner libraries are bundled, no CDN needed
+
+### Coming soon
+These are planned, not yet built — tracked in detail in [docs/ROADMAP.md](docs/ROADMAP.md).
+- 🎬 **In-app lesson playback** — an animated "faux video" for each chapter (code types itself, scrubbable like a real video player) — runs entirely in the browser, no video files
+- 🐍 **Professor Python** — an animated, persona-driven AI tutor
+- 🗂️ **Projects tab** — hands-on practice projects inspired by *The Big Book of Small Python Projects*
+- 🎓 **Chapters 12+** — Pygame, data visualization, web apps (idea stage, not yet scoped)
 
 ---
 
@@ -65,7 +72,9 @@ Double-click START_WINDOWS.bat
 
 ---
 
-## 🤖 AI Tutor Setup (Optional)
+## 🤖 Meet Professor Python (AI Tutor Setup, Optional)
+
+The AI tutor in this app is **Professor Python** — patient, encouraging, and built to teach through hints and guided questions rather than just handing you answers. His teaching philosophy is documented in full in [docs/PROFESSOR_PYTHON_PROMPT.md](docs/PROFESSOR_PYTHON_PROMPT.md).
 
 The AI Tutor and Script Generator require a free Anthropic API key:
 
@@ -104,6 +113,8 @@ pcc_app/
 ├── appIcon.png             ← App icon
 ├── START_MAC_LINUX.sh      ← Launcher for Ubuntu/macOS
 ├── START_WINDOWS.bat       ← Launcher for Windows
+├── vendor/                 ← Bundled CodeMirror + Skulpt (offline support)
+├── docs/                   ← Requirements, architecture, and roadmap
 ├── progress.json           ← Your saved progress (auto-created, not tracked)
 └── .venv/                  ← Virtual environment (auto-created, not tracked)
 ```
@@ -126,11 +137,14 @@ pcc_app/
 
 ## 🗺️ Roadmap
 
-- [ ] YouTube video embeds per chapter (in progress — videos being created)
-- [ ] Projects tab inspired by *The Big Book of Small Python Projects*
-- [ ] Chapters 12+ (Pygame, data visualization, web apps)
-- [ ] Dark/light theme toggle
-- [ ] Mobile-friendly layout
+The full, up-to-date roadmap — including current priorities and design decisions — lives in [docs/ROADMAP.md](docs/ROADMAP.md). Short version of what's next:
+
+1. **F14** — in-app faux-video lesson player (one chapter first, as a proof of concept)
+2. **F15** — Professor Python as an animated character
+3. **F13** — Projects tab
+4. **F11** — Professor Python as a full AI tutor persona
+
+See [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md) for the full feature list and status of each, and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for how new features are designed to fit the app's offline, zero-install philosophy.
 
 ---
 
