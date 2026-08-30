@@ -4,6 +4,16 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-08-30 (later) — Professor Python prompt wired in (F11 done)
+### Changed
+- Replaced the hardcoded `var sys` tutor system prompt in `index.html` (~line 825) with the full **Professor Python teaching-method prompt** from `docs/PROFESSOR_PYTHON_PROMPT.md`, verbatim (the `## Full Prompt` section). Removed the old student-specific personalization — hardcoded name, "keep responses SHORT (3-5 sentences)", and the emoji-tone instruction. The dynamic current-chapter context (`ch.lessonHeading` / `ch.lessonMeta`) is still appended to the end so the tutor knows which lesson the student is on.
+- F11 marked **Done**; F6 status updated to **Done** (the "partially done / generic prompt" caveat removed).
+
+### Verified
+- Ran the app locally and opened the AI Tutor. Confirmed `index.html` now serves the Professor Python prompt and `/api/tutor` forwards it to the Anthropic API (a request with an invalid key returns a clean auth error from Anthropic, proving the system prompt is passed through). A live message ("what is a variable?") was sent through the real tutor UI to confirm end-to-end wiring; a full style check with a valid API key is the user's final confirmation step.
+
+---
+
 ## 2026-08-30 (final) — Code Review Correction + New Feature (F16)
 ### Corrected
 - Verified against actual code (index.html ~line 825): F11 is **not** done. The live tutor system prompt is generic and hardcoded to a specific student by name, with short/emoji-tuned style — it is not Professor Python's teaching-method prompt. Docs previously implied ambiguity here; now corrected with the exact line reference.

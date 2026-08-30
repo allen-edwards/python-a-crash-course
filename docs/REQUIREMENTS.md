@@ -13,12 +13,12 @@ What the user can do. Status reflects the code as of 2026-07-09.
 | F3 | The user can take quizzes and earn XP; chapters unlock as XP grows | Must | Done |
 | F4 | The user's progress (XP, streak, completed chapters, quiz scores) is saved between sessions | Must | Done |
 | F5 | The user can maintain a day streak that tracks consecutive learning days | Must | Done |
-| F6 | The user can chat with Professor Python — the app's AI tutor persona and identity, powered by Claude — after entering their own API key | Must | Partially done — a tutor chat is live, but its current system prompt (in index.html) is a generic, personalized-to-one-user prompt, not Professor Python's actual teaching-method prompt. See F11. |
+| F6 | The user can chat with Professor Python — the app's AI tutor persona and identity, powered by Claude — after entering their own API key | Must | Done — tutor chat is live and uses Professor Python's full teaching-method prompt (see F11). |
 | F7 | The user can generate an original YouTube video script for any chapter | Must | Done (404 bug fixed in v6.0) |
 | F8 | The user can pop out a floating, draggable lesson panel while coding | Nice | Done |
 | F9 | The user can collapse the sidebar for more screen space | Nice | Done |
 | F10 | The user can watch embedded lesson videos in each chapter | Nice | Superseded by F14 (see below) |
-| F11 | The `/api/tutor` system prompt uses the full Professor Python teaching-method prompt verbatim (see docs/PROFESSOR_PYTHON_PROMPT.md), replacing the current generic prompt hardcoded in index.html (~line 825), which is personalized to one specific student and should be removed | Must | Planned |
+| F11 | The `/api/tutor` system prompt uses the full Professor Python teaching-method prompt verbatim (see docs/PROFESSOR_PYTHON_PROMPT.md), replacing the current generic prompt hardcoded in index.html (~line 825), which is personalized to one specific student and should be removed | Must | Done — `var sys` in index.html now holds the full Professor Python teaching-method prompt verbatim; old name/short-response/emoji personalization removed; dynamic current-chapter context still appended. |
 | F16 | The student can tell the app their name and describe how they learn best (e.g. "lots of examples," "short explanations," "step-by-step") in a simple, editable field. Both are passed into Professor Python's system prompt as stated context — no inference, no tracking, no behavior analysis. | Nice | Planned |
 | F12 | ~~The user can watch cinematic lesson playback (generated backgrounds, animated code typing, narration)~~ | Nice | Superseded by F14 — see decision note below |
 | F13 | The user can browse a Projects tab with hands-on practice projects | Nice | Planned |
