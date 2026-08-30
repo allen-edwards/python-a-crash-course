@@ -12,15 +12,22 @@ HTML_FILE = os.path.join(BASE, "index.html")
 VENDOR    = os.path.join(BASE, "vendor")
 
 # ── helpers ───────────────────────────────────────────────────────────────────
+DEFAULT_PROGRESS = {"xp":0,"streak":1,"lastActiveDate":None,
+                    "completed":[],"quizScores":{},"currentChapter":0,
+                    "studentName":"","learningPreference":""}
+
 def load_progress():
     try:
         if os.path.exists(SAVE_FILE):
             with open(SAVE_FILE) as f:
-                return json.load(f)
+                data = json.load(f)
+            if isinstance(data, dict):
+                # merge onto defaults so older save files missing newer
+                # fields (e.g. studentName / learningPreference) still load
+                return {**DEFAULT_PROGRESS, **data}
     except Exception:
         pass
-    return {"xp":0,"streak":1,"lastActiveDate":None,
-            "completed":[],"quizScores":{},"currentChapter":0}
+    return dict(DEFAULT_PROGRESS)
 
 def save_progress(data):
     try:

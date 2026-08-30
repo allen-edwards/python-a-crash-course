@@ -4,6 +4,19 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-08-30 (later, pt. 3) — F16 (name / learning preference) + Ambiguous Spelling prompt rule
+### Added
+- **Ambiguous Spelling** section in `docs/PROFESSOR_PYTHON_PROMPT.md` (after "Error Messages"): Professor Python ignores ordinary typos, and only asks a natural clarifying question when a misspelling could plausibly be a different real word and context doesn't disambiguate. Copied verbatim into the `var sys` prompt in `index.html`.
+- **F16** — two optional fields in Settings → "About You": "What should Professor Python call you?" and "How do you learn best?". Stored as `studentName` / `learningPreference` in `progress.json` via the existing `/api/progress` POST; editable anytime. `app.py` `load_progress()` now merges saved data onto `DEFAULT_PROGRESS`, so older save files without these fields still load.
+- Tutor wiring: `sendMsg()` builds an `about` line — `The student's name is X. They've told you they learn best this way: "Y"` — and inserts it into `sys` **only when both fields are non-empty**, immediately before the chapter context. Never emits a partial line. Core teaching method / personality prompt is byte-for-byte unchanged regardless of these fields.
+- First-run nudge: skipped by design — the Settings entry is discoverable and the fields are optional.
+
+### Verified
+- `node --check` on the extracted `<script>` blocks passes.
+- Ran the app from `~/projects/python-a-crash-course` (`.venv/bin/python app.py`, port 5757): saved a name + learning preference in Settings, reloaded, confirmed the values persist in `progress.json` and repopulate the fields. `/api/progress` round-trip confirmed via curl. Confirmed `sys` contains the "About You" line only when both fields are set (empty-field case emits nothing). A full conversational check of tone/name usage with a live API key is the user's final step.
+
+---
+
 ## 2026-08-30 (later, pt. 2) — Professor Python branding in the UI
 ### Changed
 - Renamed the tutor tab/button from "🤖 AI Tutor" to "🎓 Professor Python"; updated the API-key panel heading and helper text to match ("Professor Python & Script Generator", "Required for Professor Python and the Chapter Script Generator"). Route and function names (`/api/tutor`, `switchTab('tutor')`, etc.) are unchanged — display text only.

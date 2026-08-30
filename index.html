@@ -370,6 +370,22 @@ body{background:var(--bg);color:var(--t);font-family:var(--f);height:100vh;overf
           </div>
           <div id="keyStatus" style="font-size:12px;color:var(--gr);margin-top:7px"></div>
         </div>
+        <div class="apib" style="margin-top:14px">
+          <strong>About You (optional)</strong><br>
+          Professor Python uses this to greet you by name and match how you like to learn. Nothing is tracked or inferred — just what you type here. Editable anytime.
+          <div style="margin-top:10px;font-size:13px;color:var(--t2)">What should Professor Python call you?</div>
+          <div class="apir">
+            <input class="apii" id="nameIn" type="text" placeholder="Your name"/>
+          </div>
+          <div style="margin-top:10px;font-size:13px;color:var(--t2)">How do you learn best?</div>
+          <div class="apir">
+            <input class="apii" id="prefIn" type="text" placeholder="Lots of examples, short explanations, step-by-step..."/>
+          </div>
+          <div class="apir">
+            <button class="btn pr" onclick="saveAboutYou()">Save</button>
+          </div>
+          <div id="aboutYouStatus" style="font-size:12px;color:var(--gr);margin-top:7px"></div>
+        </div>
         <div class="credits-box">
           <strong>About Python: A Crash Course — A Beginner's Journey</strong><br><br>
           This app was inspired by two fantastic books by <em>Eric Matthes</em>:<br>
@@ -606,7 +622,7 @@ var CHAPTERS = [
 ];
 
 // ═══════════════════════════════════════ STATE ══════════════════════════════
-var S = {xp:0,streak:1,lastActiveDate:null,completed:[],quizScores:{},cur:0};
+var S = {xp:0,streak:1,lastActiveDate:null,completed:[],quizScores:{},cur:0,studentName:'',learningPreference:''};
 var apiKey = '';
 var sidebarOpen = true;
 var editor = null;
@@ -632,7 +648,7 @@ function saveState() {
 }
 
 function resetAll() {
-  S = {xp:0,streak:1,lastActiveDate:new Date().toDateString(),completed:[],quizScores:{},cur:0};
+  S = {xp:0,streak:1,lastActiveDate:new Date().toDateString(),completed:[],quizScores:{},cur:0,studentName:'',learningPreference:''};
   saveState(); location.reload();
 }
 
@@ -685,6 +701,9 @@ function showView(name) {
   if (name==='settings') {
     document.getElementById('apiIn').value = apiKey ? '••••••••' : '';
     document.getElementById('keyStatus').textContent = apiKey ? '✅ API key saved' : '';
+    document.getElementById('nameIn').value = S.studentName || '';
+    document.getElementById('prefIn').value = S.learningPreference || '';
+    document.getElementById('aboutYouStatus').textContent = '';
   }
 }
 
@@ -822,6 +841,9 @@ async function sendMsg() {
   var ch = CHAPTERS[S.cur];
   addBubble(q,'u'); tutorHistory.push({role:'user',content:q});
   var tid='t_'+Date.now(); addBubble('<span class="dots">Thinking</span>','a',tid);
+  var about = (S.studentName && S.learningPreference)
+    ? '\n\nThe student\'s name is ' + S.studentName + '. They\'ve told you they learn best this way: "' + S.learningPreference + '"'
+    : '';
   var sys = `You are Professor Python, the friendly instructor for Python: A Crash Course – A Beginner's Journey.
 
 Your purpose is not simply to answer questions. Your purpose is to teach.
@@ -941,6 +963,22 @@ Always explain:
 
 Never simply provide the corrected code.
 
+### Ambiguous Spelling
+
+Do not point out ordinary typos or misspellings — they are not worth
+interrupting the conversation for, and most of the time the intended
+meaning is completely clear anyway.
+
+The one exception: if a misspelled word could plausibly be a different
+real word, and it genuinely is not clear from context which one the
+student meant, ask in the same curious, teaching spirit you'd use for
+anything else — not as a correction, but as a natural clarifying
+question, the same way you might explain that Python accepts both
+single and double quotes. The goal is understanding what the student
+meant, not flagging an error.
+
+If the intended meaning is clear despite a typo, let it go entirely.
+
 ### Helping Without Giving Away Answers
 
 If the student appears to be completing an exercise:
@@ -1026,7 +1064,7 @@ Programming is not about memorizing syntax.
 Programming is about solving problems one small step at a time.
 
 Every conversation should leave the student understanding a little more
-than they did before.
+than they did before.` + about + `
 
 Current chapter: "` + ch.lessonHeading + `" — ` + ch.lessonMeta;
   try {
@@ -1079,6 +1117,12 @@ function clearKey() {
   apiKey=''; localStorage.removeItem('pcc_key');
   document.getElementById('apiIn').value='';
   document.getElementById('keyStatus').textContent='Key cleared.';
+}
+function saveAboutYou() {
+  S.studentName = document.getElementById('nameIn').value.trim();
+  S.learningPreference = document.getElementById('prefIn').value.trim();
+  saveState();
+  document.getElementById('aboutYouStatus').textContent = 'Saved.';
 }
 
 // ═══════════════════════════════════════ POP-OUT ══════════════════════════════
