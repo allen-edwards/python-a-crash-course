@@ -4,6 +4,16 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-08-30 — Planning
+### Docs
+- Superseded F12 (rendered/cinematic lesson video) with **F14: in-app faux-video lesson player** — live browser animation (HTML/CSS/JS) inside a scrubbable player shell, instead of exporting real video files. Decision: HyperFrames (HTML-to-MP4 rendering) was evaluated and rejected for this use case since it requires Node.js/FFmpeg, which conflicts with the app's zero-install, USB-portable design.
+- Added **F15: Professor Python as an animated Lottie character** (idle/thinking/wave), usable both as the static app icon and as an animated guide in the lesson player / AI tutor chat. Runs via the client-side `lottie-web` library — no new system dependency.
+- Added non-functional requirement N7: no feature may require a runtime beyond a browser and Python.
+- Added docs/ROADMAP.md (new file) — Phase 1 (done), Phase 2 (current focus: F13, F14, F15, F11), Phase 3 (someday/superseded items).
+- Set next milestone (v7.0): one chapter's F14 lesson working end-to-end, as a proof of concept before building all 11.
+
+---
+
 ## [v6.0] — 2026-07-06 — Offline Support & Fixes
 
 ### Added
