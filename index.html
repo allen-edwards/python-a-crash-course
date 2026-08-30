@@ -276,7 +276,7 @@ body{background:var(--bg);color:var(--t);font-family:var(--f);height:100vh;overf
         <button class="on" onclick="switchTab('lesson')">📖 Lesson</button>
         <button onclick="switchTab('sandbox')">🖥️ Sandbox</button>
         <button onclick="switchTab('quiz')">🧠 Quiz</button>
-        <button onclick="switchTab('tutor')">🤖 AI Tutor</button>
+        <button onclick="switchTab('tutor')">🎓 Professor Python</button>
       </div>
 
       <!-- LESSON TAB -->
@@ -325,7 +325,7 @@ body{background:var(--bg);color:var(--t);font-family:var(--f);height:100vh;overf
       <div class="tc" id="tab-tutor">
         <div class="tw">
           <div class="tm" id="tutorMsgs">
-            <div class="mg a"><div class="mb">👋 Hey Allen! I'm your Python tutor. Ask me anything about the current chapter — I'll explain it with fun analogies and real examples that actually stick. What's on your mind?</div></div>
+            <div class="mg a"><div class="mb">Hello! I'm Professor Python. What are we working on today?</div></div>
           </div>
           <div class="tia">
             <div class="qbs" id="quickBtns"></div>
@@ -360,8 +360,8 @@ body{background:var(--bg);color:var(--t);font-family:var(--f);height:100vh;overf
           <button class="btn sm" onclick="showView('chapter')">← Back</button>
         </div>
         <div class="apib">
-          <strong>AI Tutor & Script Generator — Anthropic API Key</strong><br>
-          Required for the AI Tutor and Chapter Script Generator. Get a free key at
+          <strong>Professor Python & Script Generator — Anthropic API Key</strong><br>
+          Required for Professor Python and the Chapter Script Generator. Get a free key at
           <a href="https://console.anthropic.com" target="_blank" style="color:var(--ac2)">console.anthropic.com</a>
           <div class="apir">
             <input class="apii" id="apiIn" type="password" placeholder="sk-ant-..."/>

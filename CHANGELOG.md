@@ -4,6 +4,14 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-08-30 (later, pt. 2) — Professor Python branding in the UI
+### Changed
+- Renamed the tutor tab/button from "🤖 AI Tutor" to "🎓 Professor Python"; updated the API-key panel heading and helper text to match ("Professor Python & Script Generator", "Required for Professor Python and the Chapter Script Generator"). Route and function names (`/api/tutor`, `switchTab('tutor')`, etc.) are unchanged — display text only.
+- Replaced the hardcoded tutor greeting bubble ("Hey Allen! … fun analogies that actually stick") with a generic, non-personalized greeting in Professor Python's voice: "Hello! I'm Professor Python. What are we working on today?" — no student name, no emoji.
+- Verified by running the app locally: tab now reads "🎓 Professor Python" and fits the tab bar; the new greeting renders correctly. (This complements the F11 prompt swap in the entry below, which was verified with a live tutor test message.)
+
+---
+
 ## 2026-08-30 (later) — Professor Python prompt wired in (F11 done)
 ### Changed
 - Replaced the hardcoded `var sys` tutor system prompt in `index.html` (~line 825) with the full **Professor Python teaching-method prompt** from `docs/PROFESSOR_PYTHON_PROMPT.md`, verbatim (the `## Full Prompt` section). Removed the old student-specific personalization — hardcoded name, "keep responses SHORT (3-5 sentences)", and the emoji-tone instruction. The dynamic current-chapter context (`ch.lessonHeading` / `ch.lessonMeta`) is still appended to the end so the tutor knows which lesson the student is on.
