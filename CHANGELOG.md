@@ -4,6 +4,27 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-08-31 — F14 v1, Part 1 of 2: data format + panel shell + Text mode
+### Added
+- **`CHAPTER_SCRIPTS`** beat data format in `index.html` — the standard for every chapter's lesson script. Beat types: `narration` (caption text), `code` (`code` + `typeSpeedMs`), `output` (result text). Wrote a real 8-beat Chapter 1 script based on the existing lesson content.
+- **`getBeatDuration(beat)`** helper — single source of truth for a beat's length in ms (narration = word-count reading estimate at ~180 wpm; code = `code.length * typeSpeedMs`; output = fixed 1200 ms pause). The progress bar and F14b's future audio sync both read from it.
+- New **lesson panel** replacing the old floating text pop-out: draggable, minimizable, reachable from a tab-bar button on every tab plus the two Sandbox buttons. Header has a **Video / Text** segmented toggle.
+  - **Text mode:** fully functional — renders the chapter script's beats as readable paragraphs, code blocks, and an output box styled like the sandbox output.
+  - **Video mode:** player-shell UI only for now — dark stage, disabled play button, empty progress bar, "wired up in Part 2" placeholder.
+  - Toggling modes always resets scroll to the top (position memory is deferred — F14a).
+
+### Changed
+- Removed the old `openPopout` / `#popoutPanel` text pop-out and its "⧉ Pop out lesson" buttons; the lesson panel takes over that role.
+
+### Not done yet
+- **Part 2:** Video mode's actual code-typing animation, play/pause, and progress-bar wiring driven by `getBeatDuration`. F14 stays **Part 1 of 2** — not marked fully Done.
+
+### Verified
+- `node --check` passes; app boots (`GET /` 200), no console errors.
+- Panel opens from both the Lesson tab and the Sandbox tab. Text mode renders all 8 Chapter 1 beats correctly (2 code blocks, 2 output boxes, 4 narration paragraphs). Video/Text toggle switches views and resets scroll. Minimize/close work. `getBeatDuration` returns sane values (Chapter 1 total ≈ 35 s).
+
+---
+
 ## 2026-08-30 (F14 spec) — F14 Fully Scoped: Toggleable Video/Text Panel, Phased Build
 ### Docs
 - F14 redefined based on the original (older, "lost to file heaven") design intent: a single toggleable panel — not a separate video tab — accessible from anywhere in the app including the sandbox, replacing the current text-based pop-out. Two modes (Video/Text) render from one shared per-chapter script.

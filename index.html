@@ -77,6 +77,10 @@ body{background:var(--bg);color:var(--t);font-family:var(--f);height:100vh;overf
   color:var(--t2);font-size:12px;cursor:pointer;font-family:var(--f);
   border-bottom:2px solid transparent;margin-bottom:-1px;}
 .tb button.on{color:var(--ac2);border-bottom-color:var(--ac);}
+.tb .tb-panel-btn{margin-left:auto;margin-bottom:5px;align-self:center;border:1px solid var(--b2);
+  border-radius:7px;background:var(--yeb);color:var(--ye);font-weight:600;}
+.tb .tb-panel-btn:hover{background:rgba(245,200,66,.18);}
+.tb .tb-panel-btn.on{color:var(--ye);border-bottom:1px solid var(--b2);}
 .tc{display:none;flex:1;overflow-y:auto;min-height:0;}
 .tc.on{display:flex;flex-direction:column;}
 
@@ -221,6 +225,33 @@ body{background:var(--bg);color:var(--t);font-family:var(--f);height:100vh;overf
 .popout-body{flex:1;overflow-y:auto;padding:14px;font-size:calc(14px * var(--fs-scale));color:var(--t2);
   line-height:1.7;min-height:150px;}
 
+/* ── Lesson panel (F14): Video / Text modes ── */
+.lp-tabs{display:flex;gap:5px;padding:8px 12px;background:var(--s2);border-bottom:1px solid var(--b);flex-shrink:0;}
+.popout.minimized .lp-tabs{display:none;}
+.lp-mode{flex:1;padding:6px 10px;border-radius:7px;border:1px solid var(--b2);background:transparent;
+  color:var(--t2);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--f);}
+.lp-mode:hover{border-color:var(--acbr);color:var(--ac2);}
+.lp-mode.on{background:var(--ac);border-color:var(--ac);color:#fff;}
+.lp-video{display:flex;flex-direction:column;height:100%;gap:10px;}
+.lp-stage{flex:1;background:#0d0f16;border:1px solid var(--b2);border-radius:10px;overflow:auto;
+  padding:16px;font-family:var(--m);font-size:calc(13px * var(--fs-scale));color:#c9d1f0;
+  white-space:pre-wrap;display:flex;align-items:center;justify-content:center;text-align:center;}
+.lp-placeholder{color:var(--t3);font-family:var(--f);font-size:13px;line-height:1.6;}
+.lp-controls{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.lp-play{background:var(--s2);border:1px solid var(--b2);color:var(--t);border-radius:6px;
+  width:34px;height:28px;cursor:pointer;font-size:12px;flex-shrink:0;}
+.lp-play:disabled{opacity:.45;cursor:default;}
+.lp-track{flex:1;height:6px;background:var(--s3);border-radius:99px;overflow:hidden;}
+.lp-progress{height:100%;width:0;background:linear-gradient(90deg,var(--ac),var(--ac2));border-radius:99px;}
+.lp-text .lp-narr{margin:0 0 12px;line-height:1.6;color:var(--t2);font-size:calc(15px * var(--fs-scale));}
+.lp-text .lp-code{background:var(--s2);border:1px solid var(--b2);border-radius:8px;padding:10px 13px;
+  font-family:var(--m);font-size:calc(13px * var(--fs-scale));color:#c9d1f0;white-space:pre;
+  overflow-x:auto;margin:0 0 12px;line-height:1.6;}
+.lp-text .lp-out{background:#0a0c12;border-radius:8px;padding:8px 12px 9px;font-family:var(--m);
+  font-size:calc(13px * var(--fs-scale));color:#b8f0c0;white-space:pre-wrap;margin:0 0 12px;line-height:1.6;}
+.lp-text .lp-out::before{content:"output";display:block;font-family:var(--f);font-size:10px;
+  text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:3px;}
+
 /* ── Buttons ── */
 .btn{padding:7px 14px;border-radius:8px;border:1px solid var(--b2);background:var(--s2);
   color:var(--t);font-size:13px;cursor:pointer;font-family:var(--f);transition:background .15s;}
@@ -285,6 +316,7 @@ body{background:var(--bg);color:var(--t);font-family:var(--f);height:100vh;overf
         <button onclick="switchTab('sandbox')">🖥️ Sandbox</button>
         <button onclick="switchTab('quiz')">🧠 Quiz</button>
         <button onclick="switchTab('tutor')">🎓 Professor Python</button>
+        <button class="tb-panel-btn" onclick="openLessonPanel()" title="Open the lesson panel (Video / Text)">⧉ Lesson panel</button>
       </div>
 
       <!-- LESSON TAB -->
@@ -298,7 +330,7 @@ body{background:var(--bg);color:var(--t);font-family:var(--f);height:100vh;overf
           <div class="sandbox-top">
             <h3>🖥️ Python Sandbox</h3>
             <span style="font-size:12px;color:var(--t3)">Real Python — runs on your machine</span>
-            <button class="btn sm pu" onclick="openPopout()" style="margin-left:auto" title="Pop out lesson">⧉ Pop out lesson</button>
+            <button class="btn sm pu" onclick="openLessonPanel()" style="margin-left:auto" title="Open the lesson panel">⧉ Lesson panel</button>
             <button class="btn sm" onclick="loadChallenge()">Load challenge</button>
             <button class="btn sm" onclick="clearCode()">Clear</button>
           </div>
@@ -318,7 +350,7 @@ body{background:var(--bg);color:var(--t);font-family:var(--f);height:100vh;overf
           <div class="sbar">
             <button class="btn rn" onclick="runCode()">▶ Run</button>
             <button class="btn sm" onclick="copyCode()">Copy</button>
-            <button class="btn sm pu" onclick="openPopout()">⧉ Pop out lesson</button>
+            <button class="btn sm pu" onclick="openLessonPanel()">⧉ Lesson panel</button>
             <span style="margin-left:auto;font-size:11px;color:var(--t3)">Python runs on your machine</span>
           </div>
         </div>
@@ -419,14 +451,29 @@ body{background:var(--bg);color:var(--t);font-family:var(--f);height:100vh;overf
   </main>
 </div>
 
-<!-- FLOATING POP-OUT PANEL -->
-<div class="popout hidden" id="popoutPanel" style="width:420px;height:480px;top:80px;right:20px;">
-  <div class="popout-bar" id="popoutBar">
-    <span class="title" id="popoutTitle">📖 Lesson Reference</span>
-    <button class="popout-btn" onclick="minimizePopout()" title="Minimize">─</button>
-    <button class="popout-btn" onclick="closePopout()" title="Close">✕</button>
+<!-- FLOATING LESSON PANEL (F14 v1) -->
+<div class="popout hidden" id="lessonPanel" style="width:460px;height:520px;top:70px;right:20px;">
+  <div class="popout-bar" id="lessonPanelBar">
+    <span class="title" id="lessonPanelTitle">Lesson</span>
+    <button class="popout-btn" onclick="minimizeLessonPanel()" title="Minimize">─</button>
+    <button class="popout-btn" onclick="closeLessonPanel()" title="Close">✕</button>
   </div>
-  <div class="popout-body" id="popoutBody"></div>
+  <div class="lp-tabs">
+    <button class="lp-mode on" data-mode="video" onclick="setLessonMode('video')">▶ Video</button>
+    <button class="lp-mode" data-mode="text" onclick="setLessonMode('text')">≡ Text</button>
+  </div>
+  <div class="popout-body" id="lessonPanelBody">
+    <div class="lp-video" id="lpVideo">
+      <div class="lp-stage" id="lpStage">
+        <div class="lp-placeholder">Video mode — the code-typing animation is wired up in Part 2.<br>Use <strong>Text</strong> mode to read the full lesson now.</div>
+      </div>
+      <div class="lp-controls">
+        <button class="lp-play" id="lpPlayBtn" title="Play / pause" disabled>▶</button>
+        <div class="lp-track"><div class="lp-progress" id="lpProgress"></div></div>
+      </div>
+    </div>
+    <div class="lp-text" id="lpText" style="display:none"></div>
+  </div>
 </div>
 
 <!-- SCRIPT MODAL -->
@@ -637,6 +684,44 @@ var CHAPTERS = [
     prompts:['Why do professional programmers write tests?','Explain assert in simple terms','What is unittest and how do I use it?','Give me a testing challenge']
   }
 ];
+
+// ═══════════════════════════════════ LESSON SCRIPTS (F14) ════════════════════
+// Beat format — the standard for every chapter's lesson panel (Video + Text modes):
+//   { type:'narration', text:'...' }              caption text, no code shown
+//   { type:'code',      code:'...', typeSpeedMs:N } code-typing animation target (N = ms per char)
+//   { type:'output',    text:'...' }              result of the code, styled like the sandbox output box
+// getBeatDuration(beat) below is the single source of truth for a beat's length —
+// the progress bar (Part 2) and F14b's future audio sync both read from it.
+var CHAPTER_SCRIPTS = {
+  0: {
+    title: 'Chapter 1 — Hello World',
+    beats: [
+      { type:'narration', text:"Let's write your very first Python program — the legendary \"Hello World\". Python is a readable, beginner-friendly language, and this one line proves it's running on your machine." },
+      { type:'code', code:'print("Hello, World!")', typeSpeedMs:55 },
+      { type:'narration', text:"print() is a function built into Python. Whatever you put inside the parentheses is displayed on the screen." },
+      { type:'output', text:'Hello, World!' },
+      { type:'narration', text:"Python files end in .py, and Python reads them top to bottom, running each line in order." },
+      { type:'narration', text:"You can also experiment live: type python in your terminal to open the interpreter, where the >>> prompt runs one line at a time — like a calculator that speaks Python." },
+      { type:'code', code:'2 + 2', typeSpeedMs:70 },
+      { type:'output', text:'4' }
+    ]
+  }
+};
+
+// Computed length of a single beat, in milliseconds.
+function getBeatDuration(beat) {
+  if (!beat) return 0;
+  if (beat.type === 'code')   return Math.max(1, (beat.code || '').length) * (beat.typeSpeedMs || 40);
+  if (beat.type === 'output') return 1200; // fixed short pause
+  var words = (beat.text || '').trim().split(/\s+/).filter(Boolean).length; // narration: reading-time estimate
+  return Math.max(1200, Math.round(words / 3 * 1000)); // ~180 wpm
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"]/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];
+  });
+}
 
 // ═══════════════════════════════════════ STATE ══════════════════════════════
 var S = {xp:0,streak:1,lastActiveDate:null,completed:[],quizScores:{},cur:0,studentName:'',learningPreference:'',fontSizePreference:'medium'};
@@ -1158,35 +1243,75 @@ function setFontSize(pref) {
   applyFontSize(S.fontSizePreference);
 }
 
-// ═══════════════════════════════════════ POP-OUT ══════════════════════════════
-var popoutMinimized = false;
+// ═══════════════════════════════ LESSON PANEL (F14 v1) ═══════════════════════
+// One draggable panel, reachable from any tab. Two modes (Video / Text), both
+// rendered from the same CHAPTER_SCRIPTS beat list. Toggling modes always
+// resets to the top — position memory is deferred (F14a).
+var lessonPanelMode = 'video';
+var lessonPanelMin  = false;
 
-function openPopout() {
+function currentScript() {
   var ch = CHAPTERS[S.cur];
-  document.getElementById('popoutTitle').textContent = '📖 '+ch.lessonHeading;
-  document.getElementById('popoutBody').innerHTML = ch.lessonHTML;
-  var panel = document.getElementById('popoutPanel');
+  return CHAPTER_SCRIPTS[ch.id] || null;
+}
+
+function openLessonPanel() {
+  var ch = CHAPTERS[S.cur];
+  var script = currentScript();
+  document.getElementById('lessonPanelTitle').textContent =
+    script ? script.title : (ch.lessonHeading || 'Lesson');
+  renderLessonText(script);
+  var panel = document.getElementById('lessonPanel');
   panel.classList.remove('hidden','minimized');
-  popoutMinimized = false;
+  lessonPanelMin = false;
+  panel.querySelector('.popout-btn').textContent = '─';
+  setLessonMode(lessonPanelMode);
 }
 
-function closePopout() {
-  document.getElementById('popoutPanel').classList.add('hidden');
+function closeLessonPanel() {
+  document.getElementById('lessonPanel').classList.add('hidden');
 }
 
-function minimizePopout() {
-  popoutMinimized = !popoutMinimized;
-  var panel = document.getElementById('popoutPanel');
-  panel.classList.toggle('minimized', popoutMinimized);
-  panel.querySelector('.popout-btn').textContent = popoutMinimized ? '□' : '─';
+function minimizeLessonPanel() {
+  lessonPanelMin = !lessonPanelMin;
+  var panel = document.getElementById('lessonPanel');
+  panel.classList.toggle('minimized', lessonPanelMin);
+  panel.querySelector('.popout-btn').textContent = lessonPanelMin ? '□' : '─';
 }
 
-// Draggable pop-out
+function setLessonMode(mode) {
+  lessonPanelMode = (mode === 'text') ? 'text' : 'video';
+  document.getElementById('lpVideo').style.display = lessonPanelMode === 'video' ? 'flex' : 'none';
+  document.getElementById('lpText').style.display  = lessonPanelMode === 'text'  ? 'block' : 'none';
+  var btns = document.querySelectorAll('#lessonPanel .lp-mode');
+  for (var i = 0; i < btns.length; i++)
+    btns[i].classList.toggle('on', btns[i].getAttribute('data-mode') === lessonPanelMode);
+  // always reset to the top on a mode switch (F14a position sync is deferred)
+  document.getElementById('lessonPanelBody').scrollTop = 0;
+  document.getElementById('lpText').scrollTop = 0;
+  var stage = document.getElementById('lpStage');
+  if (stage) stage.scrollTop = 0;
+}
+
+function renderLessonText(script) {
+  var el = document.getElementById('lpText');
+  if (!script || !script.beats || !script.beats.length) {
+    el.innerHTML = '<p class="lp-narr">No lesson script for this chapter yet — check back soon.</p>';
+    return;
+  }
+  el.innerHTML = script.beats.map(function(b){
+    if (b.type === 'code')   return '<pre class="lp-code">' + escapeHtml(b.code || '') + '</pre>';
+    if (b.type === 'output') return '<pre class="lp-out">'  + escapeHtml(b.text || '') + '</pre>';
+    return '<p class="lp-narr">' + escapeHtml(b.text || '') + '</p>';
+  }).join('');
+}
+
+// Draggable panel (drag from the title bar only)
 (function(){
   var panel, isDragging=false, ox=0, oy=0;
   document.addEventListener('DOMContentLoaded', function(){
-    panel = document.getElementById('popoutPanel');
-    var bar = document.getElementById('popoutBar');
+    panel = document.getElementById('lessonPanel');
+    var bar = document.getElementById('lessonPanelBar');
     bar.addEventListener('mousedown', function(e){
       if (e.target.classList.contains('popout-btn')) return;
       isDragging=true; ox=e.clientX-panel.offsetLeft; oy=e.clientY-panel.offsetTop;
