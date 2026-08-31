@@ -4,6 +4,28 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-08-31 — F14 v1 Part 2 of 2: Video mode wired up (F14 v1 Done for Chapter 1)
+### Added
+- Beat format extended: `holdMs` on `code` / `output` beats (pause after content settles; default ~400 ms in `getBeatDuration`); new **`run`** beat type (`command` + `typeSpeedMs` + `holdMs`) for the "type the command that runs the file" moment, durationed like `code` off `command.length`. Chapter 1 script updated — a `run` beat (`python hello_world.py`) sits before the file's output; the interpreter `2 + 2` → `4` pair stays adjacent (REPL, no file run), matching the provided spec snippet.
+- **Video mode player**, inside `#lpStage`, mirroring the app's own editor+output layout:
+  - caption area (narration) on top
+  - an "editor" card — dot bar + `hello_world.py` label — where code types itself character-by-character (`Math.floor(localElapsed / typeSpeedMs)`), blinking cursor only while actively typing
+  - a "terminal" card below — green `$` prompt where `run` beats type their command, output text fading in green underneath (styled like the sandbox output box)
+  - the editor keeps showing the last completed code through later narration / run / output beats — never goes blank
+- **Playback engine** on `requestAnimationFrame`, tracking elapsed ms against `Σ getBeatDuration()`. Play/pause button (`▶` / `⏸` / `↻`). On reaching the end it explicitly renders and holds the final state (last code/run/output/narration) rather than cutting off. Pressing play after finishing replays from the start.
+- **Progress bar**: elapsed/total as width %, with click-to-jump *and* drag-to-scrub (`mousedown` + `mousemove` while held + `mouseup`). Scrubbing while playing pauses; scrubbing to the end triggers the same final-hold as natural completion.
+- Mode toggle unchanged — Video always restarts from the top on switch (F14a position memory still deferred).
+
+### Verified
+- `node --check` passes; app boots; no console errors.
+- Played Chapter 1 end to end (~42 s) — pacing reads deliberate. Frame checks: code types progressively with a cursor, cursor gone during `holdMs`, output fades in over its beat, code persists through later beats, final frame holds (`2 + 2` / `4` / progress 100% / `↻`).
+- Drag the progress bar mid-code-typing → jumps to the right character count. Pause/resume → no drift while paused, resumes forward cleanly. Scrub-to-end → final hold. Play after finish → replays from 0. Toggle to Text mid-playback and back → resets cleanly (elapsed 0, progress 0, button `▶`).
+
+### Deferred (unchanged)
+- **F14a** position-aware toggling; **F14b** Speechify narration audio. Chapters 2–11 still need `CHAPTER_SCRIPTS` entries.
+
+---
+
 ## 2026-08-31 — F14 v1, Part 1 of 2: data format + panel shell + Text mode
 ### Added
 - **`CHAPTER_SCRIPTS`** beat data format in `index.html` — the standard for every chapter's lesson script. Beat types: `narration` (caption text), `code` (`code` + `typeSpeedMs`), `output` (result text). Wrote a real 8-beat Chapter 1 script based on the existing lesson content.

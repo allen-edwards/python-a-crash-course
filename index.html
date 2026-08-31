@@ -234,9 +234,23 @@ body{background:var(--bg);color:var(--t);font-family:var(--f);height:100vh;overf
 .lp-mode.on{background:var(--ac);border-color:var(--ac);color:#fff;}
 .lp-video{display:flex;flex-direction:column;height:100%;gap:10px;}
 .lp-stage{flex:1;background:#0d0f16;border:1px solid var(--b2);border-radius:10px;overflow:auto;
-  padding:16px;font-family:var(--m);font-size:calc(13px * var(--fs-scale));color:#c9d1f0;
-  white-space:pre-wrap;display:flex;align-items:center;justify-content:center;text-align:center;}
-.lp-placeholder{color:var(--t3);font-family:var(--f);font-size:13px;line-height:1.6;}
+  padding:12px;display:flex;flex-direction:column;gap:10px;}
+.lp-caption{color:var(--t2);font-family:var(--f);font-size:calc(13px * var(--fs-scale));
+  line-height:1.55;min-height:1.3em;flex:0 0 auto;}
+.lp-file{border:1px solid var(--b2);border-radius:8px;overflow:hidden;background:#1e2030;flex:0 0 auto;}
+.lp-file-bar{display:flex;align-items:center;gap:5px;padding:5px 9px;background:var(--s2);border-bottom:1px solid var(--b);}
+.lp-file-bar i{width:8px;height:8px;border-radius:50%;background:var(--t3);}
+.lp-file-bar span{margin-left:6px;font-family:var(--m);font-size:11px;color:var(--t3);}
+.lp-file-code{margin:0;padding:10px 12px;font-family:var(--m);font-size:calc(13px * var(--fs-scale));
+  color:#c9d1f0;white-space:pre-wrap;min-height:2.6em;line-height:1.6;}
+.lp-term{border:1px solid var(--b2);border-radius:8px;background:#0a0c12;padding:9px 12px;flex:0 0 auto;
+  font-family:var(--m);font-size:calc(13px * var(--fs-scale));line-height:1.6;}
+.lp-term-cmd{color:#d6deff;white-space:pre-wrap;min-height:1.3em;}
+.lp-term-prompt{color:var(--gr);}
+.lp-term-out{margin:5px 0 0;color:#b8f0c0;white-space:pre-wrap;transition:opacity .12s linear;}
+.lp-cursor{display:inline-block;width:7px;height:1.05em;background:var(--ac2);
+  vertical-align:text-bottom;margin-left:1px;animation:lpblink 1s steps(1) infinite;}
+@keyframes lpblink{50%{opacity:0;}}
 .lp-controls{display:flex;align-items:center;gap:10px;flex-shrink:0;}
 .lp-play{background:var(--s2);border:1px solid var(--b2);color:var(--t);border-radius:6px;
   width:34px;height:28px;cursor:pointer;font-size:12px;flex-shrink:0;}
@@ -465,11 +479,19 @@ body{background:var(--bg);color:var(--t);font-family:var(--f);height:100vh;overf
   <div class="popout-body" id="lessonPanelBody">
     <div class="lp-video" id="lpVideo">
       <div class="lp-stage" id="lpStage">
-        <div class="lp-placeholder">Video mode — the code-typing animation is wired up in Part 2.<br>Use <strong>Text</strong> mode to read the full lesson now.</div>
+        <div class="lp-caption" id="lpCaption"></div>
+        <div class="lp-file" id="lpFile">
+          <div class="lp-file-bar"><i></i><i></i><i></i><span>hello_world.py</span></div>
+          <pre class="lp-file-code" id="lpFileCode"></pre>
+        </div>
+        <div class="lp-term" id="lpTerm">
+          <div class="lp-term-cmd"><span class="lp-term-prompt">$</span> <span id="lpTermCmd"></span></div>
+          <pre class="lp-term-out" id="lpTermOut" style="opacity:0"></pre>
+        </div>
       </div>
       <div class="lp-controls">
-        <button class="lp-play" id="lpPlayBtn" title="Play / pause" disabled>▶</button>
-        <div class="lp-track"><div class="lp-progress" id="lpProgress"></div></div>
+        <button class="lp-play" id="lpPlayBtn" title="Play / pause" onclick="lpTogglePlay()">▶</button>
+        <div class="lp-track" id="lpTrack"><div class="lp-progress" id="lpProgress"></div></div>
       </div>
     </div>
     <div class="lp-text" id="lpText" style="display:none"></div>
@@ -687,23 +709,25 @@ var CHAPTERS = [
 
 // ═══════════════════════════════════ LESSON SCRIPTS (F14) ════════════════════
 // Beat format — the standard for every chapter's lesson panel (Video + Text modes):
-//   { type:'narration', text:'...' }              caption text, no code shown
-//   { type:'code',      code:'...', typeSpeedMs:N } code-typing animation target (N = ms per char)
-//   { type:'output',    text:'...' }              result of the code, styled like the sandbox output box
+//   { type:'narration', text:'...' }                          caption text, no code shown
+//   { type:'code',  code:'...',    typeSpeedMs:N, holdMs:N }   code-typing target (N = ms/char); holdMs = pause after it settles
+//   { type:'run',   command:'...', typeSpeedMs:N, holdMs:N }   the "type the command that runs the file" moment, before an output
+//   { type:'output', text:'...',   holdMs:N }                  result of the code, styled like the sandbox output box
 // getBeatDuration(beat) below is the single source of truth for a beat's length —
-// the progress bar (Part 2) and F14b's future audio sync both read from it.
+// the progress bar and F14b's future audio sync both read from it.
 var CHAPTER_SCRIPTS = {
   0: {
     title: 'Chapter 1 — Hello World',
     beats: [
       { type:'narration', text:"Let's write your very first Python program — the legendary \"Hello World\". Python is a readable, beginner-friendly language, and this one line proves it's running on your machine." },
-      { type:'code', code:'print("Hello, World!")', typeSpeedMs:55 },
+      { type:'code', code:'print("Hello, World!")', typeSpeedMs:70, holdMs:1400 },
       { type:'narration', text:"print() is a function built into Python. Whatever you put inside the parentheses is displayed on the screen." },
-      { type:'output', text:'Hello, World!' },
+      { type:'run', command:'python hello_world.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:'Hello, World!', holdMs:1800 },
       { type:'narration', text:"Python files end in .py, and Python reads them top to bottom, running each line in order." },
       { type:'narration', text:"You can also experiment live: type python in your terminal to open the interpreter, where the >>> prompt runs one line at a time — like a calculator that speaks Python." },
-      { type:'code', code:'2 + 2', typeSpeedMs:70 },
-      { type:'output', text:'4' }
+      { type:'code', code:'2 + 2', typeSpeedMs:70, holdMs:1400 },
+      { type:'output', text:'4', holdMs:1800 }
     ]
   }
 };
@@ -711,8 +735,10 @@ var CHAPTER_SCRIPTS = {
 // Computed length of a single beat, in milliseconds.
 function getBeatDuration(beat) {
   if (!beat) return 0;
-  if (beat.type === 'code')   return Math.max(1, (beat.code || '').length) * (beat.typeSpeedMs || 40);
-  if (beat.type === 'output') return 1200; // fixed short pause
+  var hold = (typeof beat.holdMs === 'number') ? beat.holdMs : 400;
+  if (beat.type === 'code') return Math.max(1, (beat.code    || '').length) * (beat.typeSpeedMs || 40) + hold;
+  if (beat.type === 'run')  return Math.max(1, (beat.command || '').length) * (beat.typeSpeedMs || 45) + hold;
+  if (beat.type === 'output') return 600 + hold; // brief fade-in, then hold
   var words = (beat.text || '').trim().split(/\s+/).filter(Boolean).length; // narration: reading-time estimate
   return Math.max(1200, Math.round(words / 3 * 1000)); // ~180 wpm
 }
@@ -1286,7 +1312,11 @@ function setLessonMode(mode) {
   var btns = document.querySelectorAll('#lessonPanel .lp-mode');
   for (var i = 0; i < btns.length; i++)
     btns[i].classList.toggle('on', btns[i].getAttribute('data-mode') === lessonPanelMode);
-  // always reset to the top on a mode switch (F14a position sync is deferred)
+  // Video mode always starts fresh from the top (F14a position sync is deferred)
+  lpPause(false);
+  lpElapsed = 0;
+  lpResetVideo();
+  // reset scroll on a mode switch
   document.getElementById('lessonPanelBody').scrollTop = 0;
   document.getElementById('lpText').scrollTop = 0;
   var stage = document.getElementById('lpStage');
@@ -1301,10 +1331,124 @@ function renderLessonText(script) {
   }
   el.innerHTML = script.beats.map(function(b){
     if (b.type === 'code')   return '<pre class="lp-code">' + escapeHtml(b.code || '') + '</pre>';
+    if (b.type === 'run')    return '<pre class="lp-code">$ ' + escapeHtml(b.command || '') + '</pre>';
     if (b.type === 'output') return '<pre class="lp-out">'  + escapeHtml(b.text || '') + '</pre>';
     return '<p class="lp-narr">' + escapeHtml(b.text || '') + '</p>';
   }).join('');
 }
+
+// ── Video-mode playback engine ──
+var lpPlaying = false, lpElapsed = 0, lpTotal = 0, lpRaf = null, lpLastTs = null;
+
+function lpBeats()   { var s = currentScript(); return (s && s.beats) || []; }
+function lpTotalMs() { return lpBeats().reduce(function(a,b){ return a + getBeatDuration(b); }, 0); }
+
+function lpResetVideo() {
+  document.getElementById('lpCaption').textContent = '';
+  document.getElementById('lpFileCode').textContent = '';
+  document.getElementById('lpTermCmd').textContent = '';
+  var to = document.getElementById('lpTermOut'); to.textContent = ''; to.style.opacity = 0;
+  document.getElementById('lpProgress').style.width = '0%';
+  document.getElementById('lpPlayBtn').textContent = '▶';
+}
+
+// Build and paint the frame for a given elapsed time (ms).
+function lpRenderAt(elapsed) {
+  var beats = lpBeats();
+  if (!beats.length) return;
+  var acc = 0, idx = beats.length - 1, local = 0;
+  for (var i = 0; i < beats.length; i++) {
+    var d = getBeatDuration(beats[i]);
+    if (elapsed < acc + d) { idx = i; local = elapsed - acc; break; }
+    acc += d;
+    if (i === beats.length - 1) { idx = i; local = d; }
+  }
+  var caption = '', code = '', cmd = '', out = '', typingCode = false, typingRun = false;
+  for (var j = 0; j <= idx; j++) {
+    var b = beats[j];
+    if (b.type === 'narration') { caption = b.text || ''; }
+    else if (b.type === 'code') {
+      cmd = ''; out = '';
+      if (j < idx) { code = b.code || ''; }
+      else {
+        var n = Math.floor(local / (b.typeSpeedMs || 40));
+        var full = b.code || '';
+        code = full.slice(0, Math.min(n, full.length));
+        typingCode = n < full.length;
+      }
+    }
+    else if (b.type === 'run') {
+      out = '';
+      if (j < idx) { cmd = b.command || ''; }
+      else {
+        var rn = Math.floor(local / (b.typeSpeedMs || 45));
+        var rfull = b.command || '';
+        cmd = rfull.slice(0, Math.min(rn, rfull.length));
+        typingRun = rn < rfull.length;
+      }
+    }
+    else if (b.type === 'output') { out = b.text || ''; }
+  }
+  document.getElementById('lpCaption').textContent = caption;
+  document.getElementById('lpFileCode').innerHTML =
+    escapeHtml(code) + (typingCode ? '<b class="lp-cursor"></b>' : '');
+  document.getElementById('lpTermCmd').innerHTML =
+    escapeHtml(cmd) + (typingRun ? '<b class="lp-cursor"></b>' : '');
+  var to = document.getElementById('lpTermOut');
+  to.textContent = out;
+  var curBeat = beats[idx];
+  if (out && curBeat && curBeat.type === 'output') to.style.opacity = Math.min(1, local / 400);
+  else to.style.opacity = out ? 1 : 0;
+  document.getElementById('lpProgress').style.width =
+    (lpTotal ? Math.min(100, elapsed / lpTotal * 100) : 0) + '%';
+}
+
+// Explicitly render and hold the final state (last of each beat type).
+function lpRenderFinal() {
+  var beats = lpBeats();
+  var caption = '', code = '', cmd = '', out = '';
+  beats.forEach(function(b){
+    if (b.type === 'narration') caption = b.text || '';
+    else if (b.type === 'code') { code = b.code || ''; cmd = ''; out = ''; }
+    else if (b.type === 'run')  { cmd = b.command || ''; out = ''; }
+    else if (b.type === 'output') out = b.text || '';
+  });
+  document.getElementById('lpCaption').textContent = caption;
+  document.getElementById('lpFileCode').textContent = code;
+  document.getElementById('lpTermCmd').textContent = cmd;
+  var to = document.getElementById('lpTermOut'); to.textContent = out; to.style.opacity = out ? 1 : 0;
+  document.getElementById('lpProgress').style.width = '100%';
+  lpElapsed = lpTotal;
+  document.getElementById('lpPlayBtn').textContent = '↻';
+}
+
+function lpTick(ts) {
+  if (!lpPlaying) return;
+  if (lpLastTs == null) lpLastTs = ts;
+  lpElapsed = Math.min(lpElapsed + (ts - lpLastTs), lpTotal);
+  lpLastTs = ts;
+  if (lpElapsed >= lpTotal) { lpPlaying = false; lpRaf = null; lpRenderFinal(); return; }
+  lpRenderAt(lpElapsed);
+  lpRaf = requestAnimationFrame(lpTick);
+}
+
+function lpPlay() {
+  if (!lpBeats().length) return;
+  lpTotal = lpTotalMs();
+  if (lpElapsed >= lpTotal) lpElapsed = 0; // replay from the start
+  lpPlaying = true; lpLastTs = null;
+  document.getElementById('lpPlayBtn').textContent = '⏸';
+  lpRaf = requestAnimationFrame(lpTick);
+}
+
+function lpPause(atEnd) {
+  lpPlaying = false;
+  if (lpRaf) { cancelAnimationFrame(lpRaf); lpRaf = null; }
+  var btn = document.getElementById('lpPlayBtn');
+  if (btn) btn.textContent = atEnd ? '↻' : '▶';
+}
+
+function lpTogglePlay() { lpPlaying ? lpPause(false) : lpPlay(); }
 
 // Draggable panel (drag from the title bar only)
 (function(){
@@ -1325,6 +1469,30 @@ function renderLessonText(script) {
       panel.style.left=x+'px'; panel.style.top=y+'px'; panel.style.right='auto';
     });
     document.addEventListener('mouseup', function(){ isDragging=false; });
+  });
+})();
+
+// Progress bar — click-to-jump and drag-to-scrub
+(function(){
+  var track, scrubbing = false;
+  function seek(clientX){
+    var r = track.getBoundingClientRect();
+    var pct = Math.max(0, Math.min(1, (clientX - r.left) / r.width));
+    lpTotal = lpTotalMs();
+    lpElapsed = pct * lpTotal;
+    if (lpElapsed >= lpTotal) lpRenderFinal();
+    else lpRenderAt(lpElapsed);
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    track = document.getElementById('lpTrack');
+    if (!track) return;
+    track.addEventListener('mousedown', function(e){
+      scrubbing = true;
+      if (lpPlaying) lpPause(false); // scrubbing pauses playback
+      seek(e.clientX); e.preventDefault();
+    });
+    document.addEventListener('mousemove', function(e){ if (scrubbing) seek(e.clientX); });
+    document.addEventListener('mouseup', function(){ scrubbing = false; });
   });
 })();
 

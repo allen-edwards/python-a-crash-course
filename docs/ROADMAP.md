@@ -19,7 +19,7 @@ A self-contained, offline-first Python learning app — lessons, sandbox, quizze
 
 ### Phase 2 — Lesson experience (current focus)
 - [ ] F13 Projects tab — hands-on practice projects per chapter
-- [ ] F14 In-app faux-video lesson player — animated code-typing in a scrubbable player shell, browser-only, no video export
+- [x] F14 v1 (Chapter 1) — toggleable Video/Text lesson panel; Video mode plays a silent code-typing animation (editor+terminal split) with play/pause and a click/drag-scrub progress bar. Done 2026-08-31. Remaining: `CHAPTER_SCRIPTS` for chapters 2–11.
 - [ ] Per-chapter lesson content built for the faux-video player (11 chapters, one lesson each) — first chapter is the proof of concept; the rest follow once the format is validated
 - [ ] F15 Professor Python as an animated Lottie character (idle/thinking/wave), usable as the app icon and alongside the AI tutor chat — not used in F14 video lessons
 - [x] F11 Wire the full Professor Python teaching-method prompt into the `/api/tutor` system prompt — Done, verified 2026-08-30
