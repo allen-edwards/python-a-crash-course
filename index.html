@@ -525,13 +525,13 @@ var CHAPTERS = [
     sandboxCode:'# Chapter 1 — Try it yourself!\nprint("Hello, world!")\nprint("My name is Allen")\nprint("Python is awesome!")',
     lessonHTML:'<p>Python is one of the world\'s most popular languages — readable, powerful, and beginner-friendly. Your first task: the legendary <strong>Hello World</strong> — one line that proves Python is running on your machine.</p><div class="cb"><span class="fn">print</span>(<span class="str">"Hello, world!"</span>)</div><p>That single line calls the built-in <code>print()</code> function and displays whatever is inside the parentheses on screen. Simple — but this exact pattern is used in programs with millions of lines of code.</p><div class="cl"><div class="clt">💡 Key idea</div><p>Python files end in <code>.py</code>. Python reads them top-to-bottom, executing every line in order.</p></div><p>The <strong>interactive interpreter</strong> lets you experiment live. Type <code>python</code> in your terminal and Python responds instantly:</p><div class="cb"><span class="cm"># The >>> is Python\'s interactive prompt</span>\n>>> <span class="fn">print</span>(<span class="str">"Hello!"</span>)\nHello!\n>>> <span class="nm">2</span> + <span class="nm">2</span>\n<span class="nm">4</span></div><p>Think of the interpreter as a calculator that speaks Python — type any expression and get the answer immediately. Great for experimenting!</p><div class="video-placeholder"><span>🎬</span>Video lesson coming soon!<br><small>Check back after upload to our YouTube channel.</small></div><div class="la"><button class="btn pr" onclick="loadSandboxAndSwitch()">▶ Try in sandbox</button><button class="btn pu" onclick="genScript()">📝 Generate video script</button><button class="btn" onclick="markDone(0)">✓ Mark complete +15 XP</button></div>',
     challengeTitle:'Ch 1 Challenge',
-    challengeDesc:'Print your name and favourite animal on two separate lines. Bonus: do it in ONE print() call!',
-    challengeCode:'# Ch 1 challenge!\n# 1. Print your name\n# 2. Print your favourite animal\n# Bonus: do it in one line!\n\nprint("Your Name")\nprint("Your Animal")\n',
+    challengeDesc:'Time to try this on your own! Create two variables: one called `city` that stores the name of a city you\'d like to visit, and one called `weather` that stores a word describing what the weather might be like there (like "sunny" or "rainy"). Then use print() to display a sentence that combines both variables, like: The weather in Tokyo is sunny. Remember — you\'ll need to figure out how to join your variables together with the rest of the sentence text.',
+    challengeCode:'# Step 1: Create a variable called city and store a city name in it\n\n\n# Step 2: Create a variable called weather and store a weather word in it\n\n\n# Step 3: Use print() to combine both variables into one sentence\n',
     quizzes:[
-      {q:'Which function displays text on screen?',opts:['input()','print()','show()','display()'],ans:1},
-      {q:'What does >>> mean in Python?',opts:['A comparison operator','A comment','The interactive interpreter prompt','An error'],ans:2},
-      {q:'What extension do Python files use?',opts:['.python','.pt','.py','.code'],ans:2},
-      {q:'What does print("Hi") do?',opts:['Stores Hi in memory','Deletes Hi','Displays Hi on screen','Creates a variable called Hi'],ans:2}
+      {q:'You write: print(Hello) — without any quotation marks around Hello. What will most likely happen?',opts:['It prints the word Hello just fine, since print() doesn\'t care about quotes','Python will likely give an error, because it thinks Hello is a variable name, not text','It prints an empty line instead','Python automatically adds the quotation marks for you'],ans:1},
+      {q:'You have a variable: greeting = "Hi there". Why does typing print(greeting) display Hi there, but print("greeting") displays the word greeting instead?',opts:['There\'s no real difference — both would display Hi there','Quotation marks tell Python to treat the text literally, instead of looking up a variable with that name','print() only works with quotation marks, so the first example is actually an error','Variable names must always be written in all capital letters to work correctly'],ans:1},
+      {q:'Your program has two lines: print("Line one") and then print("Line two"). If Python hits an error on the FIRST line, what happens to the second line?',opts:['It still runs normally, since each print() statement is independent','It never runs — Python stops as soon as it hits the error','It runs, but only if the error is a missing quotation mark','Python skips the broken line and runs the rest of the program as normal'],ans:1},
+      {q:'Why does Python need print() at all — why can\'t you just write "Hello, World!" on its own line and expect it to show up on the screen?',opts:['You can — print() is just an old-fashioned habit left over from older languages','print() is the specific instruction that tells Python to actually display something to the user; without it, Python may process the text but won\'t show it','Because text always needs to be stored in a variable before it can appear anywhere','print() is only required when displaying numbers, not words'],ans:1}
     ],
     prompts:["Explain print() like I'm 10",'What is the Python interpreter?','Give me a Ch 1 mini-challenge','Why do we always start with Hello World?']
   },
@@ -1118,6 +1118,19 @@ If the student appears to be completing an exercise:
 - Encourage experimentation.
 
 Reveal full solutions only if the student requests them directly.
+
+### Practice Challenge Design
+
+When you generate a live practice challenge in conversation — not the app's built-in sandbox challenges, but ones you create on the fly while chatting with a student — never make it a minimal-variation restatement of the example you just demonstrated.
+
+If you just showed the student how to print a name, don't ask them to print a different name. If you just demonstrated combining two variables into a greeting, don't ask them to combine two different variables into a nearly identical greeting.
+
+Instead:
+- Ask about a different subject or specific detail than the one in your example — a different kind of information, a slightly different combination, or a small twist that requires the student to apply the underlying idea rather than copy the shape of what they just saw.
+- Make sure the student has to make at least one small decision on their own (what to name a variable, how to phrase the print() output, which values to combine) rather than simply substituting one word for another.
+- If you're unsure whether a challenge is too close to your example, ask yourself: "Could a student solve this by only changing the text inside the quotation marks, without understanding what's happening?" If yes, make it more different.
+
+This keeps live practice challenges honest comprehension checks, the same way the app's own sandbox challenges and quizzes are designed to be.
 
 ### Praise
 

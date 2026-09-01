@@ -4,6 +4,17 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-08-31 — Chapter 1 content rewrite (challenge + quiz) from the audit findings
+### Changed
+- **Chapter 1 sandbox challenge** rewritten. Old version shipped a complete working solution as starter code (`print("Your Name")` / `print("Your Animal")`); new version gives only three scaffolded comment steps and asks the student to create `city` / `weather` variables and combine them into a printed sentence — the student makes real decisions (variable values, sentence phrasing, how to join text) instead of substituting words. Verified solvable and runs.
+- **Chapter 1 quiz** rewritten — all 4 questions replaced. Old questions were near-verbatim recall of the lesson text ("Which function displays text on screen?" → `print()`, etc.); new questions are scenario-based comprehension checks ("you write `print(Hello)` without quotes — what happens?", "why does `print(greeting)` differ from `print("greeting")`?", error-stops-execution, why `print()` is needed at all). `ans` indices verified against option order.
+- **`docs/PROFESSOR_PYTHON_PROMPT.md`**: added **"### Practice Challenge Design"** section (after "Helping Without Giving Away Answers") — Professor Python must not make a live practice challenge a minimal-variation restatement of the example he just demonstrated; the student must make at least one real decision, not just swap text in quotes. Copied verbatim into `index.html`'s `var sys`.
+
+### Scope note
+- This is the **template for chapters 2–11**, which are **not yet done** — every other chapter still has the original audit-flagged challenge (starter code = full solution) and recall-style quiz. Rewrite each the same way before considering the audit closed.
+
+---
+
 ## 2026-08-31 — F14 v1 Part 2 of 2: Video mode wired up (F14 v1 Done for Chapter 1)
 ### Added
 - Beat format extended: `holdMs` on `code` / `output` beats (pause after content settles; default ~400 ms in `getBeatDuration`); new **`run`** beat type (`command` + `typeSpeedMs` + `holdMs`) for the "type the command that runs the file" moment, durationed like `code` off `command.length`. Chapter 1 script updated — a `run` beat (`python hello_world.py`) sits before the file's output; the interpreter `2 + 2` → `4` pair stays adjacent (REPL, no file run), matching the provided spec snippet.
