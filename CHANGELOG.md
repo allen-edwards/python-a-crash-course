@@ -4,6 +4,23 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-08-31 — F14 Video-mode scripts for Chapters 2–11 (F14 v1 COMPLETE, all 11 chapters)
+### Added
+- `CHAPTER_SCRIPTS` gains entries `1`–`10` (Chapters 2–11), same beat format as Chapter 1: narration → code → run → output, with `holdMs` on settling beats. Each was syntax-validated standalone before insertion. Every chapter's worked example is deliberately **different** from that chapter's sandbox challenge — the video teaches with one scenario, the challenge tests with another, no overlap.
+- The editor tab label in Video mode is now derived per chapter from the script's `run` command (`python dicts.py` → `dicts.py`), instead of a hardcoded `hello_world.py` for every chapter.
+
+### Verified
+- `node --check` on the full extracted scripts: passes. All 11 `CHAPTER_SCRIPTS` entries parse; beat counts 9–13 per chapter.
+- Simulated full playback (`lpRenderAt` across the whole timeline + `lpRenderFinal`) for every chapter 1–11: **no errors**, progress reaches 100%, final frame holds the last code/output/narration.
+- Each chapter's example run through the real sandbox (`/api/run`): output matches the script's `output` beats exactly, no invented syntax or behavior, and matches that chapter's actual lesson content (spot-checked Ch 2/4/6/7/9 in depth).
+- **Chapter 9 (Classes)** final beat confirmed to show output — `Rex says meow!` / `Rex is on duty.` — `ServiceCat` is instantiated and both methods called (the draft's define-but-never-instantiate bug was fixed before handoff).
+- Panel title + editor filename correct for all 11 chapters (`hello_world.py`, `variables.py`, `lists.py`, `loops.py`, `grades.py`, `dicts.py`, `while_loop.py`, `functions.py`, `classes.py`, `files.py`, `test_add.py`). No console errors.
+
+### Milestone
+- **F14 v1 is now complete for all 11 chapters** — both the challenge/quiz content rewrite and the Video-mode scripts. `docs/REQUIREMENTS.md` F14 and `docs/ROADMAP.md` updated to full completion.
+
+---
+
 ## 2026-08-31 — Chapters 6–11 content rewrite — audit-driven rewrite COMPLETE (all 11 chapters)
 ### Changed — Chapters 6–11 rewritten (same rules as Ch 1–5)
 Each: starter `challengeCode` is now a **comment-only scaffold** (no working solution), and all four quiz questions are **scenario/comprehension** checks answerable from that chapter's own lesson, not near-verbatim recall.

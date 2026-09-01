@@ -481,7 +481,7 @@ body{background:var(--bg);color:var(--t);font-family:var(--f);height:100vh;overf
       <div class="lp-stage" id="lpStage">
         <div class="lp-caption" id="lpCaption"></div>
         <div class="lp-file" id="lpFile">
-          <div class="lp-file-bar"><i></i><i></i><i></i><span>hello_world.py</span></div>
+          <div class="lp-file-bar"><i></i><i></i><i></i><span id="lpFileName">hello_world.py</span></div>
           <pre class="lp-file-code" id="lpFileCode"></pre>
         </div>
         <div class="lp-term" id="lpTerm">
@@ -728,6 +728,176 @@ var CHAPTER_SCRIPTS = {
       { type:'narration', text:"You can also experiment live: type python in your terminal to open the interpreter, where the >>> prompt runs one line at a time — like a calculator that speaks Python." },
       { type:'code', code:'2 + 2', typeSpeedMs:70, holdMs:1400 },
       { type:'output', text:'4', holdMs:1800 }
+    ]
+  },
+
+  1: {
+    title: 'Chapter 2 — Variables',
+    beats: [
+      { type:'narration', text:"A variable is like a labelled box — you put a value in it, give it a name, and use that name later. In Python, you never have to declare what type of value it will hold." },
+      { type:'code', code:'age = 30\ncity = "Denver"', typeSpeedMs:60, holdMs:1400 },
+      { type:'narration', text:"age stores a whole number, and city stores text — Python figures out the type automatically, just from the value you give it." },
+      { type:'narration', text:"Strings also come with built-in tools called methods. Let's try one." },
+      { type:'code', code:'place = "denver"\nprint(place.title())', typeSpeedMs:60, holdMs:1400 },
+      { type:'run', command:'python variables.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:'Denver', holdMs:1800 },
+      { type:'narration', text:".title() capitalizes the first letter of each word — handy for cleaning up text without retyping it." },
+      { type:'narration', text:"Python also does math with a few operators you might not expect — ** for power, and % for remainder." },
+      { type:'code', code:'print(5 ** 2)\nprint(10 % 4)', typeSpeedMs:60, holdMs:1400 },
+      { type:'run', command:'python variables.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:'25\n2', holdMs:1800 }
+    ]
+  },
+
+  2: {
+    title: 'Chapter 3 — Lists',
+    beats: [
+      { type:'narration', text:"A list stores many values in one variable, in order. Think of it as a numbered row of boxes." },
+      { type:'code', code:'colors = ["red", "green", "blue"]\nprint(colors[0])', typeSpeedMs:60, holdMs:1400 },
+      { type:'narration', text:"Indexes start at 0, not 1 — so colors[0] is the FIRST item, not the second." },
+      { type:'run', command:'python lists.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:'red', holdMs:1800 },
+      { type:'narration', text:"Need the last item, but don't want to count how many there are? Use -1." },
+      { type:'code', code:'print(colors[-1])', typeSpeedMs:60, holdMs:1400 },
+      { type:'run', command:'python lists.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:'blue', holdMs:1800 },
+      { type:'narration', text:"Lists are dynamic too — you can add and remove items freely, whenever you want." },
+      { type:'code', code:'colors.append("yellow")\nprint(colors)', typeSpeedMs:60, holdMs:1400 },
+      { type:'run', command:'python lists.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:"['red', 'green', 'blue', 'yellow']", holdMs:1800 }
+    ]
+  },
+
+  3: {
+    title: 'Chapter 4 — Loops',
+    beats: [
+      { type:'narration', text:"A for loop visits each item in a list automatically — like a conveyor belt moving each item to your code, one at a time." },
+      { type:'code', code:'sports = ["soccer", "tennis"]\nfor sport in sports:\n    print("I enjoy", sport)', typeSpeedMs:55, holdMs:1400 },
+      { type:'run', command:'python loops.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:'I enjoy soccer\nI enjoy tennis', holdMs:1800 },
+      { type:'narration', text:"range() is useful for looping through a sequence of numbers instead of a list." },
+      { type:'code', code:'for i in range(1, 4):\n    print(i)', typeSpeedMs:55, holdMs:1400 },
+      { type:'run', command:'python loops.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:'1\n2\n3', holdMs:1800 },
+      { type:'narration', text:"Notice it stops BEFORE 4 — range(1, 4) means start at 1, stop before 4." },
+      { type:'narration', text:"List comprehensions let you build a whole new list in a single, readable line." },
+      { type:'code', code:'doubles = [x * 2 for x in range(1, 4)]\nprint(doubles)', typeSpeedMs:55, holdMs:1400 },
+      { type:'run', command:'python loops.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:'[2, 4, 6]', holdMs:1800 }
+    ]
+  },
+
+  4: {
+    title: 'Chapter 5 — if Statements',
+    beats: [
+      { type:'narration', text:"An if statement makes your code take different paths based on a condition — this is how programs become intelligent." },
+      { type:'code', code:'score = 85\nif score >= 90:\n    print("A grade")\nelif score >= 80:\n    print("B grade")\nelse:\n    print("Keep practicing")', typeSpeedMs:50, holdMs:1400 },
+      { type:'run', command:'python grades.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:'B grade', holdMs:1800 },
+      { type:'narration', text:"Python checks each condition top to bottom, and stops at the FIRST one that's true — the rest are skipped entirely." },
+      { type:'narration', text:"You can combine conditions with and, or check if something is inside a list using in." },
+      { type:'code', code:'members = ["alice", "bob"]\nif "alice" in members:\n    print("Welcome back!")', typeSpeedMs:50, holdMs:1400 },
+      { type:'run', command:'python grades.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:'Welcome back!', holdMs:1800 }
+    ]
+  },
+
+  5: {
+    title: 'Chapter 6 — Dictionaries',
+    beats: [
+      { type:'narration', text:"A dictionary stores data as key-value pairs — like a real dictionary, where you look up a word to find its meaning." },
+      { type:'code', code:'user = {"name": "Maya", "age": 28}\nprint(user["name"])', typeSpeedMs:55, holdMs:1400 },
+      { type:'run', command:'python dicts.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:'Maya', holdMs:1800 },
+      { type:'narration', text:"You can update an existing key, or add a brand new one, just by assigning to it." },
+      { type:'code', code:'user["age"] = 29\nuser["city"] = "Miami"\nprint(user)', typeSpeedMs:55, holdMs:1400 },
+      { type:'run', command:'python dicts.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:"{'name': 'Maya', 'age': 29, 'city': 'Miami'}", holdMs:1800 },
+      { type:'narration', text:"To loop through both the keys and values at once, use .items()." },
+      { type:'code', code:'for key, value in user.items():\n    print(key + ":", value)', typeSpeedMs:55, holdMs:1400 },
+      { type:'run', command:'python dicts.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:'name: Maya\nage: 29\ncity: Miami', holdMs:1800 }
+    ]
+  },
+
+  6: {
+    title: 'Chapter 7 — While Loops',
+    beats: [
+      { type:'narration', text:"A while loop keeps running as long as a condition stays true — unlike a for loop, it doesn't know in advance how many times it'll run." },
+      { type:'code', code:'battery = 3\nwhile battery > 0:\n    print("Battery:", battery)\n    battery -= 1\nprint("Recharge me!")', typeSpeedMs:50, holdMs:1400 },
+      { type:'run', command:'python while_loop.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:'Battery: 3\nBattery: 2\nBattery: 1\nRecharge me!', holdMs:1800 },
+      { type:'narration', text:"That battery -= 1 line is critical — always make sure something changes each time, or the loop runs forever." },
+      { type:'narration', text:"break exits a loop immediately, and continue skips just the current pass and moves on to the next." },
+      { type:'code', code:'for num in range(5):\n    if num == 2:\n        continue\n    print(num)', typeSpeedMs:50, holdMs:1400 },
+      { type:'run', command:'python while_loop.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:'0\n1\n3\n4', holdMs:1800 }
+    ]
+  },
+
+  7: {
+    title: 'Chapter 8 — Functions',
+    beats: [
+      { type:'narration', text:"A function is a named block of reusable code. Define it once, and call it anywhere — like saving a recipe you can cook anytime." },
+      { type:'code', code:'def welcome(name):\n    print("Welcome, " + name.title() + "!")\n\nwelcome("sam")', typeSpeedMs:50, holdMs:1400 },
+      { type:'run', command:'python functions.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:'Welcome, Sam!', holdMs:1800 },
+      { type:'narration', text:"Functions can also return a value back to whoever called them, instead of just printing something." },
+      { type:'code', code:'def triple(number):\n    return number * 3\n\nresult = triple(4)\nprint(result)', typeSpeedMs:50, holdMs:1400 },
+      { type:'run', command:'python functions.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:'12', holdMs:1800 },
+      { type:'narration', text:"You can give a parameter a default value, so callers can skip it entirely if they want." },
+      { type:'code', code:'def welcome(name, greeting="Hi"):\n    print(greeting + ", " + name + "!")\n\nwelcome("Sam")\nwelcome("Sam", "Hey")', typeSpeedMs:50, holdMs:1400 },
+      { type:'run', command:'python functions.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:'Hi, Sam!\nHey, Sam!', holdMs:1800 }
+    ]
+  },
+
+  8: {
+    title: 'Chapter 9 — Classes',
+    beats: [
+      { type:'narration', text:"A class is a blueprint for creating objects. Think of it like a cookie cutter — the class is the cutter, and each object is a cookie made from it." },
+      { type:'code', code:'class Cat:\n    def __init__(self, name):\n        self.name = name\n\n    def meow(self):\n        print(self.name + " says meow!")', typeSpeedMs:45, holdMs:1400 },
+      { type:'narration', text:"__init__ runs automatically the moment you create a new instance, setting up its starting data." },
+      { type:'code', code:'my_cat = Cat("Whiskers")\nmy_cat.meow()', typeSpeedMs:50, holdMs:1400 },
+      { type:'run', command:'python classes.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:'Whiskers says meow!', holdMs:1800 },
+      { type:'narration', text:"self is how each object keeps track of its own data — it connects an attribute or method to that specific instance." },
+      { type:'narration', text:"Classes support inheritance too — a child class gets everything the parent has, plus anything new you add." },
+      { type:'code', code:'class ServiceCat(Cat):\n    def assist(self):\n        print(self.name + " is on duty.")\n\nhelper = ServiceCat("Rex")\nhelper.meow()\nhelper.assist()', typeSpeedMs:40, holdMs:1400 },
+      { type:'run', command:'python classes.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:'Rex says meow!\nRex is on duty.', holdMs:1800 }
+    ]
+  },
+
+  9: {
+    title: 'Chapter 10 — Files & Exceptions',
+    beats: [
+      { type:'narration', text:"Python can read and write files, letting your programs store data permanently instead of losing it when they close." },
+      { type:'code', code:'with open("log.txt", "w") as f:\n    f.write("Session started\\n")', typeSpeedMs:50, holdMs:1400 },
+      { type:'narration', text:"The with statement automatically closes the file for you when the block finishes — no need to remember to do it yourself." },
+      { type:'code', code:'with open("log.txt", "r") as f:\n    contents = f.read()\nprint(contents)', typeSpeedMs:50, holdMs:1400 },
+      { type:'run', command:'python files.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:'Session started', holdMs:1800 },
+      { type:'narration', text:"Sometimes code fails in ways you can predict — like dividing by zero. try/except lets you handle that gracefully instead of crashing." },
+      { type:'code', code:'try:\n    result = 20 / 0\nexcept ZeroDivisionError:\n    print("Can\'t divide by zero!")', typeSpeedMs:50, holdMs:1400 },
+      { type:'run', command:'python files.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:"Can't divide by zero!", holdMs:1800 }
+    ]
+  },
+
+  10: {
+    title: 'Chapter 11 — Testing',
+    beats: [
+      { type:'narration', text:"Testing your code means writing small checks that verify your functions actually work. It catches bugs early, before they cause bigger problems." },
+      { type:'code', code:'def add(a, b):\n    return a + b\n\nresult = add(3, 4)\nassert result == 7', typeSpeedMs:50, holdMs:1400 },
+      { type:'narration', text:"assert checks that a condition is true. If it's false, Python stops and raises an error right there — a signal something's wrong." },
+      { type:'code', code:'print("Test passed!")', typeSpeedMs:60, holdMs:1400 },
+      { type:'run', command:'python test_add.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:'Test passed!', holdMs:1800 },
+      { type:'narration', text:"Python also has a built-in testing library called unittest, which organizes many tests together." },
+      { type:'code', code:'import unittest\n\nclass TestAdd(unittest.TestCase):\n    def test_add(self):\n        self.assertEqual(add(3, 4), 7)', typeSpeedMs:45, holdMs:1400 },
+      { type:'narration', text:"assertEqual works like assert, but gives you a clearer error message showing exactly what was expected versus what you got." }
     ]
   }
 };
@@ -1294,11 +1464,26 @@ function currentScript() {
   return CHAPTER_SCRIPTS[ch.id] || null;
 }
 
+function scriptFileName(script) {
+  // derive the editor tab label from the script's first run command ("python foo.py" -> "foo.py")
+  if (script && script.beats) {
+    for (var i = 0; i < script.beats.length; i++) {
+      var b = script.beats[i];
+      if (b.type === 'run' && b.command) {
+        var m = b.command.match(/([\w.-]+\.py)\s*$/);
+        if (m) return m[1];
+      }
+    }
+  }
+  return 'script.py';
+}
+
 function openLessonPanel() {
   var ch = CHAPTERS[S.cur];
   var script = currentScript();
   document.getElementById('lessonPanelTitle').textContent =
     script ? script.title : (ch.lessonHeading || 'Lesson');
+  document.getElementById('lpFileName').textContent = scriptFileName(script);
   renderLessonText(script);
   var panel = document.getElementById('lessonPanel');
   panel.classList.remove('hidden','minimized');
