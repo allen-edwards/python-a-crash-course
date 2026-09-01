@@ -68,7 +68,7 @@ Double-click START_WINDOWS.bat
 ```
 
 4. Your browser opens automatically at `http://127.0.0.1:5757`
-5. A desktop shortcut and app launcher entry are created automatically on first run (Linux)
+5. A desktop shortcut is created automatically on first run (all platforms — Linux, macOS, Windows). On Linux, an app-launcher entry is also added to the applications menu.
 
 ---
 
