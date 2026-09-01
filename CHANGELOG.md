@@ -4,6 +4,25 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-08-31 — Chapters 6–11 content rewrite — audit-driven rewrite COMPLETE (all 11 chapters)
+### Changed — Chapters 6–11 rewritten (same rules as Ch 1–5)
+Each: starter `challengeCode` is now a **comment-only scaffold** (no working solution), and all four quiz questions are **scenario/comprehension** checks answerable from that chapter's own lesson, not near-verbatim recall.
+- **Ch 6 (Dictionaries):** challenge = build a `book` dict, print by key, add a key, update a value, loop with `.items()`. Quiz: reassigning a value, list-vs-dict for ordered data, `del` on a key, correct `.items()` loop syntax.
+- **Ch 7 (While Loops):** challenge = `count` from 10 down to 0, then "Liftoff!". Quiz: forgetting to update the condition → infinite loop, what `continue` does, cumulative `+=`, `break` vs `continue`.
+- **Ch 8 (Functions):** challenge = a two-param `describe_animal` + a `double` that returns. Quiz: define ≠ call, `return` vs `print()`, default-parameter fallback, `*args`. (No "docstring" question — the earlier audit flag is addressed.)
+- **Ch 9 (Classes):** challenge = a `Book` class with `__init__` + a `describe` method + two instances. Quiz: when `__init__` runs, what `self` is, what inheritance grants, instances hold independent data.
+- **Ch 10 (Files & Exceptions):** challenge = write `journal.txt`, then `try/except` a missing file with a friendly message. Quiz: `with` auto-closes, `"r"` on a missing file errors, `except` is skipped when no error occurs, why `try/except` beats an uncaught crash.
+- **Ch 11 (Testing):** challenge = `add_numbers` + an `assert` that passes, then break it on purpose. Quiz: a failing `assert` raises, why a re-runnable test beats eyeballing output, the `test_` method-name convention, `assert` vs `assertEqual`.
+
+### Milestone
+- **The audit-driven content rewrite is now complete for all 11 chapters.** Sequence: Ch 1 (first pass `b70dceb`, scope-corrected `1bf7dfb`) → Ch 2–5 (`1bf7dfb`) → Ch 6–11 (this commit). Recorded as its own entry in `docs/ROADMAP.md` since it was a real fix, not an F-numbered feature.
+
+### Verified
+- `node --check` passes; app boots; no console errors.
+- Ch 6–11: every `challengeCode` has **zero executable lines**. Each challenge solved via `/api/run` using only that chapter's taught concepts. Every quiz: selecting each question's `ans` index → **4/4 pass**, all green, none red — indices checked against option order. Spot-check for terms-not-in-own-lesson: Ch 10 Q2/Q3 and Ch 11 Q3 reason slightly beyond the lesson's explicit prose (e.g. the `test_` naming convention is shown in code but not stated) but are defensible comprehension questions, not recall — flagged for review, not blocking.
+
+---
+
 ## 2026-08-31 — Ch 1 scope fix + Chapters 2–5 content rewrite (audit follow-up)
 ### Fixed
 - **Chapter 1 scope violation** (introduced in `b70dceb`): the rewritten challenge and quiz Q2 both required understanding **variables**, which is Chapter 2's topic. Replaced:
