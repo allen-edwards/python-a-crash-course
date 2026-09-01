@@ -4,6 +4,16 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-08-31 — "Staying Within Taught Scope" prompt section actually added + v7.0 release
+### Fixed
+- Added the **"### Staying Within Taught Scope"** section to `docs/PROFESSOR_PYTHON_PROMPT.md` (after "Practice Challenge Design") and copied it into `index.html`'s `var sys`. This section was *designed* during the content-integrity work but never actually implemented — the docs-audit sweep above referenced it as if it existed, which was wrong. It now genuinely exists. The section tells Professor Python to only draw on concepts a chapter has actually taught when writing chapter-tied questions/challenges/examples — no later-chapter knowledge, no details never stated in the lesson. Verified present in the live `/api/tutor` system prompt.
+- The `docs/ARCHITECTURE.md` and `CLAUDE.md` references to this section (added in the docs audit) are now accurate.
+
+### Release
+- **Cut GitHub Release `v7.0`** from `main` — the Releases page had been stuck at v5.0 while the README's install instructions point new users there. v7.0 covers everything since v5.0: v6.0 (offline vendor libs, route fix), F11 (Professor Python's real teaching prompt), F16 (name / learning-preference personalization), F17 (readability + A−/A/A+ text size), F14 (the full Video/Text lesson panel across all 11 chapters), and the content-integrity rewrite (all 11 chapters' challenges and quizzes rebuilt).
+
+---
+
 ## 2026-08-31 (docs audit) — Full Documentation Consistency Sweep
 After F14's completion across all 11 chapters and the content-integrity rewrite, a full audit of README, CLAUDE.md, and ARCHITECTURE.md found several real inconsistencies where docs still described completed work as "planned" or "coming soon" — a natural consequence of how much shipped in one session, but worth catching and fixing rather than leaving stale.
 
