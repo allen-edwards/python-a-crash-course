@@ -4,6 +4,28 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-08-31 — Ch 1 scope fix + Chapters 2–5 content rewrite (audit follow-up)
+### Fixed
+- **Chapter 1 scope violation** (introduced in `b70dceb`): the rewritten challenge and quiz Q2 both required understanding **variables**, which is Chapter 2's topic. Replaced:
+  - Challenge → "using three separate `print()` statements, introduce yourself to Professor Python (name / something you enjoy / a learning goal)" — solvable with `print()` and string literals only, no variables.
+  - Quiz Q2 → an interpreter-vs-`.py`-file question ("`2 + 2` shows `4` in the interpreter but nothing when run in a file — why?"). Q1/Q3/Q4 unchanged from `b70dceb`.
+
+### Changed — Chapters 2–5 rewritten (same audit rules as Ch 1)
+Every one: starter `challengeCode` is now a **comment-only scaffold** (no working solution), and all four quiz questions are **scenario/comprehension** checks answerable from that chapter's own lesson, not near-verbatim recall.
+- **Ch 2 (Variables):** challenge = create a lowercase `hobby`, print it title-cased with a string method, then two number vars + a math operator. Quiz: type reassignment, string concatenation result, `3 ** 3`, `15 % 4`.
+- **Ch 3 (Lists):** challenge = build a `pets` list, index first, `[-1]` last, `.append()`, `.remove()` by value, print. Quiz: index of a named item, `.remove()` result, `.pop()` vs `del`, `len()`.
+- **Ch 4 (Loops):** challenge = for-loop printing each number 1–5 with its square, then a list comprehension of cubes. Quiz: `range(3, 8)`, slice `[2:4]`, what `[x for x in range(1,4)]` builds, slice `[:2]`.
+- **Ch 5 (if Statements):** challenge = a `temperature` variable + if/elif/else chain across three ranges. Quiz: `and` short-circuit truth, `in` on a list, if/elif/else skip behaviour, `=` vs `==`.
+
+### Still pending
+- **Chapters 6–11** — unchanged; still have the original audit-flagged challenge (starter code = full solution) and recall-style quizzes.
+
+### Verified
+- `node --check` passes; app boots; no console errors.
+- Ch 1–5: every `challengeCode` has **zero executable lines** (scaffold only). Each challenge solved via `/api/run` using only that chapter's concepts (Ch 1 with no variables). Every quiz: selecting each question's `ans` index → **4/4 pass**, all options mark green, none red — indices verified against option order.
+
+---
+
 ## 2026-08-31 — Chapter 1 content rewrite (challenge + quiz) from the audit findings
 ### Changed
 - **Chapter 1 sandbox challenge** rewritten. Old version shipped a complete working solution as starter code (`print("Your Name")` / `print("Your Animal")`); new version gives only three scaffolded comment steps and asks the student to create `city` / `weather` variables and combine them into a printed sentence — the student makes real decisions (variable values, sentence phrasing, how to join text) instead of substituting words. Verified solvable and runs.
