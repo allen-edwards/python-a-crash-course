@@ -4,6 +4,22 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-08-31 (docs audit) — Full Documentation Consistency Sweep
+After F14's completion across all 11 chapters and the content-integrity rewrite, a full audit of README, CLAUDE.md, and ARCHITECTURE.md found several real inconsistencies where docs still described completed work as "planned" or "coming soon" — a natural consequence of how much shipped in one session, but worth catching and fixing rather than leaving stale.
+
+### Fixed
+- **README.md** — "Coming soon" incorrectly listed F14 (the lesson panel, done for all 11 chapters) and Professor Python's teaching prompt (F11, done) as unbuilt. Moved to "Available now"; only the Lottie *animation* piece (F15) remains genuinely pending. Also added F16 (personalization) and F17 (text-size control) to "Available now" — both were live but undocumented in the feature list. Fixed the bottom mini-roadmap, which still listed F14 and F11 as top priorities.
+- **CLAUDE.md** (repo root) — was significantly behind: still described F14 as "NEXT MILESTONE, not yet built," the UI structure diagram still described the old text-only pop-out instead of the real Video/Text panel, and there was no mention anywhere of the content-integrity rewrite or the free-XP bug (both significant). Fully updated: Planned Features section, UI Structure diagram, top-level feature summary, and version date.
+- **docs/ARCHITECTURE.md** — F14's section header still said "Planned," despite v1 being shipped for all 11 chapters. Updated header and phased-build description to reflect actual completion status. Added a dedicated section documenting the content-integrity rewrite as an architectural decision, since it wasn't recorded here at all.
+
+### Added
+- **The free-XP "mark complete" bug is now formally tracked** — previously only discussed in conversation, never written into any doc. Now recorded in `docs/REQUIREMENTS.md` (Known bugs), `docs/ROADMAP.md` (Phase 2), and `CLAUDE.md` (Planned Features), so it can't be silently lost between sessions.
+
+### Lesson for future sessions
+A large volume of work landing in one session makes doc drift easy — multiple files describing the same feature can fall out of sync with each other even when each individual update seemed complete at the time. Worth a full cross-document consistency pass after any major milestone, not just updating the file most directly touched by that change.
+
+---
+
 ## 2026-08-31 — F14 Video-mode scripts for Chapters 2–11 (F14 v1 COMPLETE, all 11 chapters)
 ### Added
 - `CHAPTER_SCRIPTS` gains entries `1`–`10` (Chapters 2–11), same beat format as Chapter 1: narration → code → run → output, with `holdMs` on settling beats. Each was syntax-validated standalone before insertion. Every chapter's worked example is deliberately **different** from that chapter's sandbox challenge — the video teaches with one scenario, the challenge tests with another, no overlap.

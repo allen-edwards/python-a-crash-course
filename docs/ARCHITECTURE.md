@@ -37,22 +37,26 @@ The app is a single-page web application served by a tiny local Flask server. Al
 | urllib (stdlib) for the AI proxy | Avoids adding a requests dependency; keeps requirements.txt to Flask only |
 | progress.json flat file | Single-user app; a database would be overkill |
 
-## Planned: F14 — In-app lesson panel (Video/Text toggle)
+## F14 — In-app lesson panel (Video/Text toggle) — v1 shipped, all 11 chapters
 
-**Decision:** one panel, accessible from anywhere in the app (including mid-sandbox), replacing the current text-based pop-out. It has two modes the student can toggle between, both rendering from the same underlying per-chapter script:
+**Decision:** one panel, accessible from anywhere in the app (including mid-sandbox), replacing the old text-based pop-out. It has two modes the student can toggle between, both rendering from the same underlying per-chapter script:
 
 - **Video mode:** a styled player-shell `<div>` (dark frame, play/pause, scrubbable progress bar) where code appears to type itself, paced against the script, with on-screen captions. No video encoding, no Node.js, no FFmpeg — pure HTML/CSS/JS, same as the rest of the app.
-- **Text mode:** the same lesson content shown as plain readable text — essentially what the current pop-out already does today.
+- **Text mode:** the same lesson content shown as plain readable text — this is what the old pop-out always did, and it still works standalone.
 
 Because there's no real video file, switching modes is just swapping what's rendered inside the same `<div>` from the same source script — not two separate systems to maintain.
 
-**Build is phased — do not attempt all of this in v1:**
+**Build is phased:**
 
-1. **v1 (current target):** panel + toggle exist; Video mode is silent (captions only), timing driven by an internal clock structured as a **timeline of beats** (not raw fixed CSS animation durations) so audio can be added later without reworking the mechanism; Text mode shows the script as formatted text; toggling between modes simply resets to the top — no position syncing yet. Build and verify against ONE chapter before doing the rest.
-2. **v1.1 (deferred, F14a):** position-aware toggling. Video→Text opens text near the video's current beat. Text→Video starts slightly *before* the student's reading position (a small rewind buffer) — this asymmetry is intentional, not a bug: switching *to* video usually means "I want to see this in action," which reads better starting just before the moment in question, not exactly at it. Requires a shared position/beat index between both modes — deliberately deferred until v1's core timing mechanism is proven, since retrofitting shared position state is easier than designing it correctly before anything works.
+1. **v1 — DONE, all 11 chapters (2026-08-31):** panel + toggle exist; Video mode is silent (captions only), timing driven by an internal clock structured as a **timeline of beats** (not raw fixed CSS animation durations) so audio can be added later without reworking the mechanism; Text mode shows the script as formatted text; toggling between modes simply resets to the top — no position syncing yet. Originally scoped as "one chapter as proof of concept," then extended to cover all 11 chapters in the same session once the mechanism was validated. Each chapter's video example is deliberately distinct from that chapter's sandbox challenge (see the content-integrity rewrite note below), so the video teaches the concept without accidentally giving away the challenge's answer.
+2. **v1.1 (deferred, F14a):** position-aware toggling. Video→Text opens text near the video's current beat. Text→Video starts slightly *before* the student's reading position (a small rewind buffer) — this asymmetry is intentional, not a bug: switching *to* video usually means "I want to see this in action," which reads better starting just before the moment in question, not exactly at it. Requires a shared position/beat index between both modes — deliberately deferred until v1's core timing mechanism was proven, since retrofitting shared position state is easier than designing it correctly before anything works.
 3. **Future audio (deferred, F14b):** narration recorded via Speechify per chapter, from the same script that drives the animation. Not a v1 blocker — it's real production work on Allen's side, independent of the coding, and the silent animation already has real teaching value alone. When added, the beat-timeline structure from v1 means playback timing switches to sync against `audio.currentTime` instead of the internal clock, without needing to rebuild the animation logic itself.
 
 This whole approach was evaluated against HyperFrames (an open-source HTML-to-MP4 renderer used by AI coding agents) and deliberately rejected: HyperFrames is the right tool when a portable video *file* is the goal (e.g. for YouTube), but it requires Node.js 22+ and FFmpeg as local dependencies, which conflicts with N7 (no runtime beyond browser + Python) and the app's USB-portable design. Since lessons only ever need to play inside the app itself, live animation is strictly simpler and avoids the dependency entirely — and it lets a learner pause and copy the code being "typed," which a real video file never could.
+
+## Content-integrity rewrite (all 11 chapters, 2026-08-31)
+
+Not an F-numbered feature — a substantive fix that came out of testing F14, kept here since it's a real architectural/content-design decision worth recording. An audit found every chapter's sandbox `challengeCode` shipped a complete working solution (student only swapped placeholder text), and most quiz questions were near-verbatim lesson recall with implausible distractors. Fixed by rewriting all 11 chapters' challenges (comment-only scaffolding now) and quizzes (genuine comprehension checks, grounded only in that chapter's own taught content). A related addition — a "Practice Challenge Design" section in `docs/PROFESSOR_PYTHON_PROMPT.md` — extends the same discipline to the *live* AI tutor's on-the-fly challenges. See `docs/REQUIREMENTS.md` for the full decision note and `docs/PROFESSOR_PYTHON_PROMPT.md` for the added prompt section.
 
 ## Planned: F15 — Professor Python as an animated Lottie character
 

@@ -21,7 +21,7 @@ Read this file before making any changes to the codebase.
 one true working copy. Other folders (Downloads, old zip extracts, etc.)
 may contain stale copies — always confirm `git log --oneline -1` matches
 the latest known commit before trusting a folder.
-**Current version:** v6 (post-v6.0 doc/feature updates through 2026-08-30)
+**Current version:** v6 (post-v6.0 doc/feature updates through 2026-08-31 — F14 v1 complete for all 11 chapters, content-integrity rewrite complete for all 11 chapters)
 
 ---
 
@@ -31,13 +31,16 @@ An interactive Python learning app that runs locally via Flask and opens
 in the browser. It includes:
 - 11 structured lessons based on original content
 - Live Python sandbox (runs real Python via Flask subprocess)
-- Quizzes with XP rewards and chapter unlock progression
+- Quizzes with XP rewards and chapter unlock progression — comprehension-
+  based, not recall (rewritten 2026-08-31, see Content-integrity rewrite below)
 - Day streak tracker
 - **Professor Python** — the app's AI tutor identity and voice, powered by
   the Anthropic Claude API, using a full teaching-method system prompt
   (see `docs/PROFESSOR_PYTHON_PROMPT.md`)
 - Video script generator for YouTube content
-- Floating draggable pop-out lesson panel
+- **F14 lesson panel** — toggleable Video/Text lesson experience per
+  chapter, draggable and minimizable, accessible from any tab including
+  the sandbox (replaces the old text-only pop-out; see UI Structure below)
 - Collapsible sidebar
 - Syntax highlighted code editor (CodeMirror + Dracula theme)
 - Persistent progress saved to progress.json
@@ -196,16 +199,27 @@ App layout (CSS Grid):
 ├── Sidebar (collapsible) — chapter nav, progress, settings links
 └── Main content area
     ├── Chapter view (default)
-    │   ├── Tab: Lesson — HTML lesson content (F14 faux-video player: planned, not yet built)
+    │   ├── Tab: Lesson — HTML lesson content (static, per-chapter reading material)
     │   ├── Tab: Sandbox — CodeMirror editor (left) + output (right)
-    │   ├── Tab: Quiz — 4 questions per chapter
+    │   ├── Tab: Quiz — 4 questions per chapter, comprehension-based (rewritten 2026-08-31)
     │   └── Tab: Professor Python — chat interface (renamed from "AI Tutor" in commit 1299fc5)
     ├── Progress view — XP stats + chapter progress bars
     └── Settings view — API key input, About You (name/learning pref), text-size toggle, credits
 
 Floating elements:
-├── Pop-out panel — draggable, minimizable lesson reference
-└── Script modal — displays generated video script
+├── Lesson panel (F14, replaces the old text-only pop-out) — draggable,
+│   minimizable, opens via "⧉ Lesson panel" button (present on every tab,
+│   including Sandbox). Two toggleable modes, both built from the same
+│   per-chapter CHAPTER_SCRIPTS beat data:
+│   ├── Video mode — silent code-typing animation (editor+terminal split
+│   │   UI), play/pause, click/drag-scrub progress bar. All 11 chapters
+│   │   have a script. No audio yet (F14b, deferred).
+│   └── Text mode — the same script's beats rendered as readable text
+│       (this is what the old pop-out always did; still works standalone)
+│   Toggling between modes resets to the top — no position memory yet
+│   (F14a, deferred).
+└── Script modal — displays generated video script (separate feature, F7,
+    unrelated to the F14 panel above despite the similar name)
 ```
 
 ---
@@ -216,29 +230,16 @@ Quick summary, current priority order (Phase 2, roadmap):
 
 ### 1. F13 — Projects Tab
 Bite-sized coding projects inspired by *The Big Book of Small Python
-Projects*, appearing after core chapters.
+Projects*, appearing after core chapters. Not started.
 
-### 2. F14 — In-app "Faux Video" Lesson Player (NEXT MILESTONE, v7.0)
-**Important scope note:** an earlier draft (2026-07-06, archived in
-`docs/history/`) envisioned a much more ambitious "Cinematic Lesson
-Player" — Canvas API generative art, Web Speech API narration,
-motion-graphics feel. That was deliberately scoped down in this session.
-F14 as currently defined is simpler:
-- Live browser animation (HTML/CSS/JS), NOT a rendered video file —
-  no Node.js, no FFmpeg (violates N7).
-- A styled player-shell UI (dark frame, play/pause, scrubbable progress
-  bar) containing code that appears to type itself, matching the
-  chapter's script (from the existing script generator).
-- Progress bar syncs to an `<audio>` element (if narration is ever added)
-  or an internal clock; scrubbing jumps the animation to that point.
-- Student can pause and copy the code being "typed" — impossible with a
-  real video file.
-- v7.0 target: ONE chapter working end-to-end as proof of concept before
-  building all 11.
-- Does NOT use Professor Python's interactive/Socratic prompt — see
-  scope boundary above.
-- Does NOT use HyperFrames or any HTML-to-video renderer — evaluated and
-  rejected for requiring Node.js/FFmpeg.
+### 2. Bug: "Mark complete" doesn't verify the challenge/quiz were attempted
+Found 2026-08-31. A student can currently mark any chapter complete and
+receive full XP without writing any code or answering any quiz question —
+this defeats the entire progression system and undermines the
+content-integrity rewrite below. Not yet fixed. Root cause not yet
+investigated — locate the completion/XP-award code path in `app.py` or
+`index.html`'s progress handling before proposing a fix. See
+`docs/REQUIREMENTS.md` "Known bugs".
 
 ### 3. F15 — Professor Python as an animated Lottie character
 JSON-based vector animation (`lottie-web`, no new system dependency) for
@@ -247,12 +248,54 @@ NOT used in F14 video lessons. Personality should ground the animation
 style: calm, patient, curious — not high-energy mascot motion. Creating
 the `.json` asset itself needs an external animation tool (After Effects
 + Bodymovin, or LottieFiles' editor) — not something written in code.
+Pending: confirm Allen's LottieFiles account access/tier before starting.
 
-### Done (2026-08-30)
+### Done (2026-08-30 to 2026-08-31)
 - F11 — Professor Python's real prompt wired into `/api/tutor`'s system
   prompt (was previously a generic, student-specific placeholder)
 - F16 — name/learning-preference fields
 - F17 — readability/font-size fix + toggle
+- **F14 v1 — complete for ALL 11 chapters** (not just Chapter 1's original
+  proof-of-concept scope). Toggleable Video/Text lesson panel; Video mode
+  plays a silent code-typing animation (editor+terminal split UI) with
+  play/pause and click/drag-scrub progress bar. Every chapter has a
+  `CHAPTER_SCRIPTS` entry using a worked example that's deliberately
+  distinct from that chapter's sandbox challenge (see below), so the video
+  teaches the concept without giving away the challenge's answer.
+  - **Important scope note (still applies):** an earlier draft
+    (2026-07-06, archived in `docs/history/`) envisioned a much more
+    ambitious "Cinematic Lesson Player" — Canvas API generative art, Web
+    Speech API narration, motion-graphics feel. That was deliberately
+    scoped down. F14 as built is a live browser animation (HTML/CSS/JS),
+    NOT a rendered video file — no Node.js, no FFmpeg (violates N7). No
+    audio yet (F14b, deferred — depends on Allen producing narration via
+    Speechify). No position-memory when toggling Video↔Text (F14a,
+    deferred). Does NOT use Professor Python's interactive/Socratic
+    prompt — the video is a non-interactive walkthrough, not a
+    conversation. Does NOT use HyperFrames or any HTML-to-video renderer.
+- **Content-integrity rewrite — all 11 chapters** (2026-08-31, NOT an
+  F-numbered feature — a substantive fix born from testing, not the
+  original roadmap). An audit found every chapter's sandbox challenge
+  shipped a complete working solution as starter code (student only
+  swapped placeholder text), and ~3/4 of quiz questions per chapter were
+  near-verbatim recall of the lesson text directly above them, with
+  distractors so implausible (other-language syntax, invented functions)
+  a student could guess correctly without understanding anything.
+  - Every chapter's `challengeCode` is now comment-only scaffolding — the
+    student writes all the real code themselves.
+  - Every quiz question tests genuine comprehension (predicting behavior,
+    understanding why something works) rather than sentence-matching, and
+    only draws on concepts that specific chapter's own lesson actually
+    teaches (a real miss was caught and fixed in Chapter 1 — its original
+    rewrite required understanding variables, which is Chapter 2's topic,
+    not Chapter 1's — corrected before it could set a bad pattern for the
+    rest).
+  - Added a "### Practice Challenge Design" section to
+    `docs/PROFESSOR_PYTHON_PROMPT.md` so the *live* AI tutor doesn't
+    generate the same kind of giveaway challenges in conversation.
+  - A reusable Claude Skill (`professor-python-content`) was built to
+    generate this kind of content consistently for future chapters,
+    bundling the persona, design rules, and output format.
 
 ### Someday / parked (see ROADMAP.md Phase 3 for full list)
 - Chapters 12+ (Pygame, data viz, web apps) — idea stage

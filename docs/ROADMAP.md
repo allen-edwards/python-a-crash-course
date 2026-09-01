@@ -20,7 +20,8 @@ A self-contained, offline-first Python learning app — lessons, sandbox, quizze
 ### Phase 2 — Lesson experience (current focus)
 - [ ] F13 Projects tab — hands-on practice projects per chapter
 - [x] F14 v1 — **complete, all 11 chapters** (2026-08-31). Toggleable Video/Text lesson panel; Video mode plays a silent code-typing animation (editor+terminal split) with play/pause and a click/drag-scrub progress bar. Every chapter (1–11) has a `CHAPTER_SCRIPTS` entry, each using a worked example distinct from that chapter's sandbox challenge.
-- [ ] F15 Professor Python as an animated Lottie character (idle/thinking/wave), usable as the app icon and alongside the AI tutor chat — not used in F14 video lessons
+- [ ] F15 Professor Python as an animated Lottie character (idle/thinking/wave), usable as the app icon and alongside the AI tutor chat — not used in F14 video lessons. Pending: confirm Allen's LottieFiles account access/tier.
+- [ ] **Bug: "Mark complete" awards full XP without verifying the challenge or quiz were attempted** (found 2026-08-31). See docs/REQUIREMENTS.md Known bugs. Not yet fixed — needs investigation into the completion logic before a fix can be proposed.
 - [x] F11 Wire the full Professor Python teaching-method prompt into the `/api/tutor` system prompt — Done, verified 2026-08-30
 - [x] F16 Student-stated name and learning preference, passed to Professor Python as context — Done, verified 2026-08-30
 - [x] F17 Readability pass — Done. Base text raised to 16px / 1.6 line-height; Settings A−/A/A+ text-size control scales lessons, quizzes, tutor chat, and the code editor and persists (`fontSizePreference`).
@@ -36,4 +37,4 @@ A self-contained, offline-first Python learning app — lessons, sandbox, quizze
 - New example code blocks in the tutor chat can be easy to miss mid-conversation, especially in longer responses — worth a visual treatment (border/label) to distinguish a new example from a reference to earlier code. Minor polish, not urgent.
 
 ## Next milestone
-**v7.0 target:** Chapter 1 has a working F14 panel end to end — the toggleable Video/Text lesson panel, accessible from anywhere including the sandbox, replacing the current text pop-out. Video mode: silent code-typing animation with captions, scrubbable progress bar. Text mode: readable script content. Simple reset-on-toggle (no position syncing yet — that's F14a, deferred). No audio yet (F14b, deferred — depends on Allen producing narration via Speechify). Proof of concept before building the remaining 10 chapters.
+**v7.0 — achieved and exceeded (2026-08-31):** the original target was Chapter 1's F14 panel working end to end as a proof of concept. It was completed, validated, and then extended to all 11 chapters in the same session, alongside the content-integrity rewrite. Current priorities for what's next: F13 (Projects tab), the free-XP completion bug, and F15 (pending Lottie account check).

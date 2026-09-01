@@ -23,9 +23,12 @@ All lesson content, explanations, and code examples in this app are original. We
 ### Available now
 - 📖 **11 interactive chapters** covering Python fundamentals — from Hello World through to Testing
 - 🖥️ **Live Python sandbox** with syntax highlighting — runs real Python on your machine
-- 🧠 **Quizzes with XP rewards** — earn points and unlock new chapters
+- 🎬 **In-app lesson panel** — every chapter has a toggleable Video/Text lesson experience (animated code-typing with captions, or plain readable text), accessible from anywhere including the sandbox
+- 🧠 **Quizzes with XP rewards** — genuine comprehension checks, not recall — earn points and unlock new chapters
 - 🔥 **Day streak tracker** — keeps you motivated to learn every day
-- 🤖 **AI tutor** powered by Claude (Anthropic API) — ask anything, get clear analogies
+- 🐍 **Professor Python** — AI tutor powered by Claude, with a real teaching-method system prompt (hints before answers, predict-before-run questions, patient pacing)
+- 🙋 **Optional personalization** — tell Professor Python your name and how you learn best; he adapts without changing his core teaching approach
+- 🔤 **Adjustable text size** — A−/A/A+ control in Settings for comfortable reading, saved between sessions
 - 📝 **Video script generator** — create original YouTube scripts for each chapter
 - ⧉ **Floating pop-out lesson panel** — drag it anywhere while you code
 - 📊 **Progress dashboard** — track XP, completed chapters, and quiz scores
@@ -35,8 +38,7 @@ All lesson content, explanations, and code examples in this app are original. We
 
 ### Coming soon
 These are planned, not yet built — tracked in detail in [docs/ROADMAP.md](docs/ROADMAP.md).
-- 🎬 **In-app lesson playback** — an animated "faux video" for each chapter (code types itself, scrubbable like a real video player) — runs entirely in the browser, no video files
-- 🐍 **Professor Python** — an animated, persona-driven AI tutor
+- 🐍 **Professor Python, animated** — a Lottie character (idle/thinking/wave) alongside his existing teaching prompt
 - 🗂️ **Projects tab** — hands-on practice projects inspired by *The Big Book of Small Python Projects*
 - 🎓 **Chapters 12+** — Pygame, data visualization, web apps (idea stage, not yet scoped)
 
@@ -139,10 +141,9 @@ pcc_app/
 
 The full, up-to-date roadmap — including current priorities and design decisions — lives in [docs/ROADMAP.md](docs/ROADMAP.md). Short version of what's next:
 
-1. **F14** — in-app faux-video lesson player (one chapter first, as a proof of concept)
-2. **F15** — Professor Python as an animated character
-3. **F13** — Projects tab
-4. **F11** — Professor Python as a full AI tutor persona
+1. **F13** — Projects tab
+2. **F15** — Professor Python as an animated Lottie character
+3. A known bug fix — chapter completion currently doesn't verify a challenge was actually attempted
 
 See [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md) for the full feature list and status of each, and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for how new features are designed to fit the app's offline, zero-install philosophy.
 
