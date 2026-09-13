@@ -4,6 +4,21 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-09-13 — Ch7/8/9 real narration audio swapped in (fallback still active - see note)
+### Changed
+- Replaced `audio/ch7.mp3`, `audio/ch8.mp3`, `audio/ch9.mp3` with newly-recorded narration covering the full extended scripts (confirmed against the exact narration text sent for Speechify - not a stale/wrong recording). Checksummed against the source files after copying.
+### Not yet resolved - the fallback from the previous entry is still engaged for all three
+- The new recordings are genuinely complete and correctly paced for a natural speaking voice, but their duration still falls under the 50%-of-raw-estimate threshold added in the safety-fallback commit: **Ch7 43.5% (46.6s/107s), Ch8 37.9% (25.7s/68s), Ch9 46.6% (32.9s/71s)**. The fallback guard is doing exactly what it was built to do - all three still play at correct, watchable silent pacing rather than a broken speedup - but that means the intended fix (real audio) isn't actually taking effect yet.
+- **New data surfaced while checking this that's worth a real decision**: measuring the ratio across all 11 chapters' *current, already-correct, never-touched* audio shows the natural range is wider than assumed when the 50% threshold was picked - Chapter 6 (untouched, unquestionably fine) sits at **48.1%**, and Chapter 5 at 51.5%, both close to or under the cutoff. The three chapters this fallback was built for measured 22.7%/30.5%/41.1% *before* re-recording (a genuine 2.4-4.4x mismatch) - qualitatively different from a chapter that's simply narrated efficiently relative to its code-typing beats. A flat 50% cutoff doesn't cleanly separate "genuinely mismatched content" from "a chapter with a lot of code-typing beats and comparatively little narration," which naturally pulls the ratio down even when everything is correct.
+- **Deliberately not changed unilaterally** - the threshold value came from Browser's own instruction, and picking a new one is a real decision (lower the cutoff, and to what; compare against each individual beat's narration length instead of a whole-chapter ratio; or accept that Ch7/8/9 will keep falling back until narration is condensed further) rather than something to guess at silently.
+### Verified
+- All three new files confirmed via checksum to be exact copies of Allen's provided recordings.
+- Live in the running app: `usingAudio` false and the mismatch console warning firing for all three, matching the math above exactly.
+- Play/pause and scrub both confirmed working correctly (in the currently-active fallback/silent path) - elapsed advanced correctly during play, held exactly steady while paused, and a scrub-to-50% landed on the precise expected millisecond and progress-bar position.
+- Full `lpRenderAt` timeline sweep re-run for Ch7 with the new (still-fallback) audio loaded - zero errors, correct final output, clean completion.
+
+---
+
 ## 2026-09-13 — Removed dead Skulpt fallback
 ### Removed
 - Deleted `vendor/skulpt.min.js` and `vendor/skulpt-stdlib.js` (966 KB combined - `vendor/` drops from 1.2 MB to 204 KB), and their `<script>` tags in `index.html`. Confirmed genuinely unused first: no code path anywhere in the app referenced Skulpt.
