@@ -1620,7 +1620,24 @@ var lpAudioEl = null, lpAudioReady = false, lpAudioFailed = false, lpAudioChapte
 function lpBeats() { var s = currentScript(); return (s && s.beats) || []; }
 
 function lpUsingAudio() {
-  return !!(lpAudioReady && !lpAudioFailed && lpAudioEl && lpAudioEl.duration && !isNaN(lpAudioEl.duration));
+  if (!(lpAudioReady && !lpAudioFailed && lpAudioEl && lpAudioEl.duration && !isNaN(lpAudioEl.duration))) return false;
+  // Safety guard (added 2026-09-13, after Ch7/8/9's content was extended
+  // without re-recording their audio): if the loaded audio is drastically
+  // shorter than the script's current estimated total, proportional
+  // rescaling would compress everything into an unwatchably fast pace
+  // instead of gracefully smoothing over normal minor drift. Falling back
+  // to silent/estimate-based pacing here (rather than force-compressing)
+  // means every caller of this function - the tick loop, play, pause,
+  // scrub - automatically does the right thing without separate patches.
+  var rawTotal = lpBeatDurationsRaw().reduce(function(a,b){ return a + b; }, 0);
+  if (rawTotal > 0 && (lpAudioEl.duration * 1000) < rawTotal * 0.5) {
+    var title = (currentScript() && currentScript().title) || 'this chapter';
+    console.warn('[F14b audio mismatch] "' + title + '": audio is ' + lpAudioEl.duration.toFixed(1) +
+      's but the script is estimated at ' + Math.round(rawTotal / 1000) + 's (more than 2x mismatch) - ' +
+      'falling back to silent pacing instead of force-compressing. Re-record this chapter\'s audio to fix.');
+    return false;
+  }
+  return true;
 }
 
 // Per-beat durations (ms) for the beat-boundary walk in lpRenderAt. Falls
