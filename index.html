@@ -827,7 +827,7 @@ var CHAPTER_SCRIPTS = {
   },
 
   6: {
-    title: 'Chapter 7 — While Loops',
+    title: 'Chapter 7 — User Input & While Loops',
     beats: [
       { type:'narration', text:"A while loop keeps running as long as a condition stays true — unlike a for loop, it doesn't know in advance how many times it'll run." },
       { type:'code', code:'battery = 3\nwhile battery > 0:\n    print("Battery:", battery)\n    battery -= 1\nprint("Recharge me!")', typeSpeedMs:50, holdMs:1400 },
@@ -837,7 +837,23 @@ var CHAPTER_SCRIPTS = {
       { type:'narration', text:"break exits a loop immediately, and continue skips just the current pass and moves on to the next." },
       { type:'code', code:'for num in range(5):\n    if num == 2:\n        continue\n    print(num)', typeSpeedMs:50, holdMs:1400 },
       { type:'run', command:'python while_loop.py', typeSpeedMs:45, holdMs:500 },
-      { type:'output', text:'0\n1\n3\n4', holdMs:1800 }
+      { type:'output', text:'0\n1\n3\n4', holdMs:1800 },
+      { type:'narration', text:"So far our programs have only displayed information — input() lets a program listen too." },
+      { type:'code', code:'name = input("What is your name? ")\nprint(f"Nice to meet you, {name}!")', typeSpeedMs:50, holdMs:1400 },
+      { type:'run', command:'python greet.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:'What is your name? Jordan\nNice to meet you, Jordan!', holdMs:1800 },
+      { type:'narration', text:"input() always hands back text — even a number typed in needs converting with int() before you can do math with it." },
+      { type:'code', code:'age = input("How old are you? ")\nage = int(age)\nprint(f"Next year you will be {age + 1}.")', typeSpeedMs:50, holdMs:1400 },
+      { type:'run', command:'python greet.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:'How old are you? 29\nNext year you will be 30.', holdMs:1800 },
+      { type:'narration', text:"A flag variable is a clean alternative to while True plus break — one variable controls whether the loop keeps going." },
+      { type:'code', code:'active = True\nwhile active:\n    reply = input("Type quit to stop: ")\n    if reply == "quit":\n        active = False\n    else:\n        print(f"You said: {reply}")', typeSpeedMs:45, holdMs:1600 },
+      { type:'run', command:'python greet.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:'Type quit to stop: hello\nYou said: hello\nType quit to stop: quit', holdMs:1800 },
+      { type:'narration', text:"while loops are also great for moving items from one list to another, one at a time." },
+      { type:'code', code:'todo = ["email", "report", "call"]\ndone = []\nwhile todo:\n    task = todo.pop()\n    done.append(task)\n    print(f"Finished: {task}")', typeSpeedMs:45, holdMs:1600 },
+      { type:'run', command:'python greet.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:'Finished: call\nFinished: report\nFinished: email', holdMs:1800 }
     ]
   },
 
@@ -855,7 +871,12 @@ var CHAPTER_SCRIPTS = {
       { type:'narration', text:"You can give a parameter a default value, so callers can skip it entirely if they want." },
       { type:'code', code:'def welcome(name, greeting="Hi"):\n    print(greeting + ", " + name + "!")\n\nwelcome("Sam")\nwelcome("Sam", "Hey")', typeSpeedMs:50, holdMs:1400 },
       { type:'run', command:'python functions.py', typeSpeedMs:45, holdMs:500 },
-      { type:'output', text:'Hi, Sam!\nHey, Sam!', holdMs:1800 }
+      { type:'output', text:'Hi, Sam!\nHey, Sam!', holdMs:1800 },
+      { type:'narration', text:"As a program grows, it helps to split functions into their own file, called a module, and import them where needed." },
+      { type:'code', code:'# File: helpers.py\ndef shout(text):\n    return text.upper() + "!"', typeSpeedMs:45, holdMs:1600 },
+      { type:'code', code:'# File: main.py\nfrom helpers import shout\n\nprint(shout("nice work"))', typeSpeedMs:45, holdMs:1600 },
+      { type:'run', command:'python main.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:'NICE WORK!', holdMs:1800 }
     ]
   },
 
@@ -872,7 +893,11 @@ var CHAPTER_SCRIPTS = {
       { type:'narration', text:"Classes support inheritance too — a child class gets everything the parent has, plus anything new you add." },
       { type:'code', code:'class ServiceCat(Cat):\n    def assist(self):\n        print(self.name + " is on duty.")\n\nhelper = ServiceCat("Rex")\nhelper.meow()\nhelper.assist()', typeSpeedMs:40, holdMs:1400 },
       { type:'run', command:'python classes.py', typeSpeedMs:45, holdMs:500 },
-      { type:'output', text:'Rex says meow!\nRex is on duty.', holdMs:1800 }
+      { type:'output', text:'Rex says meow!\nRex is on duty.', holdMs:1800 },
+      { type:'narration', text:"A child class can also override a parent's method completely, replacing its behavior instead of just adding something new." },
+      { type:'code', code:'class QuietCat(Cat):\n    def meow(self):\n        print(self.name + " gives a tiny, silent meow.")\n\nshy = QuietCat("Pip")\nshy.meow()', typeSpeedMs:45, holdMs:1600 },
+      { type:'run', command:'python classes.py', typeSpeedMs:45, holdMs:500 },
+      { type:'output', text:'Pip gives a tiny, silent meow.', holdMs:1800 }
     ]
   },
 
