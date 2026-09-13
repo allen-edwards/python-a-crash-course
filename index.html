@@ -493,6 +493,10 @@ body{background:var(--bg);color:var(--t);font-family:var(--f);height:100vh;overf
         <button class="lp-play" id="lpPlayBtn" title="Play / pause" onclick="lpTogglePlay()">▶</button>
         <div class="lp-track" id="lpTrack"><div class="lp-progress" id="lpProgress"></div></div>
       </div>
+      <!-- F14b: real narration audio, drives Video-mode timing when available.
+           No native controls - the custom play button/progress bar above
+           already do that job. -->
+      <audio id="lpAudio" preload="auto"></audio>
     </div>
     <div class="lp-text" id="lpText" style="display:none"></div>
   </div>
@@ -1528,6 +1532,12 @@ function openLessonPanel() {
 }
 
 function closeLessonPanel() {
+  // Now that Video mode can have real audio playing, closing the panel
+  // needs to actually stop it - previously (silent estimate-only) a
+  // "still playing" panel left open in the background was invisible and
+  // harmless; with real audio it would otherwise keep playing audibly
+  // with no visible player to stop it from.
+  lpPause(false);
   document.getElementById('lessonPanel').classList.add('hidden');
 }
 
@@ -1548,6 +1558,7 @@ function setLessonMode(mode) {
   // Video mode always starts fresh from the top (F14a position sync is deferred)
   lpPause(false);
   lpElapsed = 0;
+  if (lessonPanelMode === 'video') lpLoadAudioForCurrentChapter();
   lpResetVideo();
   // reset scroll on a mode switch
   document.getElementById('lessonPanelBody').scrollTop = 0;
@@ -1572,9 +1583,60 @@ function renderLessonText(script) {
 
 // ── Video-mode playback engine ──
 var lpPlaying = false, lpElapsed = 0, lpTotal = 0, lpRaf = null, lpLastTs = null;
+// F14b: real audio, when loaded and usable, becomes the timing source
+// instead of the wall-clock/estimate-based system below. lpAudioChapterId
+// tracks which chapter the <audio> element's src currently belongs to, so
+// re-opening the panel on the same chapter doesn't reload/restart it.
+var lpAudioEl = null, lpAudioReady = false, lpAudioFailed = false, lpAudioChapterId = null;
 
-function lpBeats()   { var s = currentScript(); return (s && s.beats) || []; }
-function lpTotalMs() { return lpBeats().reduce(function(a,b){ return a + getBeatDuration(b); }, 0); }
+function lpBeats() { var s = currentScript(); return (s && s.beats) || []; }
+
+function lpUsingAudio() {
+  return !!(lpAudioReady && !lpAudioFailed && lpAudioEl && lpAudioEl.duration && !isNaN(lpAudioEl.duration));
+}
+
+// Per-beat durations (ms) for the beat-boundary walk in lpRenderAt. Falls
+// back to the raw silent-era estimates (getBeatDuration) when there's no
+// usable audio; otherwise scales each beat PROPORTIONALLY so it keeps the
+// same share of the timeline it had in the estimate, now stretched/
+// compressed to match the real recorded audio's actual duration - avoids
+// hand-tuning 11 chapters' worth of beat timing by hand.
+function lpBeatDurationsRaw() { return lpBeats().map(getBeatDuration); }
+function lpBeatDurations() {
+  var raw = lpBeatDurationsRaw();
+  if (!lpUsingAudio()) return raw;
+  var rawTotal = raw.reduce(function(a,b){ return a + b; }, 0) || 1;
+  var audioTotalMs = lpAudioEl.duration * 1000;
+  return raw.map(function(d){ return d / rawTotal * audioTotalMs; });
+}
+function lpTotalMs() { return lpBeatDurations().reduce(function(a,b){ return a + b; }, 0); }
+
+// Loads the current chapter's narration audio into the shared <audio>
+// element. Called whenever Video mode is (re)entered (see setLessonMode).
+// Failure (missing file, bad format, etc.) just sets lpAudioFailed - every
+// caller already falls back to the original silent/estimate behavior via
+// lpUsingAudio(), so a bad file never breaks Video mode, it just plays
+// silent like it always did before F14b.
+function lpLoadAudioForCurrentChapter() {
+  var ch = CHAPTERS[S.cur];
+  if (!lpAudioEl) lpAudioEl = document.getElementById('lpAudio');
+  if (lpAudioChapterId === ch.id) return; // already the right chapter's audio
+  lpAudioChapterId = ch.id;
+  lpAudioReady = false;
+  lpAudioFailed = false;
+  lpAudioEl.pause();
+  lpAudioEl.onloadedmetadata = function () { lpAudioReady = true; };
+  lpAudioEl.onerror = function () { lpAudioFailed = true; lpAudioReady = false; };
+  // Safety net alongside lpTick's own end-of-timeline check (elapsed vs
+  // lpTotal) - covers the rare case a frame is skipped right at the end
+  // (tab throttling, rounding) and playback would otherwise sit "playing"
+  // with nothing left to render.
+  lpAudioEl.onended = function () {
+    if (lpPlaying) { lpPlaying = false; if (lpRaf) { cancelAnimationFrame(lpRaf); lpRaf = null; } lpRenderFinal(); }
+  };
+  lpAudioEl.src = '/audio/ch' + (ch.id + 1) + '.mp3';
+  lpAudioEl.load();
+}
 
 function lpResetVideo() {
   document.getElementById('lpCaption').textContent = '';
@@ -1585,26 +1647,38 @@ function lpResetVideo() {
   document.getElementById('lpPlayBtn').textContent = '▶';
 }
 
-// Build and paint the frame for a given elapsed time (ms).
+// Build and paint the frame for a given elapsed time (ms). `elapsed` is
+// always in the SCALED timeline (matching lpTotal/lpBeatDurations - real
+// audio duration when available, the old raw estimate otherwise).
 function lpRenderAt(elapsed) {
   var beats = lpBeats();
   if (!beats.length) return;
+  var scaled = lpBeatDurations();
+  var raw = lpBeatDurationsRaw();
   var acc = 0, idx = beats.length - 1, local = 0;
   for (var i = 0; i < beats.length; i++) {
-    var d = getBeatDuration(beats[i]);
+    var d = scaled[i];
     if (elapsed < acc + d) { idx = i; local = elapsed - acc; break; }
     acc += d;
     if (i === beats.length - 1) { idx = i; local = d; }
   }
+  // The typing sub-animation inside a code/run beat is timed in RAW
+  // ms-per-character (typeSpeedMs), but `local` above is scaled time - a
+  // beat stretched to 130% of its estimate would otherwise finish typing
+  // way too early and just sit idle. Convert local back to "raw-equivalent"
+  // time for the typing calc only; which beat we're in / hold timing /
+  // narration caption all keep using the real scaled local/acc as-is.
+  var rawLocal = (scaled[idx] > 0) ? local * (raw[idx] / scaled[idx]) : local;
   var caption = '', code = '', cmd = '', out = '', typingCode = false, typingRun = false;
   for (var j = 0; j <= idx; j++) {
     var b = beats[j];
+    var jLocal = (j === idx) ? rawLocal : 0;
     if (b.type === 'narration') { caption = b.text || ''; }
     else if (b.type === 'code') {
       cmd = ''; out = '';
       if (j < idx) { code = b.code || ''; }
       else {
-        var n = Math.floor(local / (b.typeSpeedMs || 40));
+        var n = Math.floor(jLocal / (b.typeSpeedMs || 40));
         var full = b.code || '';
         code = full.slice(0, Math.min(n, full.length));
         typingCode = n < full.length;
@@ -1614,7 +1688,7 @@ function lpRenderAt(elapsed) {
       out = '';
       if (j < idx) { cmd = b.command || ''; }
       else {
-        var rn = Math.floor(local / (b.typeSpeedMs || 45));
+        var rn = Math.floor(jLocal / (b.typeSpeedMs || 45));
         var rfull = b.command || '';
         cmd = rfull.slice(0, Math.min(rn, rfull.length));
         typingRun = rn < rfull.length;
@@ -1657,19 +1731,46 @@ function lpRenderFinal() {
 
 function lpTick(ts) {
   if (!lpPlaying) return;
-  if (lpLastTs == null) lpLastTs = ts;
-  lpElapsed = Math.min(lpElapsed + (ts - lpLastTs), lpTotal);
-  lpLastTs = ts;
-  if (lpElapsed >= lpTotal) { lpPlaying = false; lpRaf = null; lpRenderFinal(); return; }
-  lpRenderAt(lpElapsed);
+  var elapsed;
+  if (lpUsingAudio()) {
+    // Audio is the source of truth - just read its current position each
+    // frame rather than tracking our own clock, so there's nothing to
+    // drift out of sync with what's actually being heard.
+    elapsed = lpAudioEl.currentTime * 1000;
+  } else {
+    if (lpLastTs == null) lpLastTs = ts;
+    elapsed = Math.min(lpElapsed + (ts - lpLastTs), lpTotal);
+    lpLastTs = ts;
+  }
+  lpElapsed = elapsed;
+  if (elapsed >= lpTotal - 1) { // -1ms epsilon: audio.duration vs our summed estimate can differ by a hair
+    lpPlaying = false; lpRaf = null; lpRenderFinal(); return;
+  }
+  lpRenderAt(elapsed);
   lpRaf = requestAnimationFrame(lpTick);
 }
 
 function lpPlay() {
   if (!lpBeats().length) return;
   lpTotal = lpTotalMs();
-  if (lpElapsed >= lpTotal) lpElapsed = 0; // replay from the start
-  lpPlaying = true; lpLastTs = null;
+  if (lpUsingAudio()) {
+    if (lpElapsed >= lpTotal) { lpAudioEl.currentTime = 0; lpElapsed = 0; } // replay from the start
+    else lpAudioEl.currentTime = lpElapsed / 1000; // resume where the visual left off (e.g. after a scrub)
+    var playPromise = lpAudioEl.play();
+    if (playPromise && playPromise.catch) {
+      playPromise.catch(function () {
+        // Playback failed for some reason (autoplay policy, decode error
+        // mid-file, etc.) - fall back to the silent estimate-based clock
+        // rather than leaving Video mode stuck.
+        lpAudioFailed = true;
+        lpLastTs = null;
+      });
+    }
+  } else {
+    if (lpElapsed >= lpTotal) lpElapsed = 0; // replay from the start
+    lpLastTs = null;
+  }
+  lpPlaying = true;
   document.getElementById('lpPlayBtn').textContent = '⏸';
   lpRaf = requestAnimationFrame(lpTick);
 }
@@ -1677,6 +1778,7 @@ function lpPlay() {
 function lpPause(atEnd) {
   lpPlaying = false;
   if (lpRaf) { cancelAnimationFrame(lpRaf); lpRaf = null; }
+  if (lpAudioEl && !lpAudioEl.paused) lpAudioEl.pause();
   var btn = document.getElementById('lpPlayBtn');
   if (btn) btn.textContent = atEnd ? '↻' : '▶';
 }
@@ -1713,6 +1815,7 @@ function lpTogglePlay() { lpPlaying ? lpPause(false) : lpPlay(); }
     var pct = Math.max(0, Math.min(1, (clientX - r.left) / r.width));
     lpTotal = lpTotalMs();
     lpElapsed = pct * lpTotal;
+    if (lpUsingAudio()) lpAudioEl.currentTime = lpElapsed / 1000; // actually seeks what's playing/paused
     if (lpElapsed >= lpTotal) lpRenderFinal();
     else lpRenderAt(lpElapsed);
   }

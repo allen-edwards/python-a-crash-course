@@ -21,7 +21,7 @@ Read this file before making any changes to the codebase.
 one true working copy. Other folders (Downloads, old zip extracts, etc.)
 may contain stale copies — always confirm `git log --oneline -1` matches
 the latest known commit before trusting a folder.
-**Current version:** v6 (post-v6.0 doc/feature updates through 2026-08-31 — F14 v1 complete for all 11 chapters, content-integrity rewrite complete for all 11 chapters)
+**Current version:** v6 (post-v6.0 doc/feature updates through 2026-09-13 — F14 v1 complete for all 11 chapters, content-integrity rewrite complete for all 11 chapters, "Mark complete" free-XP bug fixed, F14b narration audio shipped for all 11 chapters)
 
 ---
 
@@ -211,9 +211,11 @@ Floating elements:
 │   minimizable, opens via "⧉ Lesson panel" button (present on every tab,
 │   including Sandbox). Two toggleable modes, both built from the same
 │   per-chapter CHAPTER_SCRIPTS beat data:
-│   ├── Video mode — silent code-typing animation (editor+terminal split
-│   │   UI), play/pause, click/drag-scrub progress bar. All 11 chapters
-│   │   have a script. No audio yet (F14b, deferred).
+│   ├── Video mode — code-typing animation (editor+terminal split UI),
+│   │   play/pause, click/drag-scrub progress bar, real narration audio
+│   │   (F14b, Done 2026-09-13) driving the timing when a chapter's audio
+│   │   loads successfully; falls back to the original silent/estimate
+│   │   timing otherwise. All 11 chapters have a script and audio file.
 │   └── Text mode — the same script's beats rendered as readable text
 │       (this is what the old pop-out always did; still works standalone)
 │   Toggling between modes resets to the top — no position memory yet
@@ -267,10 +269,13 @@ Pending: confirm Allen's LottieFiles account access/tier before starting.
     ambitious "Cinematic Lesson Player" — Canvas API generative art, Web
     Speech API narration, motion-graphics feel. That was deliberately
     scoped down. F14 as built is a live browser animation (HTML/CSS/JS),
-    NOT a rendered video file — no Node.js, no FFmpeg (violates N7). No
-    audio yet (F14b, deferred — depends on Allen producing narration via
-    Speechify). No position-memory when toggling Video↔Text (F14a,
-    deferred). Does NOT use Professor Python's interactive/Socratic
+    NOT a rendered video file — no Node.js, no FFmpeg (violates N7).
+    Real narration audio (F14b) shipped 2026-09-13, produced by Allen via
+    Speechify and served from `audio/`; audio.currentTime drives the
+    timing when available, falling back to the original silent/estimate
+    clock if a chapter's file is missing or fails to load. No
+    position-memory when toggling Video↔Text (F14a, deferred). Does NOT
+    use Professor Python's interactive/Socratic
     prompt — the video is a non-interactive walkthrough, not a
     conversation. Does NOT use HyperFrames or any HTML-to-video renderer.
 - **Content-integrity rewrite — all 11 chapters** (2026-08-31, NOT an

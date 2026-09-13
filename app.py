@@ -10,6 +10,7 @@ BASE      = os.path.dirname(os.path.abspath(__file__))
 SAVE_FILE = os.path.join(BASE, "progress.json")
 HTML_FILE = os.path.join(BASE, "index.html")
 VENDOR    = os.path.join(BASE, "vendor")
+AUDIO     = os.path.join(BASE, "audio")
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 DEFAULT_PROGRESS = {"xp":0,"streak":1,"lastActiveDate":None,
@@ -45,6 +46,10 @@ def index():
 @app.route("/vendor/<path:filename>")
 def vendor(filename):
     return send_from_directory(VENDOR, filename)
+
+@app.route("/audio/<path:filename>")
+def audio(filename):
+    return send_from_directory(AUDIO, filename)
 
 @app.route("/api/progress", methods=["GET"])
 def get_progress():

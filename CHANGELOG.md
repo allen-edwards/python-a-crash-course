@@ -4,6 +4,28 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-09-13 — F14b: narration audio wired into Video mode
+### Added
+- New `/audio/<filename>` Flask route in `app.py`, mirroring the existing `/vendor/<filename>` pattern - serves `audio/ch1.mp3` through `audio/ch11.mp3`.
+- New hidden `<audio id="lpAudio">` element in the lesson panel. When a chapter's Video mode is opened, its audio file loads automatically; once ready, `audio.currentTime` becomes the actual timing source for the render loop, play/pause, and progress-bar scrubbing - replacing the internal wall-clock counter used since F14 v1.
+- **Proportional beat rescaling**: each beat's original estimated duration (`getBeatDuration`, tuned for the silent version) is rescaled against the real `audio.duration` once metadata loads, so a beat keeps the same *share* of the timeline rather than its old fixed length. Confirmed necessary in practice - Chapter 1's real narration is 31.7s vs. a 42.3s silent-era estimate.
+- The in-beat character-typing animation (code/run beats) is separately corrected back to its original raw per-character rate, so typing doesn't finish early or crawl just because its beat got stretched/compressed to match real speech.
+- Graceful fallback: if a chapter's audio file is missing or fails to load, Video mode continues exactly as it did before F14b (silent, internal-clock timing) rather than breaking.
+- Closing the lesson panel now stops any playing audio - a real gap introduced by adding actual audio (previously harmless, since a "still playing" silent animation left open in the background was invisible).
+
+### Verified
+- Ran the real app (not simulated): Chapter 1 plays with real narration synced to the code-typing/output beats; play/pause correctly starts and stops the audio with no drift while paused; scrubbing the progress bar seeks the real audio to the exact position and updates the visual beat immediately; playing to completion correctly stops at 100% and flips the button to replay.
+- Spot-checked Chapters 5, 8, and 11 - all confirmed audio loads correctly and the rescaled timeline total matches that chapter's real `audio.duration` exactly.
+- Simulated a missing/broken audio file (temporarily renamed) - confirmed clean fallback to silent playback, no errors, no broken UI; restored immediately after.
+- `progress.json` (Allen's real data, gitignored) was backed up before testing and restored exactly afterward - verified via diff both times testing touched it.
+
+### Docs
+- `docs/REQUIREMENTS.md`: F14b moved from "audio produced, wiring not started" to Done, with full implementation notes.
+- `docs/ARCHITECTURE.md`: F14 section updated - audio is now the real timing source, not an internal clock; documented the proportional-rescaling and typing-speed-correction details as real architectural decisions.
+- `CLAUDE.md`: UI Structure diagram and the F14 scope note both updated to reflect real audio; version summary line updated.
+
+---
+
 ## 2026-09-13 — Fixed: "Mark complete" free-XP bug
 ### Fixed
 - **`markDone(id)` in `index.html` now requires real engagement before awarding XP or unlocking the next chapter**: the chapter's quiz must be passed (`S.quizScores[id] >= 3`, the app's existing pass bar - not a new, stricter one) AND `/api/run` must have returned a clean, error-free result at least once while that chapter was active. Previously neither was checked at all - a student could click "Mark complete" on an untouched chapter and receive full XP immediately.
