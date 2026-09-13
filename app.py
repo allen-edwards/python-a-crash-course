@@ -113,6 +113,14 @@ def tutor():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# ARCHIVED FEATURE, NOT CURRENTLY IN USE — kept intact, disconnected from UI.
+# Original purpose: generate a YouTube-style video script per chapter, for
+# Allen to record and host on a YouTube channel. Superseded by F14 (in-app
+# Video mode) — Allen decided against a YouTube channel (external dependency
+# risk: policy changes, copyright strikes outside his control).
+# Decision point: if this route is still unused by v8.0, remove it entirely
+# along with any related frontend code. If a real future use emerges before
+# then, this comment can simply be deleted.
 @app.route("/api/generate-script", methods=["POST"])
 def generate_script():
     import urllib.request, urllib.error
