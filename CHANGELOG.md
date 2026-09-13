@@ -4,6 +4,20 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-09-13 — Fixed: "Mark complete" free-XP bug
+### Fixed
+- **`markDone(id)` in `index.html` now requires real engagement before awarding XP or unlocking the next chapter**: the chapter's quiz must be passed (`S.quizScores[id] >= 3`, the app's existing pass bar - not a new, stricter one) AND `/api/run` must have returned a clean, error-free result at least once while that chapter was active. Previously neither was checked at all - a student could click "Mark complete" on an untouched chapter and receive full XP immediately.
+- Blocked attempts show a friendly, chapter-specific message (missing quiz, missing challenge run, or both) instead of a blunt error, matching Professor Python's encouraging tone elsewhere in the app.
+- New `S.challengeRun` (object, keyed by chapter id) tracks a clean sandbox run per chapter, set in `runCode()`'s success branch. Any code that runs without a Python error counts - not only the unmodified challenge starter - since a student who writes a correct solution from scratch shouldn't be penalized for skipping the "Load Challenge" button. The quiz side reuses the already-existing `S.quizScores` rather than adding a second, redundant "passed" flag.
+- Not retroactive: chapters already marked complete are untouched, since `markDone()`'s existing `if (S.completed.includes(id))` check means the new gate only ever applies to chapters not yet completed. No XP was clawed back from anything completed before this fix.
+- Verified live against the real running app (not simulated): fresh chapter blocked; quiz-only blocked; challenge-only blocked; both present succeeds with the chapter's real XP; a chapter from Allen's actual prior progress remains completed and untouched. `progress.json` (gitignored, Allen's real data) was backed up before testing and restored exactly afterward.
+
+### Docs
+- `docs/REQUIREMENTS.md`: moved the bug from "Known bugs" to a new "Fixed bugs" section with the full technical writeup.
+- `docs/ROADMAP.md`: checked off the corresponding Phase 2 item.
+
+---
+
 ## 2026-08-31 — "Staying Within Taught Scope" prompt section actually added + v7.0 release
 ### Fixed
 - Added the **"### Staying Within Taught Scope"** section to `docs/PROFESSOR_PYTHON_PROMPT.md` (after "Practice Challenge Design") and copied it into `index.html`'s `var sys`. This section was *designed* during the content-integrity work but never actually implemented — the docs-audit sweep above referenced it as if it existed, which was wrong. It now genuinely exists. The section tells Professor Python to only draw on concepts a chapter has actually taught when writing chapter-tied questions/challenges/examples — no later-chapter knowledge, no details never stated in the lesson. Verified present in the live `/api/tutor` system prompt.

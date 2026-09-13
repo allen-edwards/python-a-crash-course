@@ -21,7 +21,7 @@ A self-contained, offline-first Python learning app — lessons, sandbox, quizze
 - [ ] F13 Projects tab — hands-on practice projects per chapter
 - [x] F14 v1 — **complete, all 11 chapters** (2026-08-31). Toggleable Video/Text lesson panel; Video mode plays a silent code-typing animation (editor+terminal split) with play/pause and a click/drag-scrub progress bar. Every chapter (1–11) has a `CHAPTER_SCRIPTS` entry, each using a worked example distinct from that chapter's sandbox challenge.
 - [ ] F15 Professor Python as an animated Lottie character (idle/thinking/wave), usable as the app icon and alongside the AI tutor chat — not used in F14 video lessons. Pending: confirm Allen's LottieFiles account access/tier.
-- [ ] **Bug: "Mark complete" awards full XP without verifying the challenge or quiz were attempted** (found 2026-08-31). See docs/REQUIREMENTS.md Known bugs. Not yet fixed — needs investigation into the completion logic before a fix can be proposed.
+- [x] **Bug: "Mark complete" awards full XP without verifying the challenge or quiz were attempted** (found 2026-08-31, fixed 2026-09-13). See docs/REQUIREMENTS.md Fixed bugs for the full writeup.
 - [x] F11 Wire the full Professor Python teaching-method prompt into the `/api/tutor` system prompt — Done, verified 2026-08-30
 - [x] F16 Student-stated name and learning preference, passed to Professor Python as context — Done, verified 2026-08-30
 - [x] F17 Readability pass — Done. Base text raised to 16px / 1.6 line-height; Settings A−/A/A+ text-size control scales lessons, quizzes, tutor chat, and the code editor and persists (`fontSizePreference`).

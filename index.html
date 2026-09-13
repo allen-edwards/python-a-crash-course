@@ -920,7 +920,7 @@ function escapeHtml(s) {
 }
 
 // ═══════════════════════════════════════ STATE ══════════════════════════════
-var S = {xp:0,streak:1,lastActiveDate:null,completed:[],quizScores:{},cur:0,studentName:'',learningPreference:'',fontSizePreference:'medium'};
+var S = {xp:0,streak:1,lastActiveDate:null,completed:[],quizScores:{},challengeRun:{},cur:0,studentName:'',learningPreference:'',fontSizePreference:'medium'};
 var apiKey = '';
 var sidebarOpen = true;
 var editor = null;
@@ -946,7 +946,7 @@ function saveState() {
 }
 
 function resetAll() {
-  S = {xp:0,streak:1,lastActiveDate:new Date().toDateString(),completed:[],quizScores:{},cur:0,studentName:'',learningPreference:'',fontSizePreference:'medium'};
+  S = {xp:0,streak:1,lastActiveDate:new Date().toDateString(),completed:[],quizScores:{},challengeRun:{},cur:0,studentName:'',learningPreference:'',fontSizePreference:'medium'};
   saveState(); location.reload();
 }
 
@@ -1024,10 +1024,29 @@ function renderLesson() {
 }
 
 function markDone(id) {
-  if (!S.completed.includes(id)) {
-    S.completed.push(id); addXP(CHAPTERS[id].xpReward);
-    alert('🎉 +'+CHAPTERS[id].xpReward+' XP! Chapter complete!');
-  } else { alert('Already completed — great work! 🙌'); }
+  if (S.completed.includes(id)) { alert('Already completed — great work! 🙌'); return; }
+
+  // Require real engagement before awarding XP - matches the quiz's own
+  // pass bar (score>=3, see showQResult) rather than inventing a new one,
+  // and reuses S.quizScores (already tracked per-chapter) instead of a
+  // second "passed" flag that could drift out of sync with it.
+  var quizPassed = S.quizScores[id] !== undefined && S.quizScores[id] >= 3;
+  var ranChallenge = !!S.challengeRun[id];
+  if (!quizPassed && !ranChallenge) {
+    alert("Not quite yet! Finish the quiz (3 or more correct) and try running some code in the sandbox first - then come back and mark this one complete. 🐍");
+    return;
+  }
+  if (!quizPassed) {
+    alert("Almost there! Take the quiz for this chapter (3 or more correct) before marking it complete. 📝");
+    return;
+  }
+  if (!ranChallenge) {
+    alert("Almost there! Try running your challenge code in the sandbox at least once before marking this complete. ▶️");
+    return;
+  }
+
+  S.completed.push(id); addXP(CHAPTERS[id].xpReward);
+  alert('🎉 +'+CHAPTERS[id].xpReward+' XP! Chapter complete!');
 }
 
 function loadSandboxAndSwitch() {
@@ -1073,6 +1092,12 @@ async function runCode() {
       out.textContent = d.error; out.className = 'ob er'; st.textContent = '❌';
     } else {
       out.textContent = d.output || '(no output)'; st.textContent = '✅';
+      // Tracks a clean run per chapter for the "Mark complete" gate below -
+      // any code that runs without a Python error counts, not just the
+      // unmodified challenge starter, since a student writing their own
+      // working solution from scratch shouldn't be penalized for not
+      // clicking "Load Challenge" first.
+      S.challengeRun[S.cur] = true; saveState();
     }
   } catch(e) {
     out.textContent = 'Could not run code. Is the app server still running?';
