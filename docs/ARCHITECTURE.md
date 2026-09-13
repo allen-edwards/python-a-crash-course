@@ -79,10 +79,14 @@ Note: creating the `.json` Lottie animation itself is an asset-creation task (ne
 Professor Python is the app's overall identity, not a single feature. His full teaching-method prompt governs the **AI tutor chat only** (F6/F11) — Socratic pacing, hints before answers, patient tone. F14 (faux-video lessons) is a separate, non-interactive pipeline (script → animation → playback) and does not use the tutor prompt or require Professor Python's animated presence, though lesson scripts may still be written in a tone consistent with his teaching style.
 
 ## Data flow: running sandbox code
-1. User clicks Run; browser POSTs the code to `/api/run`.
-2. Flask executes it with `python -c <code>` in a subprocess, capturing stdout/stderr, 10 s timeout.
-3. JSON `{output, error}` returns to the browser and renders in the output box.
-4. If the server is unreachable, the frontend falls back to Skulpt (in-browser Python).
+1. User clicks Run; browser POSTs `{code, simulatedInput}` to `/api/run` - `simulatedInput` comes from a small textarea in the sandbox UI, labeled for one line per `input()` call.
+2. Flask executes the code with `python -c <code>` in a subprocess, capturing stdout/stderr, 10 s timeout.
+3. **Simulated stdin for `input()` (added 2026-09-13, Ch7 fix):** `simulatedInput` is passed as `subprocess.run(..., input=simulated_text)` - the standard technique for feeding a one-shot, non-interactive subprocess's stdin from a string. Before this, `/api/run` never set `stdin` at all, so a subprocess whose code called `input()` inherited the Flask server's own stdin and hung until the 10 s timeout killed it - `input()` was untestable in the sandbox. A trailing newline is appended if missing, so the last `input()` call still gets one, matching a real terminal.
+   - A blank `simulatedInput` is a no-op for code that never calls `input()` - stdin is simply never read, so this isn't a behavior change for the common case.
+   - Because `subprocess.run(input=...)` writes the given text and then closes stdin, a script that calls `input()` more times than lines were provided fails **fast** with a clear `EOFError: EOF when reading a line` traceback, rather than hanging for the full timeout - a better outcome than originally anticipated when this was scoped, not just an acceptable v1 limitation.
+   - The timeout error message itself was also improved to suggest checking for enough simulated input lines, as a defensive fallback for the genuine hang case (e.g. an unrelated infinite loop) where stdin isn't the cause.
+4. JSON `{output, error}` returns to the browser and renders in the output box.
+5. **Correction to this doc's own previous claim**: this section previously said "if the server is unreachable, the frontend falls back to Skulpt (in-browser Python)" - checked directly while making this change, and that fallback does not exist. `runCode()`'s `catch` block just shows "Could not run code. Is the app server still running?" - a plain error message, not a Skulpt execution path. Skulpt (`vendor/skulpt.min.js`, `vendor/skulpt-stdlib.js`) is loaded but never referenced anywhere else in `index.html`. Left as-is since implementing or removing it is outside this fix's scope - flagged to Browser to decide (build the real fallback, or remove the stale doc claim and the unused vendor files).
 
 ## Key rules for future changes
 - **All routes must be defined above the `if __name__ == "__main__":` block.** Code below `app.run()` never executes while the server runs. This has caused two 404 bugs already (v4.0: /api/run, v6.0: /api/generate-script).

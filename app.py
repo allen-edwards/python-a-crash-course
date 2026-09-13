@@ -63,14 +63,24 @@ def set_progress():
 @app.route("/api/run", methods=["POST"])
 def run_code():
     code = request.json.get("code", "")
+    # Simulated stdin for input() - one line per call, typed by the student
+    # in the sandbox's "simulated input" box. Passing `input=` to
+    # subprocess.run() feeds it to the child's stdin and closes the pipe
+    # once it's written - the standard technique for a one-shot,
+    # non-interactive subprocess. A blank simulated_input is harmless for
+    # code that never calls input() (stdin is simply never read), so this
+    # is not a behavior change for the common no-input() case.
+    simulated_input = request.json.get("simulatedInput", "") or ""
+    if simulated_input and not simulated_input.endswith("\n"):
+        simulated_input += "\n"  # last input() call still gets a trailing newline, like a real terminal
     try:
         result = subprocess.run(
             [sys.executable, "-c", code],
-            capture_output=True, text=True, timeout=10
+            input=simulated_input, capture_output=True, text=True, timeout=10
         )
         return jsonify({"output": result.stdout, "error": result.stderr})
     except subprocess.TimeoutExpired:
-        return jsonify({"output": "", "error": "Timed out after 10 seconds."})
+        return jsonify({"output": "", "error": "Timed out after 10 seconds. If your code uses input(), make sure you've provided enough simulated input lines above - each input() call needs its own line."})
     except Exception as e:
         return jsonify({"output": "", "error": str(e)})
 

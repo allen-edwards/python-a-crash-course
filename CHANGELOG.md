@@ -4,6 +4,22 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-09-13 — Ch7 Part 2: sandbox now supports input()
+### Fixed
+- **Real bug, genuinely blocking**: `/api/run` executed sandbox code via `subprocess.run()` without ever setting `stdin`. Any code calling `input()` inherited the Flask server's own stdin and hung until the 10-second timeout killed it. This mattered specifically because Chapter 7 (While Loops) - just given real `input()` lesson content in Part 1 of this fix - would have taught a concept students could read about but never actually run themselves in the sandbox.
+### Added
+- New "simulated input" textarea in the sandbox UI, labeled for one line per `input()` call. Its value is sent to `/api/run` alongside the code and passed to `subprocess.run(input=simulated_text)` - the standard technique for feeding a one-shot subprocess's stdin from a string. A blank field is a no-op for code that never calls `input()` - no behavior change for the common case.
+- A pleasant side effect, better than originally scoped as an "acceptable v1 limitation": because `subprocess.run(input=...)` closes stdin after writing the given text, a script that calls `input()` more times than lines were provided now fails **fast** with a clear `EOFError: EOF when reading a line` traceback, instead of hanging for the full 10 seconds. The timeout's own error message was also improved (suggests checking for enough simulated input lines) as a defensive fallback for genuinely unrelated hangs, like an infinite loop.
+### Fixed (layout)
+- First implementation placed the label and textarea in a single flex row - in the sandbox's narrower output column, the nowrap label consumed nearly all the width, leaving the actual input textarea rendered at 26px wide (found via a direct DOM measurement, not just eyeballing it). Switched to a vertical stack (label above, full-width textarea below), confirmed at 374px wide after the fix.
+### Docs
+- `docs/ARCHITECTURE.md`: sandbox data-flow section now documents the simulated-stdin mechanism in full. Also corrected a stale, pre-existing claim found while making this change - the doc said a failed `/api/run` request falls back to Skulpt (in-browser Python); it doesn't. `runCode()`'s catch block just shows a plain connection-error message, and Skulpt's vendor files are loaded but never referenced anywhere in the app. Left for Browser to decide (build the real fallback, or remove the stale claim and the unused vendor files) rather than silently changing scope.
+- `docs/REQUIREMENTS.md`: F2 and N3 rows updated to reflect `input()` now being genuinely teachable and runnable, and the timeout's role shrinking to a defensive fallback now that most `input()`-related hangs resolve via fast `EOFError` instead.
+### Verified
+- Ran all four scenarios directly against the live server: single `input()` call, multiple calls consumed in order, no-`input()` code unaffected by a blank field, and the insufficient-lines case (confirmed fast `EOFError`, not a hang). Separately confirmed a genuine unrelated infinite loop still times out at 10s with the improved message. Did a full real click-through in the browser too (typed code into the actual CodeMirror editor, filled the real textarea, clicked the real Run button) - not just curl against the API. `progress.json` (gitignored, real data) backed up and restored exactly.
+
+---
+
 ## 2026-09-13 — F14b: narration audio wired into Video mode
 ### Added
 - New `/audio/<filename>` Flask route in `app.py`, mirroring the existing `/vendor/<filename>` pattern - serves `audio/ch1.mp3` through `audio/ch11.mp3`.

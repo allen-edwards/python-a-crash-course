@@ -9,7 +9,7 @@ What the user can do. Status reflects the code as of 2026-08-30.
 | ID | Requirement | Priority | Status |
 |----|-------------|----------|--------|
 | F1 | The user can read 11 interactive chapters covering Python fundamentals (Hello World through Testing) | Must | Done |
-| F2 | The user can write and run real Python code in a sandbox with syntax highlighting | Must | Done |
+| F2 | The user can write and run real Python code in a sandbox with syntax highlighting | Must | Done. **`input()` is now genuinely teachable and runnable (2026-09-13)** - a real, identified gap: `/api/run` never set the subprocess's stdin, so any code calling `input()` hung until the 10 s timeout killed it, making Chapter 7's core topic untestable by a student in the sandbox. Fixed with a "simulated input" textarea (one line per `input()` call) passed to `subprocess.run(input=...)`. See ARCHITECTURE.md's sandbox data-flow section for the full mechanism. |
 | F3 | The user can take quizzes and earn XP; chapters unlock as XP grows | Must | Done |
 | F4 | The user's progress (XP, streak, completed chapters, quiz scores) is saved between sessions | Must | Done |
 | F5 | The user can maintain a day streak that tracks consecutive learning days | Must | Done |
@@ -56,7 +56,7 @@ F12 originally implied rendering real video files (generated backgrounds, narrat
 |----|-------------|----------|--------|
 | N1 | Runs on Windows, macOS, and Ubuntu with Python 3.8+ | Must | Done (launcher scripts for each OS) |
 | N2 | Core features (lessons, sandbox, quizzes, progress) work without internet | Must | Done (v6.0 bundles editor/runner libraries locally) |
-| N3 | Sandbox code executions time out after 10 seconds to prevent hangs | Must | Done |
+| N3 | Sandbox code executions time out after 10 seconds to prevent hangs | Must | Done. Timeout message now also suggests checking for enough simulated input lines (2026-09-13) - most `input()`-related hangs are now avoided entirely (fail fast with a clear `EOFError` instead), so the timeout itself is now mainly a defensive fallback for genuinely unrelated infinite loops. |
 | N4 | The user's API key is entered by the user and sent only to the Anthropic API | Must | Done (key is entered by the user, stored client-side in browser localStorage under `pcc_key`, and sent per-request; never written to the server's disk) |
 | N5 | Progress data is stored in a human-readable local file (progress.json) | Nice | Done |
 | N6 | App requires only one third-party dependency (Flask) | Nice | Done |
