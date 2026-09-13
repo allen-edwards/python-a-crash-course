@@ -4,6 +4,19 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-09-13 — Removed dead Skulpt fallback
+### Removed
+- Deleted `vendor/skulpt.min.js` and `vendor/skulpt-stdlib.js` (966 KB combined - `vendor/` drops from 1.2 MB to 204 KB), and their `<script>` tags in `index.html`. Confirmed genuinely unused first: no code path anywhere in the app referenced Skulpt.
+- **Why it existed, and why it no longer needs to**: this fallback was originally built during early development (2026-06-30), when local server setup was occasionally unreliable enough that "the page is up but the backend isn't" was a real, if rare, scenario worth guarding against. The app has since matured and stabilized - it's now clear the app IS the Flask server, so there's no reachable moment where a student sees a working page with a dead backend underneath it. What looked like defensive engineering had quietly become dead weight.
+- **Building the real fallback was considered and rejected**, not just skipped. Skulpt runs Python in an entirely different way (in-browser, no real subprocess, no real file I/O) than the server-side sandbox - meaning today's `input()` support (Ch7 Part 2, same session) would need to be fully re-solved a second time for a separate execution engine, to protect against a failure mode that essentially can't occur in this app's actual architecture. Not worth the weight, especially for an app whose whole identity is offline-portable and dependency-light.
+### Docs
+- `docs/ARCHITECTURE.md`: removed the stale "Skulpt fallback exists" claim from the sandbox data-flow section (already flagged, not yet resolved, in the previous entry); Vendor libs table row corrected; added a Key decisions log entry recording the removal and full reasoning.
+- `CLAUDE.md` and `README.md`: removed Skulpt from their vendor-file listings.
+### Verified
+- App boots and runs normally with the files removed. Confirmed via the browser's own console (zero errors) and network log (zero requests for the removed files - the script tags are simply gone, not 404ing). Re-confirmed `/vendor/skulpt.min.js` now 404s directly. Ran a real sandbox execution afterward to confirm nothing else broke. `vendor/` size confirmed reduced from 1.2 MB to 204 KB.
+
+---
+
 ## 2026-09-13 — Ch7 Part 2: sandbox now supports input()
 ### Fixed
 - **Real bug, genuinely blocking**: `/api/run` executed sandbox code via `subprocess.run()` without ever setting `stdin`. Any code calling `input()` inherited the Flask server's own stdin and hung until the 10-second timeout killed it. This mattered specifically because Chapter 7 (While Loops) - just given real `input()` lesson content in Part 1 of this fix - would have taught a concept students could read about but never actually run themselves in the sandbox.

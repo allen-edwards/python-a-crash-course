@@ -61,8 +61,6 @@ python-a-crash-course/
 ├── progress.json           ← User progress (auto-created, not tracked in git)
 ├── .venv/                  ← Virtual environment (auto-created, not tracked)
 ├── vendor/                 ← ALL JS/CSS libraries bundled locally (fully offline)
-│   ├── skulpt.min.js       ← In-browser Python fallback
-│   ├── skulpt-stdlib.js
 │   ├── codemirror.min.js   ← Code editor
 │   ├── codemirror.min.css
 │   ├── dracula.min.css     ← Editor theme

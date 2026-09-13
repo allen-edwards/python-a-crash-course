@@ -115,7 +115,7 @@ pcc_app/
 ├── appIcon.png             ← App icon
 ├── START_MAC_LINUX.sh      ← Launcher for Ubuntu/macOS
 ├── START_WINDOWS.bat       ← Launcher for Windows
-├── vendor/                 ← Bundled CodeMirror + Skulpt (offline support)
+├── vendor/                 ← Bundled CodeMirror (offline support)
 ├── docs/                   ← Requirements, architecture, and roadmap
 ├── progress.json           ← Your saved progress (auto-created, not tracked)
 └── .venv/                  ← Virtual environment (auto-created, not tracked)

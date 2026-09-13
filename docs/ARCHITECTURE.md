@@ -24,7 +24,7 @@ The app is a single-page web application served by a tiny local Flask server. Al
 | Frontend SPA | All UI, lesson content, quiz logic, XP/streak rules, CodeMirror editor | index.html (~84 KB, self-contained) |
 | Flask server | Static serving, progress persistence, code execution, AI proxy | app.py |
 | Progress store | Saves XP, streak, completed chapters, quiz scores | progress.json (created at runtime) |
-| Vendor libs | Local CodeMirror + Skulpt so the app works offline | vendor/, served via /vendor/ route |
+| Vendor libs | Local CodeMirror so the app works offline | vendor/, served via /vendor/ route |
 | Launchers | One-click start, venv setup, desktop shortcuts | START_MAC_LINUX.sh, START_WINDOWS.bat |
 
 ## Technology choices
@@ -86,7 +86,7 @@ Professor Python is the app's overall identity, not a single feature. His full t
    - Because `subprocess.run(input=...)` writes the given text and then closes stdin, a script that calls `input()` more times than lines were provided fails **fast** with a clear `EOFError: EOF when reading a line` traceback, rather than hanging for the full timeout - a better outcome than originally anticipated when this was scoped, not just an acceptable v1 limitation.
    - The timeout error message itself was also improved to suggest checking for enough simulated input lines, as a defensive fallback for the genuine hang case (e.g. an unrelated infinite loop) where stdin isn't the cause.
 4. JSON `{output, error}` returns to the browser and renders in the output box.
-5. **Correction to this doc's own previous claim**: this section previously said "if the server is unreachable, the frontend falls back to Skulpt (in-browser Python)" - checked directly while making this change, and that fallback does not exist. `runCode()`'s `catch` block just shows "Could not run code. Is the app server still running?" - a plain error message, not a Skulpt execution path. Skulpt (`vendor/skulpt.min.js`, `vendor/skulpt-stdlib.js`) is loaded but never referenced anywhere else in `index.html`. Left as-is since implementing or removing it is outside this fix's scope - flagged to Browser to decide (build the real fallback, or remove the stale doc claim and the unused vendor files).
+5. If the server is unreachable, `runCode()`'s `catch` block shows a plain error message ("Could not run code. Is the app server still running?"). **This doc previously claimed a Skulpt (in-browser Python) fallback existed here - it never did**, and the dead Skulpt vendor files/script tags were removed 2026-09-13 once confirmed genuinely unused. See the Key decisions log entry below for the full reasoning.
 
 ## Key rules for future changes
 - **All routes must be defined above the `if __name__ == "__main__":` block.** Code below `app.run()` never executes while the server runs. This has caused two 404 bugs already (v4.0: /api/run, v6.0: /api/generate-script).
@@ -99,3 +99,4 @@ Professor Python is the app's overall identity, not a single feature. His full t
 - 2026-06-30: server-side runner added; Skulpt kept as offline fallback.
 - 2026-07-09: route-ordering rule documented after second 404-after-app.run() bug.
 - 2026-08-30: F12 (cinematic/rendered lesson video) superseded by F14 (in-app faux-video player) — HyperFrames-style MP4 rendering rejected in favor of live browser animation, to preserve zero-install/USB-portable design (N7). F15 (Lottie-animated Professor Python) added as a compatible, dependency-free way to add an animated mascot.
+- 2026-09-13: **Skulpt fallback (2026-06-30 entry above) removed entirely - `skulpt.min.js`/`skulpt-stdlib.js` deleted, script tags removed.** It was built during early development when local server setup was occasionally unreliable; the app is now mature and stable enough that "the page loaded but the server has since vanished underneath it" isn't a reachable scenario - the app IS the server, so if it were down, the page wouldn't have loaded at all. Confirmed genuinely dead first (no code path referenced it) before removing. Building a real fallback instead was considered and rejected: Skulpt runs Python entirely differently (in-browser, no real subprocess or file I/O), so the input() support just built for the real sandbox (Ch7 Part 2, same day) would need solving a second time for a failure mode that can't really occur here - not worth the weight for this app's offline-portable, "lighter is better" identity.
