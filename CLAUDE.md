@@ -312,9 +312,11 @@ Pending: confirm Allen's LottieFiles account access/tier before starting.
 
 ## Inspiration & Credits
 
-This app was inspired by two books by Eric Matthes (No Starch Press):
-- Python Crash Course
-- The Big Book of Small Python Projects
+This app was inspired by two books from No Starch Press:
+- *Python Crash Course* by Eric Matthes
+- *The Big Book of Small Python Projects* by Al Sweigart
+
+(Corrected 2026-09-16: both books were previously, incorrectly, credited to Eric Matthes alone.)
 
 All lesson content is original — nothing is copied from the books.
 The credits are displayed in the Settings view of the app.

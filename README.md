@@ -10,11 +10,11 @@
 
 **Python: A Beginner's Journey** is a locally-run web app that turns learning Python into an interactive experience. It includes structured lessons, a live Python sandbox, quizzes with XP rewards, a day streak tracker, and an AI-powered tutor — all running on your own machine with no internet required for the core features.
 
-This project was inspired by two fantastic books by **Eric Matthes**:
-- *Python Crash Course* (No Starch Press)
-- *The Big Book of Small Python Projects* (No Starch Press)
+This project was inspired by two fantastic books:
+- *Python Crash Course* by **Eric Matthes** (No Starch Press)
+- *The Big Book of Small Python Projects* by **Al Sweigart** (No Starch Press)
 
-All lesson content, explanations, and code examples in this app are original. We gratefully acknowledge Eric Matthes for inspiring this learning journey.
+All lesson content, explanations, and code examples in this app are original. We gratefully acknowledge Eric Matthes and Al Sweigart for inspiring this learning journey.
 
 ---
 
@@ -163,7 +163,8 @@ This project is licensed under the MIT License — see [LICENSE](LICENSE) for de
 
 ## 🙏 Credits & Inspiration
 
-- **Eric Matthes** — *Python Crash Course* and *The Big Book of Small Python Projects* (No Starch Press)
+- **Eric Matthes** — *Python Crash Course* (No Starch Press)
+- **Al Sweigart** — *The Big Book of Small Python Projects* (No Starch Press)
 - **Anthropic** — Claude AI powering the tutor and script generator
 - **CodeMirror** — syntax highlighting in the sandbox
 - **Flask** — the lightweight server that makes it all run locally

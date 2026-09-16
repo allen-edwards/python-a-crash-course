@@ -4,6 +4,14 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-09-16 — Fixed book-credit misattribution (Al Sweigart wrongly credited as Eric Matthes)
+### Fixed
+- Both source books were incorrectly credited to **Eric Matthes** in the app's own Settings/Credits view (user-facing), plus `CLAUDE.md` and `README.md`. *The Big Book of Small Python Projects* is actually by **Al Sweigart** - a different author, not a second book by Matthes. Verified via web search before correcting (No Starch Press page, publisher listings). Only *Python Crash Course* is Matthes'.
+- Caught by Allen while reviewing F13 planning material, since he recalled owning a PDF of the Sweigart book specifically.
+- Fixed in `index.html` (live Settings/Credits box), `CLAUDE.md`, `README.md` (intro credits + full Credits & Inspiration section). Left `docs/history/CLAUDE_2026-07-06.md` untouched deliberately - it's a frozen historical snapshot of what the file said at that time, not a live doc.
+
+---
+
 ## 2026-09-13 — Ch7/8/9 real narration audio swapped in (fallback still active - see note)
 ### Changed
 - Replaced `audio/ch7.mp3`, `audio/ch8.mp3`, `audio/ch9.mp3` with newly-recorded narration covering the full extended scripts (confirmed against the exact narration text sent for Speechify - not a stale/wrong recording). Checksummed against the source files after copying.
