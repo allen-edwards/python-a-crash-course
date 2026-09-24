@@ -23,7 +23,7 @@ The app is a single-page web application served by a tiny local Flask server. Al
 |-----------|---------------|-----------|
 | Frontend SPA | All UI, lesson content, quiz logic, XP/streak rules, CodeMirror editor | index.html (~84 KB, self-contained) |
 | Flask server | Static serving, progress persistence, code execution, AI proxy | app.py |
-| Progress store | Saves XP, streak, completed chapters, quiz scores | progress.json (created at runtime) |
+| Progress store | Saves XP, streak, completed chapters, quiz scores, XP-model version (`xpModel`) | progress.json (created at runtime) |
 | Vendor libs | Local CodeMirror so the app works offline | vendor/, served via /vendor/ route |
 | Launchers | One-click start, venv setup, desktop shortcuts | START_MAC_LINUX.sh, START_WINDOWS.bat |
 

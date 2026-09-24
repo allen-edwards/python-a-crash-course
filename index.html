@@ -956,10 +956,52 @@ var apiKey = '';
 var sidebarOpen = true;
 var editor = null;
 
+// XP model 2 (2026-09-24): chapter rewards were re-evaluated and unlock thresholds moved up.
+// Saves made under model 1 have no xpModel marker. Once, guarded by that marker, add the
+// reward difference for every chapter already completed and every quiz already passed, so a
+// student isn't left behind the new thresholds by the rebalance itself.
+var XP_REWARDS_MODEL1 = [15,15,20,20,20,25,25,30,35,35,40];
+function migrateXpModel() {
+  if ((S.xpModel || 1) >= 2) return false;
+  var delta = 0;
+  (S.completed || []).forEach(function(id){
+    if (CHAPTERS[id]) delta += CHAPTERS[id].xpReward - XP_REWARDS_MODEL1[id];
+  });
+  Object.keys(S.quizScores || {}).forEach(function(k){
+    var id = +k;
+    if (CHAPTERS[id] && S.quizScores[k] >= 3) {
+      delta += Math.round(CHAPTERS[id].xpReward*0.7) - Math.round(XP_REWARDS_MODEL1[id]*0.7);
+    }
+  });
+  S.xp = Math.max(0, Math.min((S.xp || 0) + delta, 500));
+  S.xpModel = 2;
+  return true;
+}
+
+function isChapterLocked(id) {
+  var ch = CHAPTERS[id];
+  return !ch || (S.xp < ch.xpNeeded && !S.completed.includes(id));
+}
+
+// A saved current chapter can become locked (thresholds moved, or a hand-edited save).
+// Fall back to the highest chapter that is actually unlocked instead of showing a locked one.
+function fixLockedCurrentChapter() {
+  if (!isChapterLocked(S.cur)) return false;
+  var best = 0;
+  for (var i = 0; i < CHAPTERS.length; i++) { if (!isChapterLocked(i)) best = i; }
+  S.cur = best;
+  return true;
+}
+
 async function loadState() {
   try {
     var r = await fetch('/api/progress');
-    if (r.ok) { var d = await r.json(); Object.assign(S, d); }
+    if (r.ok) {
+      var d = await r.json(); Object.assign(S, d);
+      var migrated = migrateXpModel();
+      var moved = fixLockedCurrentChapter();
+      if (migrated || moved) saveState();
+    }
   } catch(e) {}
   var today = new Date().toDateString();
   if (S.lastActiveDate !== today) {
@@ -977,7 +1019,7 @@ function saveState() {
 }
 
 function resetAll() {
-  S = {xp:0,streak:1,lastActiveDate:new Date().toDateString(),completed:[],quizScores:{},challengeRun:{},cur:0,studentName:'',learningPreference:'',fontSizePreference:'medium'};
+  S = {xp:0,xpModel:2,streak:1,lastActiveDate:new Date().toDateString(),completed:[],quizScores:{},challengeRun:{},cur:0,studentName:'',learningPreference:'',fontSizePreference:'medium'};
   saveState(); location.reload();
 }
 
@@ -1143,7 +1185,8 @@ var QS = {ans:[], xpDone:false};
 function renderQuiz() {
   var ch = CHAPTERS[S.cur]; QS = {ans:[], xpDone:false};
   var xpEarn = Math.round(ch.xpReward*0.7);
-  var html = '<h2>Quiz — '+ch.title+'</h2><p class="qm">'+ch.quizzes.length+' questions · Pass 3/'+ch.quizzes.length+' to earn +'+xpEarn+' XP</p>';
+  var quizXpEarned = S.quizScores[S.cur] !== undefined && S.quizScores[S.cur] >= 3;
+  var html = '<h2>Quiz — '+ch.title+'</h2><p class="qm">'+ch.quizzes.length+' questions · Pass 3/'+ch.quizzes.length+(quizXpEarned ? ' (quiz XP already earned for this chapter)' : ' to earn +'+xpEarn+' XP')+'</p>';
   ch.quizzes.forEach(function(q,qi){
     html += '<div class="qb" id="qb'+qi+'"><p class="qt">'+(qi+1)+'. '+q.q+'</p>';
     q.opts.forEach(function(o,oi){
@@ -1168,16 +1211,24 @@ function pickQ(qi,oi) {
 function showQResult() {
   var ch = CHAPTERS[S.cur];
   var score = QS.ans.filter(function(a,i){ return a===ch.quizzes[i].ans; }).length;
-  var xpEarn = score>=3 ? Math.round(ch.xpReward*0.7) : 0;
+  // Quiz XP is awarded once per chapter. S.quizScores[chapter] >= 3 is the persistent
+  // "already earned" record (set below, only on a pass), so Retry can't re-award it.
+  var alreadyEarned = S.quizScores[S.cur] !== undefined && S.quizScores[S.cur] >= 3;
+  var xpEarn = (score>=3 && !alreadyEarned) ? Math.round(ch.xpReward*0.7) : 0;
   var res = document.getElementById('qResult');
   res.style.display = 'block';
   res.innerHTML = '<div class="qr"><div class="qrs">'+score+'/'+ch.quizzes.length+'</div>'
-    +'<div class="qrss">'+(score>=3?'🎉 Passed! +'+xpEarn+' XP!':'💪 Review the lesson and retry!')+'</div>'
+    +'<div class="qrss">'+(score>=3?(xpEarn>0?'🎉 Passed! +'+xpEarn+' XP!':'🎉 Passed! (Quiz XP already earned for this chapter.)'):'💪 Review the lesson and retry!')+'</div>'
     +'<div style="margin-top:14px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">'
     +'<button class="btn" onclick="renderQuiz()">Retry quiz</button>'
     +(score>=3?'<button class="btn pr" onclick="loadSandboxAndSwitch()">▶ Try the challenge</button>':'')
     +'</div></div>';
-  if (score>=3 && !QS.xpDone) { addXP(xpEarn); QS.xpDone=true; S.quizScores[S.cur]=score; saveState(); }
+  if (score>=3 && !QS.xpDone) {
+    QS.xpDone = true;
+    if (xpEarn > 0) addXP(xpEarn);
+    S.quizScores[S.cur] = Math.max(S.quizScores[S.cur] || 0, score);
+    saveState();
+  }
 }
 
 // ═══════════════════════════════════════ TUTOR ═══════════════════════════════
