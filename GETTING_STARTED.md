@@ -234,13 +234,13 @@ Chapters are locked until you earn enough XP. This encourages you to actually en
 | Ch 2 — Variables | 10 XP |
 | Ch 3 — Lists | 20 XP |
 | Ch 4 — Loops | 50 XP |
-| Ch 5 — if Statements | 90 XP |
-| Ch 6 — Dictionaries | 130 XP |
-| Ch 7 — While Loops | 180 XP |
-| Ch 8 — Functions | 230 XP |
-| Ch 9 — Classes | 290 XP |
-| Ch 10 — Files & Exceptions | 360 XP |
-| Ch 11 — Testing | 430 XP |
+| Ch 5 — if Statements | 100 XP |
+| Ch 6 — Dictionaries | 140 XP |
+| Ch 7 — While Loops | 190 XP |
+| Ch 8 — Functions | 270 XP |
+| Ch 9 — Classes | 340 XP |
+| Ch 10 — Files & Exceptions | 420 XP |
+| Ch 11 — Testing | 490 XP |
 
 **Day streak:**
 The 🔥 counter in the top right tracks how many days in a row you have opened the app. Try to keep it going!

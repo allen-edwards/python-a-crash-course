@@ -542,7 +542,7 @@ var CHAPTERS = [
     prompts:["Explain print() like I'm 10",'What is the Python interpreter?','Give me a Ch 1 mini-challenge','Why do we always start with Hello World?']
   },
   {
-    id:1, icon:'📦', title:'Ch 2 — Variables', sub:'Strings, numbers, types', xpNeeded:10, xpReward:15,
+    id:1, icon:'📦', title:'Ch 2 — Variables', sub:'Strings, numbers, types', xpNeeded:10, xpReward:20,
     lessonHeading:'Chapter 2: Variables and Simple Data Types',
     lessonMeta:'Storing and working with values',
     sandboxCode:'# Chapter 2 — Variables!\nname = "Allen"\nage = 25\npi = 3.14159\n\nprint("Name:", name)\nprint("Age:", age)\nprint("Pi:", pi)\n\n# String methods\nprint(name.upper())\nprint(name.lower())\n\n# Math\nprint(2 ** 8)   # 2 to the power of 8\nprint(10 % 3)   # remainder',
@@ -576,7 +576,7 @@ var CHAPTERS = [
     prompts:['Why do indexes start at 0?','pop() vs remove() — what is the difference?','What is list slicing?','Give me a list challenge']
   },
   {
-    id:3, icon:'🔁', title:'Ch 4 — Loops', sub:'For loops & comprehensions', xpNeeded:50, xpReward:20,
+    id:3, icon:'🔁', title:'Ch 4 — Loops', sub:'For loops & comprehensions', xpNeeded:50, xpReward:25,
     lessonHeading:'Chapter 4: Working with Lists',
     lessonMeta:'Loops, slices, and list comprehensions',
     sandboxCode:'# Chapter 4 — Loops!\nanimals = ["cat", "dog", "rabbit", "parrot"]\n\n# For loop\nfor animal in animals:\n    print("I love my", animal)\n\nprint("---")\n\n# Range loop\nfor i in range(1, 6):\n    print(i, "squared =", i**2)\n\nprint("---")\n\n# List comprehension — one line!\nsquares = [x**2 for x in range(1, 11)]\nprint(squares)',
@@ -593,7 +593,7 @@ var CHAPTERS = [
     prompts:['Explain for loops with a real-world analogy','What is a list comprehension?','Difference between for and while loops?','Give me a loops challenge']
   },
   {
-    id:4, icon:'🤔', title:'Ch 5 — if Statements', sub:'Making decisions in code', xpNeeded:90, xpReward:20,
+    id:4, icon:'🤔', title:'Ch 5 — if Statements', sub:'Making decisions in code', xpNeeded:100, xpReward:20,
     lessonHeading:'Chapter 5: if Statements',
     lessonMeta:'Giving your code a brain',
     sandboxCode:"# Chapter 5 — if Statements!\nage = 20\nhas_ticket = True\n\nif age >= 18 and has_ticket:\n    print('Welcome to the show!')\nelif age >= 18:\n    print('You need a ticket!')\nelse:\n    print('Too young!')\n\nprint('---')\n\n# Check list membership\nfavourites = ['python', 'javascript', 'rust']\nlanguage = 'python'\n\nif language in favourites:\n    print(language, 'is a favourite!')\nelse:\n    print(language, 'is not in the list')",
@@ -610,7 +610,7 @@ var CHAPTERS = [
     prompts:['Explain if/elif/else with a real example','Difference between = and ==?','How does "in" work with lists?','Give me an if-statement challenge']
   },
   {
-    id:5, icon:'📖', title:'Ch 6 — Dictionaries', sub:'Key-value pairs', xpNeeded:130, xpReward:25,
+    id:5, icon:'📖', title:'Ch 6 — Dictionaries', sub:'Key-value pairs', xpNeeded:140, xpReward:25,
     lessonHeading:'Chapter 6: Dictionaries',
     lessonMeta:'Labelled data storage',
     sandboxCode:"# Chapter 6 — Dictionaries!\nperson = {\n    'name': 'Allen',\n    'age': 25,\n    'city': 'Your City',\n    'hobby': 'coding'\n}\n\n# Access values\nprint('Name:', person['name'])\nprint('Age:', person['age'])\n\n# Update and add\nperson['age'] = 26\nperson['language'] = 'Python'\n\n# Loop through\nprint('---')\nfor key, value in person.items():\n    print(key + ':', value)",
@@ -627,7 +627,7 @@ var CHAPTERS = [
     prompts:['Dict vs list — when do I use which?','How do I check if a key exists?','What are nested dictionaries?','Give me a dictionary challenge']
   },
   {
-    id:6, icon:'🔄', title:'Ch 7 — While Loops', sub:'Looping with conditions', xpNeeded:180, xpReward:25,
+    id:6, icon:'🔄', title:'Ch 7 — While Loops', sub:'Looping with conditions', xpNeeded:190, xpReward:40,
     lessonHeading:'Chapter 7: While Loops & User Input',
     lessonMeta:'Loops that run until a condition is met',
     sandboxCode:"# Chapter 7 — While Loops!\n# Count up\ncount = 1\nwhile count <= 5:\n    print('Count:', count)\n    count += 1\n\nprint('Done!')\nprint('---')\n\n# Loop with a list\nfruits = ['apple', 'banana', 'cherry']\nwhile fruits:\n    eaten = fruits.pop()\n    print('Eating:', eaten)\nprint('All eaten!')",
@@ -644,7 +644,7 @@ var CHAPTERS = [
     prompts:['While loop vs for loop — when to use which?','What is an infinite loop and how do I avoid it?','Explain break and continue with examples','Give me a while loop challenge']
   },
   {
-    id:7, icon:'⚙️', title:'Ch 8 — Functions', sub:'Reusable code blocks', xpNeeded:230, xpReward:30,
+    id:7, icon:'⚙️', title:'Ch 8 — Functions', sub:'Reusable code blocks', xpNeeded:270, xpReward:35,
     lessonHeading:'Chapter 8: Functions',
     lessonMeta:'Writing reusable, organised code',
     sandboxCode:'# Chapter 8 — Functions!\ndef greet(name, greeting="Hello"):\n    """Greet someone with a custom message."""\n    print(greeting + ", " + name.title() + "!")\n\ngreet("allen")\ngreet("allen", "Welcome")\n\nprint("---")\n\n# Function with return value\ndef square(number):\n    """Return the square of a number."""\n    return number ** 2\n\nfor i in range(1, 6):\n    print(i, "squared =", square(i))\n\nprint("---")\n\n# *args — accept any number of arguments\ndef make_sandwich(*fillings):\n    print("Making sandwich with:")\n    for filling in fillings:\n        print(" -", filling)\n\nmake_sandwich("cheese", "tomato", "lettuce")',
@@ -661,7 +661,7 @@ var CHAPTERS = [
     prompts:['Explain functions with a cooking analogy','Parameters vs arguments — what is the difference?','When should I use return?','Give me a functions challenge']
   },
   {
-    id:8, icon:'🏗️', title:'Ch 9 — Classes', sub:'Object-oriented programming', xpNeeded:290, xpReward:35,
+    id:8, icon:'🏗️', title:'Ch 9 — Classes', sub:'Object-oriented programming', xpNeeded:340, xpReward:40,
     lessonHeading:'Chapter 9: Classes',
     lessonMeta:'Building your own data types',
     sandboxCode:'# Chapter 9 — Classes!\nclass Dog:\n    """A simple model of a dog."""\n\n    def __init__(self, name, breed, age):\n        """Initialize dog attributes."""\n        self.name = name\n        self.breed = breed\n        self.age = age\n\n    def sit(self):\n        print(self.name.title() + " is now sitting.")\n\n    def roll_over(self):\n        print(self.name.title() + " rolled over!")\n\n    def describe(self):\n        print(f"{self.name} is a {self.age}-year-old {self.breed}.")\n\n# Create instances\nmy_dog = Dog("rex", "labrador", 3)\nyour_dog = Dog("bella", "poodle", 5)\n\nmy_dog.describe()\nmy_dog.sit()\nyour_dog.describe()\nyour_dog.roll_over()',
@@ -678,7 +678,7 @@ var CHAPTERS = [
     prompts:['Explain classes with a real-world analogy','What is self and why do I need it?','What is the difference between a class and an instance?','Give me a classes challenge']
   },
   {
-    id:9, icon:'📁', title:'Ch 10 — Files & Exceptions', sub:'Reading files, handling errors', xpNeeded:360, xpReward:35,
+    id:9, icon:'📁', title:'Ch 10 — Files & Exceptions', sub:'Reading files, handling errors', xpNeeded:420, xpReward:35,
     lessonHeading:'Chapter 10: Files and Exceptions',
     lessonMeta:'Reading files and handling errors gracefully',
     sandboxCode:'# Chapter 10 — Files & Exceptions!\n# Writing to a file\nwith open("test_output.txt", "w") as f:\n    f.write("Hello from Python!\\n")\n    f.write("This is line 2.\\n")\n    f.write("Allen is learning Python!\\n")\n\nprint("File written!")\n\n# Reading it back\nwith open("test_output.txt", "r") as f:\n    contents = f.read()\n\nprint("File contents:")\nprint(contents)\n\n# Exception handling\nprint("---")\ntry:\n    result = 10 / 0\nexcept ZeroDivisionError:\n    print("Cannot divide by zero!")\nfinally:\n    print("This always runs.")',
@@ -695,7 +695,7 @@ var CHAPTERS = [
     prompts:['Explain try/except with a real-world analogy','Difference between "w" and "a" file modes?','What is a FileNotFoundError and how do I handle it?','Give me a files challenge']
   },
   {
-    id:10, icon:'🧪', title:'Ch 11 — Testing', sub:'Writing tests for your code', xpNeeded:430, xpReward:40,
+    id:10, icon:'🧪', title:'Ch 11 — Testing', sub:'Writing tests for your code', xpNeeded:490, xpReward:40,
     lessonHeading:'Chapter 11: Testing Your Code',
     lessonMeta:'Writing tests to make sure your code works',
     sandboxCode:'# Chapter 11 — Testing!\n# A function to test\ndef get_full_name(first, last):\n    """Return a full name, neatly formatted."""\n    return first.strip().title() + " " + last.strip().title()\n\n# Manual tests (before using unittest)\nprint("Testing get_full_name()...")\n\nresult = get_full_name("allen", "smith")\nassert result == "Allen Smith", f"Expected \'Allen Smith\', got \'{result}\'"\nprint("Test 1 passed:", result)\n\nresult = get_full_name("  ada  ", "lovelace")\nassert result == "Ada Lovelace", f"Expected \'Ada Lovelace\', got \'{result}\'"\nprint("Test 2 passed:", result)\n\nprint("All tests passed! ✅")',

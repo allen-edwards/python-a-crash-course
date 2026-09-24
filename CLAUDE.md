@@ -176,16 +176,16 @@ player itself never waits for a student answer.
 | ID | Title | XP to unlock | XP reward |
 |----|-------|-------------|-----------|
 | 0 | Ch 1 — Hello World | 0 | 15 |
-| 1 | Ch 2 — Variables | 10 | 15 |
+| 1 | Ch 2 — Variables | 10 | 20 |
 | 2 | Ch 3 — Lists | 20 | 20 |
-| 3 | Ch 4 — Loops | 50 | 20 |
-| 4 | Ch 5 — if Statements | 90 | 20 |
-| 5 | Ch 6 — Dictionaries | 130 | 25 |
-| 6 | Ch 7 — While Loops | 180 | 25 |
-| 7 | Ch 8 — Functions | 230 | 30 |
-| 8 | Ch 9 — Classes | 290 | 35 |
-| 9 | Ch 10 — Files & Exceptions | 360 | 35 |
-| 10 | Ch 11 — Testing | 430 | 40 |
+| 3 | Ch 4 — Loops | 50 | 25 |
+| 4 | Ch 5 — if Statements | 100 | 20 |
+| 5 | Ch 6 — Dictionaries | 140 | 25 |
+| 6 | Ch 7 — While Loops | 190 | 40 |
+| 7 | Ch 8 — Functions | 270 | 35 |
+| 8 | Ch 9 — Classes | 340 | 40 |
+| 9 | Ch 10 — Files & Exceptions | 420 | 35 |
+| 10 | Ch 11 — Testing | 490 | 40 |
 
 ---
 

@@ -4,6 +4,35 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-09-24 — Chapter XP re-evaluation for chapters that grew; F13 reward-project XP model recorded
+### Changed
+- **Per-chapter XP rewards raised where the chapter grew** (Browser's re-evaluation): Ch 2 15→20 (f-strings, comments), Ch 4 20→25 (min/max/sum, tuples), Ch 7 25→40 (`input()`, conversions, flags, list-draining), Ch 8 30→35 (modules/imports), Ch 9 35→40 (importing classes, method overriding). Ch 1, 3, 5, 6, 10, 11 unchanged.
+- **Unlock thresholds (`xpNeeded`) recomputed.** There is no stored formula: the values are hard-coded per chapter in `index.html` and were set once in v5.0. Analysing the v5.0 table shows Ch 5–Ch 11 follow `threshold = previous threshold + 2 × previous chapter's reward` exactly; Ch 2–Ch 4 (10, 20, 50) are hand-set and were left as they were. New thresholds:
+
+| Chapter | Reward (old → new) | Unlock (old → new) |
+|---|---|---|
+| Ch 2 | 15 → 20 | 10 → 10 |
+| Ch 3 | 20 → 20 | 20 → 20 |
+| Ch 4 | 20 → 25 | 50 → 50 |
+| Ch 5 | 20 → 20 | 90 → 100 |
+| Ch 6 | 25 → 25 | 130 → 140 |
+| Ch 7 | 25 → 40 | 180 → 190 |
+| Ch 8 | 30 → 35 | 230 → 270 |
+| Ch 9 | 35 → 40 | 290 → 340 |
+| Ch 10 | 35 → 35 | 360 → 420 |
+| Ch 11 | 40 → 40 | 430 → 490 |
+
+- `CLAUDE.md` chapter table and the `GETTING_STARTED.md` unlock table updated to match.
+
+### Design recorded (not built — F13 has not started)
+- **F13 inline reward projects** (checkpoint projects after Ch 5, Ch 7, Ch 9 and course end) are separate from chapter progression: never required, never gate a chapter unlock. A run that completes with no error through `/api/run` awards a flat **+10 XP, once per project**. It is not graded (no output check); it reuses the sandbox's existing success/error signal. See `docs/REQUIREMENTS.md` decision note.
+
+### Found while verifying (details in the review report; not fixed here)
+- **Clean-pass reachability:** with a single clean pass through the course (quiz XP + completion XP per chapter) a student can earn at most 351 XP before Ch 10 under the OLD thresholds and 410 under the NEW ones, so the Ch 10 threshold was already unreachable without extra XP (old: 360 needed; new by rule: 420).
+- **Quiz retry can re-award XP** (`QS.xpDone` resets in `renderQuiz()`), which is the only way past that gap today. Existing students' saved `xp` is not corrupted by the change (unlocks are computed live), but a student near a threshold can find a chapter re-locked.
+
+---
+
 ## 2026-09-16 — Fixed book-credit misattribution (Al Sweigart wrongly credited as Eric Matthes)
 ### Fixed
 - Both source books were incorrectly credited to **Eric Matthes** in the app's own Settings/Credits view (user-facing), plus `CLAUDE.md` and `README.md`. *The Big Book of Small Python Projects* is actually by **Al Sweigart** - a different author, not a second book by Matthes. Verified via web search before correcting (No Starch Press page, publisher listings). Only *Python Crash Course* is Matthes'.
