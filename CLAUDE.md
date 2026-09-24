@@ -331,8 +331,11 @@ The credits are displayed in the Settings view of the app.
   `/api/generate-script` (v6.0). Always define routes before app.run().
 - **CDN dependency** — All libraries moved to vendor/ after an internet
   outage broke the app. Never use CDN links.
-- **venv on Ubuntu 24** — Ubuntu blocks system pip. Launcher creates a
-  local .venv and uses VENV_PYTHON directly to avoid this.
+- **venv on Ubuntu 24 / 26** — Ubuntu blocks system pip. Launcher creates a
+  local .venv and uses VENV_PYTHON directly to avoid this. On a fresh
+  Ubuntu install `python3 -m venv` also needs `sudo apt install python3-venv`
+  first (the launcher prints that hint if venv creation fails). App and code
+  sandbox verified on Python 3.14.4 / Ubuntu 26.04.1 (2026-09-23).
 - **Timeout** — Script generator needs 120s timeout (not 30s) due to
   4000 token response size.
 - **Stale-code-in-doc-merge risk** — A "docs update" zip can sometimes

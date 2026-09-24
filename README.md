@@ -50,6 +50,7 @@ These are planned, not yet built — tracked in detail in [docs/ROADMAP.md](docs
 
 - **Python 3.8 or higher** — download free at [python.org](https://www.python.org/downloads/)
 - Flask (installed automatically on first run)
+- **Ubuntu users:** install the venv package first with `sudo apt install python3-venv` (the launcher needs it to set up the app's local environment)
 
 ### Installation
 
