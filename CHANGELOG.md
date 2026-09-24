@@ -19,8 +19,8 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 | Ch 7 | 25 → 40 | 180 → 190 |
 | Ch 8 | 30 → 35 | 230 → 270 |
 | Ch 9 | 35 → 40 | 290 → 340 |
-| Ch 10 | 35 → 35 | 360 → 420 |
-| Ch 11 | 40 → 40 | 430 → 490 |
+| Ch 10 | 35 → 35 | 360 → 400 (rule gives 420, see below) |
+| Ch 11 | 40 → 40 | 430 → 460 (rule gives 490, see below) |
 
 - `CLAUDE.md` chapter table and the `GETTING_STARTED.md` unlock table updated to match.
 
@@ -28,7 +28,7 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 - **F13 inline reward projects** (checkpoint projects after Ch 5, Ch 7, Ch 9 and course end) are separate from chapter progression: never required, never gate a chapter unlock. A run that completes with no error through `/api/run` awards a flat **+10 XP, once per project**. It is not graded (no output check); it reuses the sandbox's existing success/error signal. See `docs/REQUIREMENTS.md` decision note.
 
 ### Found while verifying (details in the review report; not fixed here)
-- **Clean-pass reachability:** with a single clean pass through the course (quiz XP + completion XP per chapter) a student can earn at most 351 XP before Ch 10 under the OLD thresholds and 410 under the NEW ones, so the Ch 10 threshold was already unreachable without extra XP (old: 360 needed; new by rule: 420).
+- **Clean-pass reachability:** a single clean pass through the course (quiz XP + completion XP per chapter, `1.7 × reward`) earns at most 351 XP before Ch 10 under the OLD thresholds and 410 under the NEW ones, so the Ch 10 threshold was already unreachable without extra XP (old 360; the rule would now give 420). The `+2 × reward` rule outgrows the `1.7 × reward` a chapter can pay. **Ch 10 and Ch 11 are therefore set below the rule's values (400 and 460) so a clean run can reach them, leaving about 10 XP of slack each.** This is a separate commit so it can be dropped. Ch 9 is very tight (2 XP of slack).
 - **Quiz retry can re-award XP** (`QS.xpDone` resets in `renderQuiz()`), which is the only way past that gap today. Existing students' saved `xp` is not corrupted by the change (unlocks are computed live), but a student near a threshold can find a chapter re-locked.
 
 ---

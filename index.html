@@ -678,7 +678,7 @@ var CHAPTERS = [
     prompts:['Explain classes with a real-world analogy','What is self and why do I need it?','What is the difference between a class and an instance?','Give me a classes challenge']
   },
   {
-    id:9, icon:'📁', title:'Ch 10 — Files & Exceptions', sub:'Reading files, handling errors', xpNeeded:420, xpReward:35,
+    id:9, icon:'📁', title:'Ch 10 — Files & Exceptions', sub:'Reading files, handling errors', xpNeeded:400, xpReward:35,
     lessonHeading:'Chapter 10: Files and Exceptions',
     lessonMeta:'Reading files and handling errors gracefully',
     sandboxCode:'# Chapter 10 — Files & Exceptions!\n# Writing to a file\nwith open("test_output.txt", "w") as f:\n    f.write("Hello from Python!\\n")\n    f.write("This is line 2.\\n")\n    f.write("Allen is learning Python!\\n")\n\nprint("File written!")\n\n# Reading it back\nwith open("test_output.txt", "r") as f:\n    contents = f.read()\n\nprint("File contents:")\nprint(contents)\n\n# Exception handling\nprint("---")\ntry:\n    result = 10 / 0\nexcept ZeroDivisionError:\n    print("Cannot divide by zero!")\nfinally:\n    print("This always runs.")',
@@ -695,7 +695,7 @@ var CHAPTERS = [
     prompts:['Explain try/except with a real-world analogy','Difference between "w" and "a" file modes?','What is a FileNotFoundError and how do I handle it?','Give me a files challenge']
   },
   {
-    id:10, icon:'🧪', title:'Ch 11 — Testing', sub:'Writing tests for your code', xpNeeded:490, xpReward:40,
+    id:10, icon:'🧪', title:'Ch 11 — Testing', sub:'Writing tests for your code', xpNeeded:460, xpReward:40,
     lessonHeading:'Chapter 11: Testing Your Code',
     lessonMeta:'Writing tests to make sure your code works',
     sandboxCode:'# Chapter 11 — Testing!\n# A function to test\ndef get_full_name(first, last):\n    """Return a full name, neatly formatted."""\n    return first.strip().title() + " " + last.strip().title()\n\n# Manual tests (before using unittest)\nprint("Testing get_full_name()...")\n\nresult = get_full_name("allen", "smith")\nassert result == "Allen Smith", f"Expected \'Allen Smith\', got \'{result}\'"\nprint("Test 1 passed:", result)\n\nresult = get_full_name("  ada  ", "lovelace")\nassert result == "Ada Lovelace", f"Expected \'Ada Lovelace\', got \'{result}\'"\nprint("Test 2 passed:", result)\n\nprint("All tests passed! ✅")',

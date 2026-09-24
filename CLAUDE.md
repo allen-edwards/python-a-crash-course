@@ -184,8 +184,8 @@ player itself never waits for a student answer.
 | 6 | Ch 7 — While Loops | 190 | 40 |
 | 7 | Ch 8 — Functions | 270 | 35 |
 | 8 | Ch 9 — Classes | 340 | 40 |
-| 9 | Ch 10 — Files & Exceptions | 420 | 35 |
-| 10 | Ch 11 — Testing | 490 | 40 |
+| 9 | Ch 10 — Files & Exceptions | 400 | 35 |
+| 10 | Ch 11 — Testing | 460 | 40 |
 
 ---
 

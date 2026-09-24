@@ -239,8 +239,8 @@ Chapters are locked until you earn enough XP. This encourages you to actually en
 | Ch 7 — While Loops | 190 XP |
 | Ch 8 — Functions | 270 XP |
 | Ch 9 — Classes | 340 XP |
-| Ch 10 — Files & Exceptions | 420 XP |
-| Ch 11 — Testing | 490 XP |
+| Ch 10 — Files & Exceptions | 400 XP |
+| Ch 11 — Testing | 460 XP |
 
 **Day streak:**
 The 🔥 counter in the top right tracks how many days in a row you have opened the app. Try to keep it going!
