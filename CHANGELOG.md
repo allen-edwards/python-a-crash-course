@@ -4,6 +4,12 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-10-14 — Sandbox: clearer `input()` errors and sample-input prefill support (not pushed)
+### Changed
+- **Friendlier `EOFError` hint:** when a run fails with `EOFError: EOF when reading a line` and the code calls `input(`, Python's real traceback stays visible and a plain-language line is added telling the student to type their answer(s) in the input box, one line per `input()` call, then press Run. The 10-second timeout message is unchanged.
+- **Sample-input prefill support:** app-loaded examples and challenges can now carry `sandboxInput` / `challengeInput`; it fills the simulated-input box only when the box is empty and the code calls `input(`. Typed text is never overwritten. No current chapter example uses `input()`, so no sample data was added.
+- Verified on a scratch copy: empty box shows traceback plus hint; typed answer runs cleanly; prefill works; typed text is kept; code without `input(` leaves the box empty.
+
 ## 2026-10-14 — Tutor notice and README wording (DRAFT, not pushed; Allen to review)
 ### Changed
 - **Settings now carries a plain-language notice next to the API key field** saying what the tutor sends to Anthropic (what you type, plus your name and learning preference when both are set), that usage may be billed to the key's owner, to avoid personal information, and that lessons and progress stay on this computer. Heading and intro no longer mention the Script Generator.

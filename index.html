@@ -1125,9 +1125,18 @@ function markDone(id) {
   alert('🎉 +'+CHAPTERS[id].xpReward+' XP! Chapter complete!');
 }
 
+// Fills the simulated-input box with sample answers for app-loaded code that calls input().
+// Never overwrites text the student already typed; does nothing for code without input( or without sample text.
+function prefillSimInput(code, sample) {
+  var box = document.getElementById('simInput');
+  if (!box || box.value.trim() || !sample || !/input\s*\(/.test(code || '')) return;
+  box.value = sample;
+}
+
 function loadSandboxAndSwitch() {
   var ch = CHAPTERS[S.cur];
   if (editor) editor.setValue(ch.sandboxCode || '# Write your Python here\nprint("Hello!")');
+  prefillSimInput(ch.sandboxCode, ch.sandboxInput);
   document.getElementById('challengeStrip').innerHTML = '💡 <strong>'+ch.lessonHeading+'</strong> — example code loaded! Click Run to see it in action.';
   document.getElementById('outputBox').textContent = 'Click Run to execute the code!';
   document.getElementById('outputBox').className = 'ob';
@@ -1138,6 +1147,7 @@ function loadSandboxAndSwitch() {
 function loadChallenge() {
   var ch = CHAPTERS[S.cur];
   if (editor) editor.setValue(ch.challengeCode);
+  prefillSimInput(ch.challengeCode, ch.challengeInput);
   document.getElementById('challengeStrip').innerHTML = '🎯 <strong>'+ch.challengeTitle+':</strong> '+ch.challengeDesc;
   document.getElementById('outputBox').textContent = 'Challenge loaded! Edit the code and click Run.';
   document.getElementById('outputBox').className = 'ob';
@@ -1167,6 +1177,9 @@ async function runCode() {
     var d = await r.json();
     if (d.error && d.error.trim()) {
       out.textContent = d.error; out.className = 'ob er'; st.textContent = '❌';
+      if (/EOFError/.test(d.error) && /input\s*\(/.test(code)) {
+        out.textContent += '\n\n💡 Your program asked for input, but the input box had no answer left. Type your answer(s) in the box below, one line per input() call, then press Run.';
+      }
     } else {
       out.textContent = d.output || '(no output)'; st.textContent = '✅';
       // Tracks a clean run per chapter for the "Mark complete" gate below -
