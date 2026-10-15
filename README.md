@@ -29,7 +29,6 @@ All lesson content, explanations, and code examples in this app are original. We
 - 🐍 **Professor Python** — AI tutor powered by Claude, with a real teaching-method system prompt (hints before answers, predict-before-run questions, patient pacing)
 - 🙋 **Optional personalization** — tell Professor Python your name and how you learn best; he adapts without changing his core teaching approach
 - 🔤 **Adjustable text size** — A−/A/A+ control in Settings for comfortable reading, saved between sessions
-- 📝 **Video script generator** — create original YouTube scripts for each chapter
 - ⧉ **Floating pop-out lesson panel** — drag it anywhere while you code
 - 📊 **Progress dashboard** — track XP, completed chapters, and quiz scores
 - ☰ **Collapsible sidebar** — more screen space when you need it
@@ -79,13 +78,14 @@ Double-click START_WINDOWS.bat
 
 The AI tutor in this app is **Professor Python** — patient, encouraging, and built to teach through hints and guided questions rather than just handing you answers. His teaching philosophy is documented in full in [docs/PROFESSOR_PYTHON_PROMPT.md](docs/PROFESSOR_PYTHON_PROMPT.md).
 
-The AI Tutor and Script Generator require a free Anthropic API key:
+<!-- DRAFT wording (2026-10-14): Allen to review before this is pushed. -->
+The AI Tutor needs **your own Anthropic API key**. Anthropic bills API usage to the owner of the key (see Anthropic's pricing page for current rates). The rest of the app works fully without a key.
 
 1. Sign up at [console.anthropic.com](https://console.anthropic.com)
 2. Create an API key
 3. Inside the app, click **Settings** in the sidebar and paste your key
 
-Your key is stored locally on your machine and never shared.
+**What gets sent:** Professor Python sends what you type to Anthropic's Claude service, using your own API key, to write replies. Your name and learning preference from Settings are included when you have set both. Usage may be billed to the owner of the key. Please don't type personal information. Your lessons and progress stay on this computer. Your key is saved in your browser on this computer.
 
 ---
 
@@ -166,7 +166,7 @@ This project is licensed under the MIT License — see [LICENSE](LICENSE) for de
 
 - **Eric Matthes** — *Python Crash Course* (No Starch Press)
 - **Al Sweigart** — *The Big Book of Small Python Projects* (No Starch Press)
-- **Anthropic** — Claude AI powering the tutor and script generator
+- **Anthropic** — Claude AI powering the tutor
 - **CodeMirror** — syntax highlighting in the sandbox
 - **Flask** — the lightweight server that makes it all run locally
 
