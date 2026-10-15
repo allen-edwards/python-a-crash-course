@@ -78,7 +78,6 @@ Double-click START_WINDOWS.bat
 
 The AI tutor in this app is **Professor Python** — patient, encouraging, and built to teach through hints and guided questions rather than just handing you answers. His teaching philosophy is documented in full in [docs/PROFESSOR_PYTHON_PROMPT.md](docs/PROFESSOR_PYTHON_PROMPT.md).
 
-<!-- DRAFT wording (2026-10-14): Allen to review before this is pushed. -->
 The AI Tutor needs **your own Anthropic API key**. Anthropic bills API usage to the owner of the key (see Anthropic's pricing page for current rates). The rest of the app works fully without a key.
 
 1. Sign up at [console.anthropic.com](https://console.anthropic.com)

@@ -41,12 +41,12 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 - **Sample-input prefill support:** app-loaded examples and challenges can now carry `sandboxInput` / `challengeInput`; it fills the simulated-input box only when the box is empty and the code calls `input(`. Typed text is never overwritten. No current chapter example uses `input()`, so no sample data was added.
 - Verified on a scratch copy: empty box shows traceback plus hint; typed answer runs cleanly; prefill works; typed text is kept; code without `input(` leaves the box empty.
 
-## 2026-10-14 — Tutor notice and README wording (DRAFT, not pushed; Allen to review)
+## 2026-10-14 — Tutor notice and README wording (approved by Allen 2026-10-15; not pushed)
 ### Changed
 - **Settings now carries a plain-language notice next to the API key field** saying what the tutor sends to Anthropic (what you type, plus your name and learning preference when both are set), that usage may be billed to the key's owner, to avoid personal information, and that lessons and progress stay on this computer. Heading and intro no longer mention the Script Generator.
 - **README tutor setup rewritten for accuracy:** the tutor needs the user's own Anthropic API key (not a "free" key), Anthropic bills usage to the key's owner, and the rest of the app works without a key. The same notice is in the README.
 - Removed the archived Script Generator from the README feature list and credits (the feature is disconnected from the UI).
-- Wording is a draft and is marked with HTML comments in `README.md` and `index.html`; no pricing amounts are stated.
+- Wording approved by Allen on 2026-10-15 (the draft markers were removed); no pricing amounts are stated.
 
 ## 2026-09-24 — Chapter XP re-evaluation for chapters that grew; F13 reward-project XP model recorded
 ### Changed
