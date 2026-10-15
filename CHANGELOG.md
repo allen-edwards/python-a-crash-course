@@ -4,6 +4,13 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-10-14 — Automatic progress backups (not pushed)
+### Added
+- **Rotating backups of `progress.json`:** before the **Reset my progress** button runs, and before the one-time XP-model migration, the server copies the save file to `progress.bak1.json` and rotates older copies, keeping the last 3 (`POST /api/progress/backup`). The reset dialog now says a backup is kept automatically, and still offers the downloadable copy for a safe copy elsewhere.
+- **If a backup cannot be written** (for example a read-only folder) the app says so and asks before continuing, instead of failing silently. Declining cancels the reset, or skips the migration until the next load.
+- **Privacy:** `progress.bak*.json` is in `.gitignore` (checked with `git check-ignore`), and the tutor API key lives in the browser, not in `progress.json`, so no key can be in a backup. GETTING_STARTED.md documents how to restore, and the limit: a backup in the same folder does not survive losing the folder. Packaged copies or release zips of the app must exclude `progress.json` and `progress.bak*.json`.
+- Verified on a scratch copy (never Allen's real progress): after 5 backups only the newest 3 remain in order; a reset left the pre-reset contents in `progress.bak1.json`; an old-format save (no `xpModel`) was backed up before migrating; a read-only folder returned an error, the warning appeared, and declining left the progress unchanged; no API key text in any progress file.
+
 ## 2026-10-14 — Tutor chat formatting, with HTML escaping (not pushed)
 ### Fixed
 - **The tutor chat showed its formatting as raw symbols** (`**bold**`, backticks, `---`, `- ` bullets) with lines run together. `fmt()` only handled fenced code blocks, and the chat bubble collapsed newlines. Found 2026-10-14 during the tutor prompt retest; not caused by the prompt change.

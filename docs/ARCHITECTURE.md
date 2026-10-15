@@ -23,7 +23,7 @@ The app is a single-page web application served by a tiny local Flask server. Al
 |-----------|---------------|-----------|
 | Frontend SPA | All UI, lesson content, quiz logic, XP/streak rules, CodeMirror editor | index.html (~84 KB, self-contained) |
 | Flask server | Static serving, progress persistence, code execution, AI proxy | app.py |
-| Progress store | Saves XP, streak, completed chapters, quiz scores, XP-model version (`xpModel`) | progress.json (created at runtime) |
+| Progress store | Saves XP, streak, completed chapters, quiz scores, XP-model version (`xpModel`) | progress.json (created at runtime); before a reset or the one-time XP migration the page calls `POST /api/progress/backup`, which rotates `progress.bak1.json`..`progress.bak3.json` (newest first) in the same folder. Backups are git-ignored and never contain the tutor key (that lives in the browser). A backup in the same folder does not survive losing the folder. |
 | Vendor libs | Local CodeMirror so the app works offline | vendor/, served via /vendor/ route |
 | Launchers | One-click start, venv setup, desktop shortcuts | START_MAC_LINUX.sh, START_WINDOWS.bat |
 

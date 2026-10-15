@@ -365,6 +365,10 @@ Your browser tab will show a connection error after this — that is completely 
 
 **Your progress is saved automatically** to a `progress.json` file in the app folder. It is safe to close the app at any time.
 
+**Automatic backups.** Before the app resets your progress (the **Reset my progress** button) or upgrades an older save file, it first copies `progress.json` to `progress.bak1.json`, and keeps the last three copies (`progress.bak1.json` is the newest, `progress.bak3.json` the oldest). If a backup cannot be written, the app tells you and asks before continuing.
+
+**To restore a backup:** close the app, then in the app folder copy the backup you want over `progress.json` (for example, copy `progress.bak1.json` to `progress.json`, replacing it), and start the app again. Backups live in the same folder as `progress.json`, so they will not survive losing the whole folder; for a safe copy kept elsewhere, use **Download a copy of my progress** in the reset dialog. These files can contain your name, so keep them private and do not share them.
+
 ---
 
 ## 14. Troubleshooting

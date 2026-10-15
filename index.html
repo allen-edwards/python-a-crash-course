@@ -1013,7 +1013,10 @@ async function loadState() {
     var r = await fetch('/api/progress');
     if (r.ok) {
       var d = await r.json(); Object.assign(S, d);
-      var migrated = migrateXpModel();
+      var migrated = false;
+      if ((S.xpModel || 1) < 2) {
+        if (await ensureBackup('this one-time update to your saved progress')) migrated = migrateXpModel();
+      }
       var moved = fixLockedCurrentChapter();
       if (migrated || moved) saveState();
     }
@@ -1033,6 +1036,17 @@ function saveState() {
   fetch('/api/progress',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(S)}).catch(function(){});
 }
 
+// Automatic backups: ask the server to copy progress.json to a rotating backup (last 3) BEFORE any
+// reset or migration. If the backup cannot be written, say so and ask before going ahead.
+async function backupProgress() {
+  try { var r = await fetch('/api/progress/backup', {method:'POST'}); var d = await r.json(); return !!d.ok; }
+  catch(e) { return false; }
+}
+async function ensureBackup(what) {
+  if (await backupProgress()) return true;
+  return confirm("The app could not save a backup copy of your progress, so " + what + " cannot be undone. Continue anyway?");
+}
+
 // Reset my progress: clears XP, completed chapters, quiz scores (these are also the "quiz XP already
 // earned" records), challenge-run flags, streak and current chapter. Keeps name, learning preference,
 // text size and the saved API key. xpModel stays 2 so migrateXpModel() never re-runs its backfill.
@@ -1047,6 +1061,7 @@ function downloadProgress() {
   setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
 }
 async function resetProgress() {
+  if (!(await ensureBackup('this reset'))) return;
   S.xp = 0; S.xpModel = 2; S.streak = 1; S.lastActiveDate = new Date().toDateString();
   S.completed = []; S.quizScores = {}; S.challengeRun = {}; S.cur = 0;
   if ('currentChapter' in S) S.currentChapter = 0;
@@ -2107,7 +2122,7 @@ document.getElementById('tutorIn').addEventListener('keydown', function(e){
     <div class="modal-body">
       <p>This will reset <strong>your XP, completed chapters, quiz scores, day streak and current chapter</strong>. You will start again at Chapter 1, and every other chapter locks until you earn the XP again.</p>
       <p style="margin-top:10px"><strong>Kept:</strong> your name, how you learn best, your text size and your saved API key.</p>
-      <p style="margin-top:10px">This cannot be undone. <a href="#" onclick="downloadProgress();return false;" style="color:var(--ac2)">Download a copy of my progress first</a> (a small file you can keep).</p>
+      <p style="margin-top:10px">A backup copy of your progress is also saved automatically in the app folder first (the last 3 are kept). You can also <a href="#" onclick="downloadProgress();return false;" style="color:var(--ac2)">download a copy of my progress</a> (a small file you can keep somewhere else).</p>
     </div>
     <div class="modal-foot">
       <button class="btn" onclick="closeResetDialog()">Cancel</button>

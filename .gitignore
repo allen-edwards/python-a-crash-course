@@ -13,6 +13,7 @@ ENV/
 
 # App data (personal — not tracked)
 progress.json
+progress.bak*.json
 
 # Working material, not app code — not tracked
 narration_scripts/

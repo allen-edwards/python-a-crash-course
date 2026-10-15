@@ -2,7 +2,7 @@
 Python: A Crash Course — A Beginner's Journey
 Run with: python app.py  |  Works on Windows, macOS, Ubuntu.
 """
-import os, sys, json, threading, webbrowser, time, subprocess
+import os, sys, json, shutil, threading, webbrowser, time, subprocess
 from flask import Flask, send_file, request, jsonify, send_from_directory
 
 app = Flask(__name__)
@@ -38,6 +38,28 @@ def save_progress(data):
     except Exception:
         pass
 
+# Automatic backups: before any action that resets or rewrites progress (Reset my progress, the
+# one-time XP migration, a future Load progress file) the page asks the server to copy
+# progress.json to progress.bak1.json, rotating the older copies and keeping the last 3.
+# Backups live in the app folder and are git-ignored like progress.json. The tutor API key is
+# stored in the browser, never in progress.json, so it can never end up in a backup.
+BACKUP_KEEP = 3
+
+def backup_progress():
+    """Returns (ok, error). Nothing to back up (no save file yet) counts as ok."""
+    if not os.path.exists(SAVE_FILE):
+        return True, None
+    try:
+        for i in range(BACKUP_KEEP, 1, -1):
+            older = os.path.join(BASE, "progress.bak%d.json" % (i-1))
+            newer = os.path.join(BASE, "progress.bak%d.json" % i)
+            if os.path.exists(older):
+                os.replace(older, newer)
+        shutil.copy2(SAVE_FILE, os.path.join(BASE, "progress.bak1.json"))
+        return True, None
+    except Exception as e:
+        return False, str(e)
+
 # ── routes ────────────────────────────────────────────────────────────────────
 @app.route("/")
 def index():
@@ -59,6 +81,13 @@ def get_progress():
 def set_progress():
     save_progress(request.json)
     return jsonify({"ok": True})
+
+@app.route("/api/progress/backup", methods=["POST"])
+def backup_progress_route():
+    ok, err = backup_progress()
+    if ok:
+        return jsonify({"ok": True})
+    return jsonify({"ok": False, "error": err}), 500
 
 @app.route("/api/run", methods=["POST"])
 def run_code():
