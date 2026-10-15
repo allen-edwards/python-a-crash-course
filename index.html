@@ -404,7 +404,7 @@ body{background:var(--bg);color:var(--t);font-family:var(--f);height:100vh;overf
         <div class="sg" id="statsGrid"></div>
         <h3 style="font-size:13px;font-weight:600;color:var(--t2);margin-bottom:10px">Chapter breakdown</h3>
         <div class="cpl" id="chProgList"></div>
-        <button class="btn dn" style="margin-top:18px" onclick="if(confirm('Reset all progress?')){resetAll();}">Reset all progress</button>
+        <button class="btn dn" style="margin-top:18px" onclick="openResetDialog()">Reset my progress</button>
       </div>
     </div>
 
@@ -453,6 +453,13 @@ body{background:var(--bg);color:var(--t);font-family:var(--f);height:100vh;overf
             <button class="btn pr" onclick="saveAboutYou()">Save</button>
           </div>
           <div id="aboutYouStatus" style="font-size:12px;color:var(--gr);margin-top:7px"></div>
+        </div>
+        <div class="apib" style="margin-top:14px">
+          <strong>Reset my progress</strong><br>
+          Start over from Chapter 1: your XP, completed chapters, quiz scores and day streak are cleared and every chapter locks again. Your name, how you learn best, text size and saved API key are kept.
+          <div class="apir" style="margin-top:9px">
+            <button class="btn dn" onclick="openResetDialog()">Reset my progress…</button>
+          </div>
         </div>
         <div class="credits-box">
           <strong>About Python: A Crash Course — A Beginner's Journey</strong><br><br>
@@ -1021,9 +1028,27 @@ function saveState() {
   fetch('/api/progress',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(S)}).catch(function(){});
 }
 
-function resetAll() {
-  S = {xp:0,xpModel:2,streak:1,lastActiveDate:new Date().toDateString(),completed:[],quizScores:{},challengeRun:{},cur:0,studentName:'',learningPreference:'',fontSizePreference:'medium'};
-  saveState(); location.reload();
+// Reset my progress: clears XP, completed chapters, quiz scores (these are also the "quiz XP already
+// earned" records), challenge-run flags, streak and current chapter. Keeps name, learning preference,
+// text size and the saved API key. xpModel stays 2 so migrateXpModel() never re-runs its backfill.
+function openResetDialog() { document.getElementById('resetModal').classList.remove('hidden'); }
+function closeResetDialog() { document.getElementById('resetModal').classList.add('hidden'); }
+function downloadProgress() {
+  var blob = new Blob([JSON.stringify(S, null, 2)], {type:'application/json'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'pcc-progress-' + new Date().toISOString().slice(0,10) + '.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+}
+async function resetProgress() {
+  S.xp = 0; S.xpModel = 2; S.streak = 1; S.lastActiveDate = new Date().toDateString();
+  S.completed = []; S.quizScores = {}; S.challengeRun = {}; S.cur = 0;
+  if ('currentChapter' in S) S.currentChapter = 0;
+  try {
+    await fetch('/api/progress', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(S)});
+  } catch(e) {}
+  location.reload();
 }
 
 // ═══════════════════════════════════════ XP ══════════════════════════════════
@@ -2023,5 +2048,19 @@ document.getElementById('tutorIn').addEventListener('keydown', function(e){
   if(e.key==='Enter') sendMsg();
 });
 </script>
+<div class="modal-overlay hidden" id="resetModal" onclick="if(event.target===this)closeResetDialog()">
+  <div class="modal" style="max-width:460px">
+    <div class="modal-head"><h3>Reset my progress?</h3></div>
+    <div class="modal-body">
+      <p>This will reset <strong>your XP, completed chapters, quiz scores, day streak and current chapter</strong>. You will start again at Chapter 1, and every other chapter locks until you earn the XP again.</p>
+      <p style="margin-top:10px"><strong>Kept:</strong> your name, how you learn best, your text size and your saved API key.</p>
+      <p style="margin-top:10px">This cannot be undone. <a href="#" onclick="downloadProgress();return false;" style="color:var(--ac2)">Download a copy of my progress first</a> (a small file you can keep).</p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeResetDialog()">Cancel</button>
+      <button class="btn dn" onclick="resetProgress()">Reset my progress</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>

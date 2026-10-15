@@ -4,6 +4,15 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-10-14 — Reset my progress button (not pushed)
+### Added
+- **"Reset my progress" in Settings** (and on the Progress page) opens a confirmation dialog that says plainly what is reset and what is kept, with an optional "Download a copy of my progress first" (a JSON file).
+- **Resets:** XP, completed chapters, quiz scores (these double as the "quiz XP already earned" records, so quizzes award XP again once), challenge-run flags, streak, and current chapter (back to Chapter 1). **Keeps:** name, learning preference, text size, and the saved tutor API key.
+- `xpModel` stays 2 after a reset, so the one-time `migrateXpModel()` backfill does not run again and add XP back.
+### Changed
+- The old "Reset all progress" button (plain `confirm()`, also wiped the student's name and preferences) is replaced by the new dialog, and the unused `resetAll()` function is removed.
+- Verified on a scratch copy (not Allen's real progress): after reset XP 0, Chapter 2 locked, streak 1, completed and quiz scores empty; name, preference, text size and API key kept; a reload did not re-add XP; passing the Chapter 1 quiz awarded its XP once and a retry awarded nothing; the download file contained the pre-reset progress.
+
 ## 2026-10-14 — Sandbox: clearer `input()` errors and sample-input prefill support (not pushed)
 ### Changed
 - **Friendlier `EOFError` hint:** when a run fails with `EOFError: EOF when reading a line` and the code calls `input(`, Python's real traceback stays visible and a plain-language line is added telling the student to type their answer(s) in the input box, one line per `input()` call, then press Run. The 10-second timeout message is unchanged.
