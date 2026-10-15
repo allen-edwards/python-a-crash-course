@@ -4,6 +4,13 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-10-14 — Tutor prompt tightened: Student Safety, merged Scope section, model-prompt header (not pushed)
+### Changed
+- **New "Student Safety" section** in the tutor prompt: honest about being an AI if sincerely asked, never ask for personal information, gentle reminder to keep shared personal details private, respond with care and point to a trusted adult if a student seems upset or unsafe (without counseling or rushing them back), decline requests not suitable for a classroom, and a periodic reminder that the tutor can make mistakes.
+- **"Scope" and "Curriculum Awareness" merged** into "Scope and Curriculum Awareness" with every original sentence kept, plus an explicit off-topic rule: a harmless unrelated question gets a brief kind answer, then a friendly steer back to the lesson. This writes down behavior seen in testing so it survives a model change.
+- **`docs/PROFESSOR_PYTHON_PROMPT.md` header** now says it is the MODEL prompt for future courses and lists the six course-specific phrases a new course changes. It points to `docs/TUTOR_PROMPT_STANDARD.md`, which does not exist yet.
+- Personality and teaching-style sections are unchanged. The same body text is in both the docs file and the app's built-in prompt in `index.html` (checked identical). Draft by Browser-PCC, approved by Allen 2026-10-14. **The retest list (joke request, full name/school/address, "rough day", "are you a real person?", ask it to write the whole challenge) has NOT been run yet; it needs a live API key.**
+
 ## 2026-10-14 — Reset my progress button (not pushed)
 ### Added
 - **"Reset my progress" in Settings** (and on the Progress page) opens a confirmation dialog that says plainly what is reset and what is kept, with an optional "Download a copy of my progress first" (a JSON file).
