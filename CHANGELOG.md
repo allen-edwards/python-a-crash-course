@@ -4,6 +4,14 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-10-14 — Tutor chat formatting, with HTML escaping (not pushed)
+### Fixed
+- **The tutor chat showed its formatting as raw symbols** (`**bold**`, backticks, `---`, `- ` bullets) with lines run together. `fmt()` only handled fenced code blocks, and the chat bubble collapsed newlines. Found 2026-10-14 during the tutor prompt retest; not caused by the prompt change.
+- **Nothing in the chat was HTML-escaped**, so a `<` in a tutor code example could be swallowed as a tag, and HTML typed or pasted by a student (or sent by the tutor) was interpreted. Now everything is escaped first, in both the tutor bubble and the student's own bubble, and server error text is escaped too.
+### Changed
+- New small formatter (no library, still fully offline): fenced code blocks (unchanged look), inline code, `**bold**`, `*italics*`, bullet and numbered lists, `---` rules, headings as bold, and paragraphs with line breaks. A few lines of CSS style inline code, lists and rules inside tutor bubbles.
+- Verified on a scratch copy: the sample messages that showed raw symbols render correctly; a `<script>` tag and an `<img onerror>` in tutor or student text show as plain text and run nothing; code containing `<` and `<=` is preserved exactly; plain paragraphs unchanged.
+
 ## 2026-10-14 — Tutor prompt tightened: Student Safety, merged Scope section, model-prompt header (not pushed)
 ### Changed
 - **New "Student Safety" section** in the tutor prompt: honest about being an AI if sincerely asked, never ask for personal information, gentle reminder to keep shared personal details private, respond with care and point to a trusted adult if a student seems upset or unsafe (without counseling or rushing them back), decline requests not suitable for a classroom, and a periodic reminder that the tutor can make mistakes.

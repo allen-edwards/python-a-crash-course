@@ -155,6 +155,11 @@ body{background:var(--bg);color:var(--t);font-family:var(--f);height:100vh;overf
 .mb{padding:11px 14px;border-radius:14px;font-size:calc(16px * var(--fs-scale));line-height:1.6;}
 .mg.u .mb{background:var(--acb);border:1px solid var(--acbr);color:var(--t);border-bottom-right-radius:4px;}
 .mg.a .mb{background:var(--s2);border:1px solid var(--b2);color:var(--t2);border-bottom-left-radius:4px;}
+.mg.a .mb code{background:var(--s3);border-radius:4px;padding:1px 5px;font-family:var(--m);font-size:.92em;}
+.mg.a .mb pre code{background:none;padding:0;}
+.mg.a .mb ul,.mg.a .mb ol{margin:6px 0 6px 22px;}
+.mg.a .mb hr{border:0;border-top:1px solid var(--b2);margin:10px 0;}
+.mg.a .mb p{margin:0 0 8px;}.mg.a .mb p:last-child{margin-bottom:0;}
 .mg.a .mb pre{background:var(--s3);border-radius:6px;padding:7px 11px;font-family:var(--m);
   font-size:calc(13.5px * var(--fs-scale));margin:7px 0;color:#c9d1f0;white-space:pre-wrap;overflow-x:auto;}
 .tia{padding:11px 16px;border-top:1px solid var(--b);display:flex;flex-direction:column;gap:7px;flex-shrink:0;}
@@ -1287,7 +1292,7 @@ async function sendMsg() {
   var q = input.value.trim(); if (!q) return;
   input.value = '';
   var ch = CHAPTERS[S.cur];
-  addBubble(q,'u'); tutorHistory.push({role:'user',content:q});
+  addBubble(esc(q),'u'); tutorHistory.push({role:'user',content:q});
   var tid='t_'+Date.now(); addBubble('<span class="dots">Thinking</span>','a',tid);
   var about = (S.studentName && S.learningPreference)
     ? '\n\nThe student\'s name is ' + S.studentName + '. They\'ve told you they learn best this way: "' + S.learningPreference + '"'
@@ -1566,13 +1571,37 @@ Current chapter: "` + ch.lessonHeading + `" — ` + ch.lessonMeta;
     var r = await fetch('/api/tutor',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({system:sys,messages:tutorHistory.slice(-10),apiKey:apiKey})});
     var d = await r.json();
-    if (d.error){ updateBubble(tid,'❌ '+d.error); return; }
+    if (d.error){ updateBubble(tid,'❌ '+esc(d.error)); return; }
     tutorHistory.push({role:'assistant',content:d.text});
     updateBubble(tid,fmt(d.text));
   } catch(e){ updateBubble(tid,'❌ Connection error — is the server still running?'); }
 }
 
-function fmt(t){ return t.replace(/```python\n?([\s\S]*?)```/g,'<pre>$1</pre>').replace(/```\n?([\s\S]*?)```/g,'<pre>$1</pre>'); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+// Tutor message formatter. Everything is HTML-escaped FIRST, then a small markdown subset is
+// converted: fenced code blocks, inline code, **bold**, *italics*, bullet/numbered lists, --- rules,
+// and paragraphs. No library, so the app stays offline. Escaping first means nothing the tutor or a
+// student sends can inject markup or script.
+function fmt(t){
+  var hold = [];
+  function keep(html){ hold.push(html); return '\u0000' + (hold.length-1) + '\u0000'; }
+  t = String(t).replace(/```[a-zA-Z]*\n?([\s\S]*?)```/g, function(m,c){ return '\n' + keep('<pre>'+esc(c.replace(/\n$/,''))+'</pre>') + '\n'; });
+  t = esc(t);
+  t = t.replace(/`([^`\n]+)`/g, function(m,c){ return keep('<code>'+c+'</code>'); });
+  t = t.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>').replace(/(^|[^*\w])\*([^*\n]+)\*(?![*\w])/g, '$1<em>$2</em>');
+  var out = [], para = [], list = null;
+  function endPara(){ if (para.length){ out.push('<p>'+para.join('<br>')+'</p>'); para = []; } }
+  function endList(){ if (list){ out.push('</'+list+'>'); list = null; } }
+  t.split('\n').forEach(function(line){
+    var ul = line.match(/^\s*[-*\u2022]\s+(.*)$/), ol = line.match(/^\s*\d+[.)]\s+(.*)$/);
+    if (/^\s*(-{3,}|\*{3,}|_{3,})\s*$/.test(line)) { endPara(); endList(); out.push('<hr>'); }
+    else if (ul || ol) { endPara(); var kind = ul ? 'ul' : 'ol'; if (list !== kind){ endList(); out.push('<'+kind+'>'); list = kind; } out.push('<li>'+(ul||ol)[1]+'</li>'); }
+    else if (!line.trim()) { endPara(); endList(); }
+    else { endList(); para.push(line.replace(/^#{1,6}\s+(.*)$/, '<strong>$1</strong>')); }
+  });
+  endPara(); endList();
+  return out.join('').replace(/\u0000(\d+)\u0000/g, function(m,i){ return hold[+i]; });
+}
 function addBubble(html,role,id){
   var msgs=document.getElementById('tutorMsgs');
   var d=document.createElement('div'); d.className='mg '+role; if(id)d.id=id;
