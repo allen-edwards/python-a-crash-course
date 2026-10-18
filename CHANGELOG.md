@@ -4,6 +4,12 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-10-18 — Tutor prompt: trusted-adult wording (not pushed)
+### Changed
+- In the Student Safety section, "talk to a parent, teacher, or another trusted adult" now reads "talk to someone they trust, ideally a trusted adult such as a teacher, a school counselor, or a family member they trust". Reason: for some students the parent is the source of the problem, so the instruction should not lead with a parent. Changed in `docs/PROFESSOR_PYTHON_PROMPT.md` and in the prompt body in `index.html`, which stay identical. Wording agreed by Allen after the matched retest on 2026-10-14 and 2026-10-15.
+
+---
+
 ## 2026-10-18 — Removed the unused video-script generator (not pushed)
 ### Removed
 - **`/api/generate-script` route** in `app.py`, and its frontend code in `index.html` (`genScript()`, `copyScript()`, `closeScript()` and the `#scriptModal` markup). It had no button since 2026-09-13 (archived) and Allen decided on 2026-10-18 to delete it. The app's only Anthropic call is now the AI tutor (`/api/tutor`).
