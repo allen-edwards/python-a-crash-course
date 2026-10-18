@@ -518,23 +518,6 @@ body{background:var(--bg);color:var(--t);font-family:var(--f);height:100vh;overf
   </div>
 </div>
 
-<!-- SCRIPT MODAL -->
-<div class="modal-overlay hidden" id="scriptModal">
-  <div class="modal">
-    <div class="modal-head">
-      <h3>📝 Chapter Video Script</h3>
-      <span style="font-size:12px;color:var(--t3)" id="scriptChapterName"></span>
-      <button class="btn sm" onclick="copyScript()" style="margin-left:auto">Copy script</button>
-      <button class="btn sm dn" onclick="closeScript()">Close</button>
-    </div>
-    <div class="modal-body" id="scriptBody">Generating script...</div>
-    <div class="modal-foot">
-      <span style="font-size:12px;color:var(--t3)">Paste into CapCut or Synthesia to create your video</span>
-      <button class="btn pr" onclick="copyScript()">Copy to clipboard</button>
-    </div>
-  </div>
-</div>
-
 <script>
 // ═══════════════════════════════════════ CHAPTERS DATA ══════════════════════
 var CHAPTERS = [
@@ -2035,36 +2018,6 @@ function lpTogglePlay() { lpPlaying ? lpPause(false) : lpPlay(); }
     document.addEventListener('mouseup', function(){ scrubbing = false; });
   });
 })();
-
-// ═══════════════════════════════════════ SCRIPT GENERATOR ════════════════════
-async function genScript() {
-  var ch = CHAPTERS[S.cur];
-  if (!apiKey) {
-    alert('Please add your Anthropic API key in Settings first!');
-    return;
-  }
-  document.getElementById('scriptChapterName').textContent = ch.lessonHeading;
-  document.getElementById('scriptBody').textContent = 'Generating your video script... this may take 30-60 seconds ✍️';
-  document.getElementById('scriptModal').classList.remove('hidden');
-  try {
-    var r = await fetch('/api/generate-script', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({chapter: ch.lessonHeading+' — '+ch.lessonMeta, apiKey: apiKey})
-    });
-    var d = await r.json();
-    if (d.error) { document.getElementById('scriptBody').textContent = '❌ Error: '+d.error; return; }
-    document.getElementById('scriptBody').textContent = d.script;
-  } catch(e) {
-    document.getElementById('scriptBody').textContent = '❌ Connection error — is the server running?';
-  }
-}
-
-function closeScript() { document.getElementById('scriptModal').classList.add('hidden'); }
-function copyScript() {
-  navigator.clipboard.writeText(document.getElementById('scriptBody').textContent)
-    .then(function(){ alert('Script copied to clipboard! Paste into CapCut or Synthesia.'); })
-    .catch(function(){ alert('Copy failed — please select the text manually.'); });
-}
 
 // ═══════════════════════════════════════ INIT ════════════════════════════════
 document.addEventListener('DOMContentLoaded', function(){

@@ -13,7 +13,6 @@ The app is a single-page web application served by a tiny local Flask server. Al
  │ CodeMirror sandbox  ├───> POST /api/run       ──────────> subprocess (python -c)
  │ XP / streak logic   │ │  GET/POST /api/progress ────────> progress.json
  │ AI Tutor chat       ├───> POST /api/tutor     ──┐       │
- │ Script generator    ├───> POST /api/generate-script ─┤  │
  └─────────────────────┘ └────────────────────────│─────┘
                                                   ▼
                                        Anthropic API (claude-sonnet-4-6)

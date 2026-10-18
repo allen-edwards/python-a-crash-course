@@ -4,6 +4,12 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-10-18 — Removed the unused video-script generator (not pushed)
+### Removed
+- **`/api/generate-script` route** in `app.py`, and its frontend code in `index.html` (`genScript()`, `copyScript()`, `closeScript()` and the `#scriptModal` markup). It had no button since 2026-09-13 (archived) and Allen decided on 2026-10-18 to delete it. The app's only Anthropic call is now the AI tutor (`/api/tutor`).
+- Docs updated to match (`CLAUDE.md`, `docs/ARCHITECTURE.md`, `docs/ROADMAP.md`). Historical mentions in this changelog and in `docs/history/` are left as written.
+
+
 ## 2026-10-14 — Automatic progress backups (not pushed)
 ### Added
 - **Rotating backups of `progress.json`:** before the **Reset my progress** button runs, and before the one-time XP-model migration, the server copies the save file to `progress.bak1.json` and rotates older copies, keeping the last 3 (`POST /api/progress/backup`). The reset dialog now says a backup is kept automatically, and still offers the downloadable copy for a safe copy elsewhere.

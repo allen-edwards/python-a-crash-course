@@ -37,7 +37,6 @@ in the browser. It includes:
 - **Professor Python** — the app's AI tutor identity and voice, powered by
   the Anthropic Claude API, using a full teaching-method system prompt
   (see `docs/PROFESSOR_PYTHON_PROMPT.md`)
-- Video script generator for YouTube content
 - **F14 lesson panel** — toggleable Video/Text lesson experience per
   chapter, draggable and minimizable, accessible from any tab including
   the sandbox (replaces the old text-only pop-out; see UI Structure below)
@@ -89,7 +88,7 @@ python-a-crash-course/
 
 3. **vendor/ folder** — All JS/CSS libraries load from vendor/ locally.
    The app must work completely offline. Never switch back to CDN links.
-   The only external calls are to Anthropic's API (tutor + script generator).
+   The only external call is to Anthropic's API (the AI tutor).
 
 4. **No new runtime dependency beyond a browser and Python** (N7 in
    REQUIREMENTS.md). No Node.js, no FFmpeg, no system-level installs for
@@ -122,7 +121,6 @@ python-a-crash-course/
 | `/api/progress` | POST | Save progress |
 | `/api/run` | POST | Execute Python code (subprocess) |
 | `/api/tutor` | POST | Professor Python (Anthropic API) — system prompt sent from index.html |
-| `/api/generate-script` | POST | Video script generator (Anthropic API) |
 
 ---
 
@@ -130,7 +128,6 @@ python-a-crash-course/
 
 **Model:** `claude-sonnet-4-6`
 **Tutor timeout:** 30 seconds
-**Script generator timeout:** 120 seconds (generates 8-12 min scripts)
 **API key:** User provides their own, stored in browser localStorage
              (`pcc_key`), sent with each request in the `apiKey` field
 
@@ -336,8 +333,8 @@ The credits are displayed in the Settings view of the app.
   Ubuntu install `python3 -m venv` also needs `sudo apt install python3-venv`
   first (the launcher prints that hint if venv creation fails). App and code
   sandbox verified on Python 3.14.4 / Ubuntu 26.04.1 (2026-09-23).
-- **Timeout** — Script generator needs 120s timeout (not 30s) due to
-  4000 token response size.
+- **Script generator removed (2026-10-18)** — the unused `/api/generate-script`
+  route and its frontend code were deleted (was archived since 2026-09-13).
 - **Stale-code-in-doc-merge risk** — A "docs update" zip can sometimes
   contain an older copy of `index.html`/`app.py` alongside genuinely
   newer docs (happened 2026-08-30). Always diff a merge zip's code files

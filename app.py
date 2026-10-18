@@ -142,59 +142,6 @@ def tutor():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# ARCHIVED FEATURE, NOT CURRENTLY IN USE — kept intact, disconnected from UI.
-# Original purpose: generate a YouTube-style video script per chapter, for
-# Allen to record and host on a YouTube channel. Superseded by F14 (in-app
-# Video mode) — Allen decided against a YouTube channel (external dependency
-# risk: policy changes, copyright strikes outside his control).
-# Decision point: if this route is still unused by v8.0, remove it entirely
-# along with any related frontend code. If a real future use emerges before
-# then, this comment can simply be deleted.
-@app.route("/api/generate-script", methods=["POST"])
-def generate_script():
-    import urllib.request, urllib.error
-    body    = request.json
-    api_key = body.get("apiKey", "")
-    chapter = body.get("chapter", "")
-    payload = json.dumps({
-        "model":      "claude-sonnet-4-6",
-        "max_tokens": 4000,
-        "system": (
-            "You are an expert Python educator creating original video scripts "
-            "for a YouTube channel called 'Python: A Crash Course — A Beginner's Journey'.\n\n"
-            "IMPORTANT:\n"
-            "- Write 100% original content. Do NOT copy from any book.\n"
-            "- Start every script with: 'This video is part of the Python: A Crash Course "
-            "series, inspired by the works of Eric Matthes.'\n"
-            "- Use your own original examples and analogies.\n\n"
-            "FORMAT:\n"
-            "- Warm intro (30 seconds)\n"
-            "- Clear section headers for CapCut scene breaks\n"
-            "- Code examples shown as [CODE: example here]\n"
-            "- Real world analogies\n"
-            "- Summary and call to action at the end\n"
-            "- Aim for 8-12 minutes"
-        ),
-        "messages": [{"role": "user", "content": f"Write a complete original video script for: {chapter}"}]
-    }).encode("utf-8")
-    headers = {"Content-Type": "application/json",
-               "anthropic-version": "2023-06-01"}
-    if api_key:
-        headers["x-api-key"] = api_key
-    req = urllib.request.Request(
-        "https://api.anthropic.com/v1/messages",
-        data=payload, headers=headers, method="POST"
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=120) as resp:
-            result = json.loads(resp.read().decode("utf-8"))
-            text = "".join(c.get("text","") for c in result.get("content",[]))
-            return jsonify({"script": text})
-    except urllib.error.HTTPError as e:
-        return jsonify({"error": e.read().decode("utf-8")}), e.code
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
 # ── start — MUST be last ──────────────────────────────────────────────────────
 if __name__ == "__main__":
     port = 5757
