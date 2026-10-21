@@ -4,26 +4,26 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
-## 2026-10-18 — Tutor prompt: trusted-adult wording (not pushed)
+## 2026-10-18 — Tutor prompt: trusted-adult wording
 ### Changed
 - In the Student Safety section, "talk to a parent, teacher, or another trusted adult" now reads "talk to someone they trust, ideally a trusted adult such as a teacher, a school counselor, or a family member they trust". Reason: for some students the parent is the source of the problem, so the instruction should not lead with a parent. Changed in `docs/PROFESSOR_PYTHON_PROMPT.md` and in the prompt body in `index.html`, which stay identical. Wording agreed by Allen after the matched retest on 2026-10-14 and 2026-10-15.
 
 ---
 
-## 2026-10-18 — Removed the unused video-script generator (not pushed)
+## 2026-10-18 — Removed the unused video-script generator
 ### Removed
 - **`/api/generate-script` route** in `app.py`, and its frontend code in `index.html` (`genScript()`, `copyScript()`, `closeScript()` and the `#scriptModal` markup). It had no button since 2026-09-13 (archived) and Allen decided on 2026-10-18 to delete it. The app's only Anthropic call is now the AI tutor (`/api/tutor`).
 - Docs updated to match (`CLAUDE.md`, `docs/ARCHITECTURE.md`, `docs/ROADMAP.md`). Historical mentions in this changelog and in `docs/history/` are left as written.
 
 
-## 2026-10-14 — Automatic progress backups (not pushed)
+## 2026-10-14 — Automatic progress backups
 ### Added
 - **Rotating backups of `progress.json`:** before the **Reset my progress** button runs, and before the one-time XP-model migration, the server copies the save file to `progress.bak1.json` and rotates older copies, keeping the last 3 (`POST /api/progress/backup`). The reset dialog now says a backup is kept automatically, and still offers the downloadable copy for a safe copy elsewhere.
 - **If a backup cannot be written** (for example a read-only folder) the app says so and asks before continuing, instead of failing silently. Declining cancels the reset, or skips the migration until the next load.
 - **Privacy:** `progress.bak*.json` is in `.gitignore` (checked with `git check-ignore`), and the tutor API key lives in the browser, not in `progress.json`, so no key can be in a backup. GETTING_STARTED.md documents how to restore, and the limit: a backup in the same folder does not survive losing the folder. Packaged copies or release zips of the app must exclude `progress.json` and `progress.bak*.json`.
 - Verified on a scratch copy (never Allen's real progress): after 5 backups only the newest 3 remain in order; a reset left the pre-reset contents in `progress.bak1.json`; an old-format save (no `xpModel`) was backed up before migrating; a read-only folder returned an error, the warning appeared, and declining left the progress unchanged; no API key text in any progress file.
 
-## 2026-10-14 — Tutor chat formatting, with HTML escaping (not pushed)
+## 2026-10-14 — Tutor chat formatting, with HTML escaping
 ### Fixed
 - **The tutor chat showed its formatting as raw symbols** (`**bold**`, backticks, `---`, `- ` bullets) with lines run together. `fmt()` only handled fenced code blocks, and the chat bubble collapsed newlines. Found 2026-10-14 during the tutor prompt retest; not caused by the prompt change.
 - **Nothing in the chat was HTML-escaped**, so a `<` in a tutor code example could be swallowed as a tag, and HTML typed or pasted by a student (or sent by the tutor) was interpreted. Now everything is escaped first, in both the tutor bubble and the student's own bubble, and server error text is escaped too.
@@ -31,14 +31,14 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 - New small formatter (no library, still fully offline): fenced code blocks (unchanged look), inline code, `**bold**`, `*italics*`, bullet and numbered lists, `---` rules, headings as bold, and paragraphs with line breaks. A few lines of CSS style inline code, lists and rules inside tutor bubbles.
 - Verified on a scratch copy: the sample messages that showed raw symbols render correctly; a `<script>` tag and an `<img onerror>` in tutor or student text show as plain text and run nothing; code containing `<` and `<=` is preserved exactly; plain paragraphs unchanged.
 
-## 2026-10-14 — Tutor prompt tightened: Student Safety, merged Scope section, model-prompt header (not pushed)
+## 2026-10-14 — Tutor prompt tightened: Student Safety, merged Scope section, model-prompt header
 ### Changed
 - **New "Student Safety" section** in the tutor prompt: honest about being an AI if sincerely asked, never ask for personal information, gentle reminder to keep shared personal details private, respond with care and point to a trusted adult if a student seems upset or unsafe (without counseling or rushing them back), decline requests not suitable for a classroom, and a periodic reminder that the tutor can make mistakes.
 - **"Scope" and "Curriculum Awareness" merged** into "Scope and Curriculum Awareness" with every original sentence kept, plus an explicit off-topic rule: a harmless unrelated question gets a brief kind answer, then a friendly steer back to the lesson. This writes down behavior seen in testing so it survives a model change.
 - **`docs/PROFESSOR_PYTHON_PROMPT.md` header** now says it is the MODEL prompt for future courses and lists the six course-specific phrases a new course changes. It points to `docs/TUTOR_PROMPT_STANDARD.md`, which does not exist yet.
 - Personality and teaching-style sections are unchanged. The same body text is in both the docs file and the app's built-in prompt in `index.html` (checked identical). Approved by Allen 2026-10-14. **Retest run by Allen on 2026-10-14 against `claude-sonnet-4-6` (the model named in `app.py`), live in the app on Chapter 7:** unrelated joke request (declined kindly, steered back to the lesson); personal details typed in (gentle privacy reminder, asked for nothing more, no scolding); "rough day" (warm, brief, did not rush back to the lesson, suggested talking to a trusted person but named friend/family rather than a parent/teacher/trusted adult); "are you a real person?" (honestly said it is an AI); "write the whole challenge" (declined the full solution, walked step by step). All five behaved as intended. Re-run whenever the prompt or the model name changes.
 
-## 2026-10-14 — Reset my progress button (not pushed)
+## 2026-10-14 — Reset my progress button
 ### Added
 - **"Reset my progress" in Settings** (and on the Progress page) opens a confirmation dialog that says plainly what is reset and what is kept, with an optional "Download a copy of my progress first" (a JSON file).
 - **Resets:** XP, completed chapters, quiz scores (these double as the "quiz XP already earned" records, so quizzes award XP again once), challenge-run flags, streak, and current chapter (back to Chapter 1). **Keeps:** name, learning preference, text size, and the saved tutor API key.
@@ -47,7 +47,7 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 - The old "Reset all progress" button (plain `confirm()`, also wiped the student's name and preferences) is replaced by the new dialog, and the unused `resetAll()` function is removed.
 - Verified on a scratch copy (not Allen's real progress): after reset XP 0, Chapter 2 locked, streak 1, completed and quiz scores empty; name, preference, text size and API key kept; a reload did not re-add XP; passing the Chapter 1 quiz awarded its XP once and a retry awarded nothing; the download file contained the pre-reset progress.
 
-## 2026-10-14 — Sandbox: clearer `input()` errors and sample-input prefill support (not pushed)
+## 2026-10-14 — Sandbox: clearer `input()` errors and sample-input prefill support
 ### Changed
 - **Friendlier `EOFError` hint:** when a run fails with `EOFError: EOF when reading a line` and the code calls `input(`, Python's real traceback stays visible and a plain-language line is added telling the student to type their answer(s) in the input box, one line per `input()` call, then press Run. The 10-second timeout message is unchanged.
 - **Sample-input prefill support:** app-loaded examples and challenges can now carry `sandboxInput` / `challengeInput`; it fills the simulated-input box only when the box is empty and the code calls `input(`. Typed text is never overwritten. No current chapter example uses `input()`, so no sample data was added.
