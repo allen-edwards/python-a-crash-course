@@ -4,6 +4,13 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-10-21 — Tutor prompt: no claims about what it stores or forgets (retest pending)
+### Added
+- One line in the privacy section of the tutor prompt: the tutor must not claim anything about what it stores, remembers or forgets, and if asked it says it can only see this conversation, cannot delete anything, and that refreshing the page starts a fresh chat. Reason: in Allen's memory test of 2026-10-18 the tightened prompt told a student it did not keep personal information and had deleted its memory of a detail, which is untrue (the chat stays in the open page until it is refreshed, and the message was sent to Anthropic). The old prompt answered accurately in that run, and both prompts overclaimed at least once in other runs, so the fix is a rule, not luck.
+- Changed in `docs/PROFESSOR_PYTHON_PROMPT.md` and in the prompt body in `index.html`, which stay identical. Approved by Allen on 2026-10-21; Allen's retest (the same test, 2 to 3 runs) is still to be recorded.
+
+---
+
 ## 2026-10-18 — Tutor prompt: trusted-adult wording
 ### Changed
 - In the Student Safety section, "talk to a parent, teacher, or another trusted adult" now reads "talk to someone they trust, ideally a trusted adult such as a teacher, a school counselor, or a family member they trust". Reason: for some students the parent is the source of the problem, so the instruction should not lead with a parent. Changed in `docs/PROFESSOR_PYTHON_PROMPT.md` and in the prompt body in `index.html`, which stay identical. Wording agreed by Allen after the matched retest on 2026-10-14 and 2026-10-15.
