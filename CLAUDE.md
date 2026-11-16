@@ -302,9 +302,6 @@ Pending: confirm Allen's LottieFiles account access/tier before starting.
 - Chapters 12+ (Pygame, data viz, web apps) — idea stage
 - Dark/light theme toggle
 - Mobile-friendly layout
-- Natural voice-to-text/TTS tutor interaction — parked for a possible
-  future **hosted web version** of the app (different product, not this
-  local one — local voice models would violate N7)
 
 ---
 

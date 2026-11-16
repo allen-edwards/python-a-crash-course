@@ -26,7 +26,7 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ## 2026-11-15 — Docs: removed a third-party tool name from the narration notes
 ### Changed
-- Wording only, in `CHANGELOG.md`, `CLAUDE.md`, `docs/ARCHITECTURE.md` and `docs/REQUIREMENTS.md`: the notes about the narration audio no longer name the tool it was produced with. Nothing about how the app works changed. (`CLAUDE.md` now also describes the cue-based Video-mode timing.)
+- Wording only, in `CHANGELOG.md`, `CLAUDE.md`, `docs/ARCHITECTURE.md` and `docs/REQUIREMENTS.md`: the notes about the narration audio no longer name the tool it was produced with. Nothing about how the app works changed. (`CLAUDE.md` now also describes the cue-based Video-mode timing.) A few notes about a parked idea were also removed from the roadmap, requirements and changelog wording.
 
 ---
 
@@ -425,7 +425,7 @@ Every one: starter `challengeCode` is now a **comment-only scaffold** (no workin
 
 ---
 
-## 2026-08-30 (session close) — F11 & F16 Verified Live; F17 Added; Voice Idea Parked
+## 2026-08-30 (session close) — F11 & F16 Verified Live; F17 Added
 ### Verified
 - F11 (Professor Python prompt swap): confirmed via live tutor conversation — analogy-first explanations, predict-before-run questions, no unprompted name use, ambiguous-spelling handling all present and matching the prompt document. Marked Done.
 - F16 (name/learning preference): confirmed via live tutor conversation with real Settings input. Name used naturally, not forced. Noted limitation: stated brevity preference ("short explanations") did not meaningfully shorten responses — logged as a known soft-signal limitation, not a bug, for future revisiting. Marked Done.
@@ -433,7 +433,6 @@ Every one: starter `challengeCode` is now a **comment-only scaffold** (no workin
 ### Added
 - F17: readability fix — default text sizing required repeated manual zooming; scoped fix is better default font/line-height plus a persistent font-size control.
 - Roadmap note: new code examples appearing mid-conversation can be easy to miss — minor visual-distinction polish item, not urgent.
-- Roadmap (parked, Phase 3): natural voice-to-text/TTS tutor interaction — explicitly tied to a possible future **hosted web version** of the app, since local voice models conflict with N7 and the offline/USB-portable design. Not scoped or committed.
 
 ---
 

@@ -34,7 +34,6 @@ A self-contained, offline-first Python learning app — lessons, sandbox, quizze
 - Chapters 12+ (Pygame, data visualization, web apps) — idea stage, not yet scoped as requirements
 - Dark/light theme toggle
 - Mobile-friendly layout
-- **Natural-sounding voice-to-text / text-to-speech tutor interaction** — explicitly parked, not rejected. A good local voice model or free natural-sounding TTS would conflict with N7 (no runtime beyond browser + Python) and the app's offline, zero-install, USB-portable design. This only makes sense as part of a **separate, hosted web version** of the app (an "extension" product, not the local app) — a server-hosted version could freely call a cloud TTS/voice API without those local constraints. Not scoped or committed to; noted here so the idea isn't lost.
 - New example code blocks in the tutor chat can be easy to miss mid-conversation, especially in longer responses — worth a visual treatment (border/label) to distinguish a new example from a reference to earlier code. Minor polish, not urgent.
 
 ## Next milestone

@@ -37,9 +37,6 @@ F14 was scoped in three deliberate phases to avoid stalling on the hardest parts
 ### Decision note: F16 brevity preferences are a soft signal, not enforced
 Live testing (2026-08-30) showed that a stated preference for "short explanations" did not meaningfully shorten Professor Python's responses — he remained thorough and well-structured (headers, multiple sections) even when brevity was requested. This is an accepted, known limitation for now, not a bug: the fix would require an explicit prompt rule prioritizing brevity over structure when a student states that preference. Not yet implemented — worth revisiting if it continues to feel long-winded in practice.
 
-### Decision note: voice interaction — parked for a hosted version, not this app
-A natural-sounding voice-to-text/text-to-speech tutor interaction was considered and explicitly parked, not rejected. A good local voice model or free natural TTS would violate N7 (no runtime beyond browser + Python) and the app's offline, zero-install, USB-portable design. This only makes sense for a **separate, hosted web version** of the app — a different product, not a feature of the local one — where a cloud voice API could be used freely without local constraints. See docs/ROADMAP.md Phase 3.
-
 
 Anyone using this app has already chosen to learn and put in the effort — F16 exists to help them succeed, not to study them. The student states their name and learning preference directly (a simple field they fill in and can edit anytime); Professor Python just reads and respects it, the same way a human tutor would take a student at their word. There is no tracking of quiz performance, no inferring a "learning style" from behavior, and no psychological profiling. If this ever seems worth expanding, that expansion should be re-evaluated deliberately, not drifted into.
 
