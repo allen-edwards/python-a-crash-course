@@ -367,7 +367,9 @@ Your browser tab will show a connection error after this — that is completely 
 
 **Automatic backups.** Before the app resets your progress (the **Reset my progress** button) or upgrades an older save file, it first copies `progress.json` to `progress.bak1.json`, and keeps the last three copies (`progress.bak1.json` is the newest, `progress.bak3.json` the oldest). If a backup cannot be written, the app tells you and asks before continuing.
 
-**To restore a backup:** close the app, then in the app folder copy the backup you want over `progress.json` (for example, copy `progress.bak1.json` to `progress.json`, replacing it), and start the app again. Backups live in the same folder as `progress.json`, so they will not survive losing the whole folder; for a safe copy kept elsewhere, use **Download a copy of my progress** in the reset dialog. These files can contain your name, so keep them private and do not share them.
+**To restore a backup in the app:** open **Settings** and choose **Restore from a backup…**. The app lists the backups it has (each one is checked, and a damaged one is shown but cannot be chosen), shows your progress now and after restoring, and asks you to confirm. It keeps your current progress as a copy first (`progress.prerestore.json`), so the restore can be undone from the same window. A restore brings back your XP, chapters, quiz scores and streak; your name, how you learn best and text size stay as they are.
+
+**To restore a backup by hand** (the fallback): close the app, then in the app folder copy the backup you want over `progress.json` (for example, copy `progress.bak1.json` to `progress.json`, replacing it), and start the app again. Backups live in the same folder as `progress.json`, so they will not survive losing the whole folder; for a safe copy kept elsewhere, use **Download a copy of my progress** in the reset dialog. These files can contain your name, so keep them private and do not share them. To delete them, close the app and delete the `progress.bak1.json`, `progress.bak2.json`, `progress.bak3.json` and `progress.prerestore.json` files in the app folder by hand.
 
 ---
 

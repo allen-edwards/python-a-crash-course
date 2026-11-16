@@ -4,6 +4,17 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-11-15 — Restore from a backup (Settings)
+### Added
+- **Restore from a backup** in Settings, next to Reset. It lists the automatic backups (most recent, previous, older) with the date saved and a short summary (XP, chapters done, quizzes passed). Each backup is checked before it is offered; a damaged one is shown as damaged and cannot be chosen. A confirmation shows progress now and after restoring.
+- Before a restore the current progress is saved as `progress.prerestore.json`, a separate copy outside the three rotating backups, so a restore can be undone from the same window and never pushes out the backup being restored. Restoring brings back XP, chapters, quiz scores, streak, challenge flags and current chapter; name, learning preference and text size stay as they are. The XP model marker comes from the backup, so the one-time XP update does not run again on a restored model-2 save.
+- With no backups, a plain message says so. The Reset dialog now says progress can be restored from Settings. Two server routes (`/api/progress/backups`, `/api/progress/restore`) only ever read fixed backup names, never a path from the page.
+- `progress.prerestore.json` is git-ignored like the other progress files. `GETTING_STARTED.md` keeps the by-hand restore as a fallback and now says how to delete the backups by hand.
+### Verified
+- On a scratch copy, never real progress: restore, undo and restore-again; a damaged and an out-of-range backup are marked damaged and refused; a path-like name is refused; no backups gives the friendly message; name and text size are kept; no API key appears in any progress file; works with no live save file.
+
+---
+
 ## 2026-10-21 — Tutor prompt: no claims about what it stores or forgets (retest pending)
 ### Added
 - One line in the privacy section of the tutor prompt: the tutor must not claim anything about what it stores, remembers or forgets, and if asked it says it can only see this conversation, cannot delete anything, and that refreshing the page starts a fresh chat. Reason: in Allen's memory test of 2026-10-18 the tightened prompt told a student it did not keep personal information and had deleted its memory of a detail, which is untrue (the chat stays in the open page until it is refreshed, and the message was sent to Anthropic). The old prompt answered accurately in that run, and both prompts overclaimed at least once in other runs, so the fix is a rule, not luck.

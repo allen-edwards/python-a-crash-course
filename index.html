@@ -465,6 +465,13 @@ body{background:var(--bg);color:var(--t);font-family:var(--f);height:100vh;overf
             <button class="btn dn" onclick="openResetDialog()">Reset my progress…</button>
           </div>
         </div>
+        <div class="apib" style="margin-top:14px">
+          <strong>Restore from a backup</strong><br>
+          Changed your mind about a reset, or something looks wrong? Pick one of the automatic backups to bring your XP, chapters, quiz scores and streak back. Your name, how you learn best and text size stay as they are now, and your current progress is kept as a copy first, so a restore can be undone too.
+          <div class="apir" style="margin-top:9px">
+            <button class="btn" onclick="openRestoreDialog()">Restore from a backup…</button>
+          </div>
+        </div>
         <div class="credits-box">
           <strong>About Python: A Crash Course — A Beginner's Journey</strong><br><br>
           This app was inspired by two fantastic books:<br>
@@ -1051,6 +1058,61 @@ async function resetProgress() {
     await fetch('/api/progress', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(S)});
   } catch(e) {}
   location.reload();
+}
+
+// Restore from a backup. The server lists the backups (each checked, damaged ones cannot be chosen),
+// keeps the current progress as a separate "before restore" copy, then brings the chosen one back.
+var restoreCurrent = null;
+function describeProgress(p) {
+  return 'XP ' + p.xp + ' \u00b7 ' + p.chapters + ' chapter' + (p.chapters === 1 ? '' : 's') + ' done \u00b7 ' + p.quizzes + ' quiz' + (p.quizzes === 1 ? '' : 'zes') + ' passed';
+}
+function backupLabel(slot) {
+  return slot === 'prerestore' ? 'Your progress just before your last restore (restoring this undoes it)'
+       : slot === 'bak1' ? 'Most recent backup' : slot === 'bak2' ? 'Previous backup' : 'Older backup';
+}
+async function openRestoreDialog() {
+  document.getElementById('restoreModal').classList.remove('hidden');
+  document.getElementById('restoreConfirm').innerHTML = '';
+  document.getElementById('restoreStatus').textContent = '';
+  var list = document.getElementById('restoreList');
+  list.textContent = 'Looking for backups\u2026';
+  try {
+    var r = await fetch('/api/progress/backups'); var d = await r.json();
+    restoreCurrent = d.current;
+    var usable = d.backups.filter(function(b){ return b.ok; });
+    if (!d.backups.length || (!usable.length && !d.backups.some(function(b){ return !b.ok; }))) {
+      list.innerHTML = '<p>There are no backups yet. A backup is saved automatically each time you reset your progress, so there is nothing to restore right now.</p>';
+      return;
+    }
+    list.innerHTML = d.backups.map(function(b) {
+      var head = '<strong>' + escapeHtml(backupLabel(b.slot)) + '</strong><br><span style="font-size:12px;color:var(--t2)">Saved ' + escapeHtml(b.modified) + '</span><br>';
+      if (!b.ok) return '<div class="apib" style="margin-bottom:8px;opacity:.7">' + head + '<span style="color:var(--rd,#e5534b)">Damaged, so it cannot be restored (' + escapeHtml(b.reason || 'unreadable') + ').</span></div>';
+      return '<div class="apib" style="margin-bottom:8px">' + head + escapeHtml(describeProgress(b.summary)) +
+             '<div class="apir" style="margin-top:7px"><button class="btn" onclick="chooseRestore(\'' + b.slot + '\')">Restore this one\u2026</button></div></div>';
+    }).join('');
+    window.restoreBackups = d.backups;
+  } catch(e) { list.textContent = 'Could not look for backups right now. Please try again.'; }
+}
+function closeRestoreDialog() { document.getElementById('restoreModal').classList.add('hidden'); }
+function chooseRestore(slot) {
+  var b = (window.restoreBackups || []).filter(function(x){ return x.slot === slot; })[0];
+  if (!b || !b.ok) return;
+  var now = restoreCurrent ? describeProgress(restoreCurrent) : 'your current progress';
+  document.getElementById('restoreConfirm').innerHTML =
+    '<div class="apib"><strong>Please confirm.</strong><br>Now: ' + escapeHtml(now) + '<br>After restoring: ' + escapeHtml(describeProgress(b.summary)) +
+    '<br><span style="font-size:13px">Your current progress is kept as a copy first, so you can undo this from this same window.</span>' +
+    '<div class="apir" style="margin-top:8px"><button class="btn pr" onclick="doRestore(\'' + slot + '\')">Yes, restore it</button> ' +
+    '<button class="btn" onclick="document.getElementById(\'restoreConfirm\').innerHTML=\'\'">Cancel</button></div></div>';
+}
+async function doRestore(slot) {
+  var st = document.getElementById('restoreStatus');
+  st.textContent = 'Restoring\u2026';
+  try {
+    var r = await fetch('/api/progress/restore', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({slot:slot})});
+    var d = await r.json();
+    if (!d.ok) { st.textContent = 'Could not restore: ' + (d.error || 'unknown problem') + '. Nothing was changed.'; return; }
+    location.reload();
+  } catch(e) { st.textContent = 'Could not restore right now. Nothing was changed.'; }
 }
 
 // ═══════════════════════════════════════ XP ══════════════════════════════════
@@ -2075,11 +2137,24 @@ document.getElementById('tutorIn').addEventListener('keydown', function(e){
     <div class="modal-body">
       <p>This will reset <strong>your XP, completed chapters, quiz scores, day streak and current chapter</strong>. You will start again at Chapter 1, and every other chapter locks until you earn the XP again.</p>
       <p style="margin-top:10px"><strong>Kept:</strong> your name, how you learn best, your text size and your saved API key.</p>
-      <p style="margin-top:10px">A backup copy of your progress is also saved automatically in the app folder first (the last 3 are kept). You can also <a href="#" onclick="downloadProgress();return false;" style="color:var(--ac2)">download a copy of my progress</a> (a small file you can keep somewhere else).</p>
+      <p style="margin-top:10px">A backup copy of your progress is also saved automatically in the app folder first (the last 3 are kept), and you can bring it back any time from <strong>Settings &rarr; Restore from a backup</strong>. You can also <a href="#" onclick="downloadProgress();return false;" style="color:var(--ac2)">download a copy of my progress</a> (a small file you can keep somewhere else).</p>
     </div>
     <div class="modal-foot">
       <button class="btn" onclick="closeResetDialog()">Cancel</button>
       <button class="btn dn" onclick="resetProgress()">Reset my progress</button>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay hidden" id="restoreModal" onclick="if(event.target===this)closeRestoreDialog()">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-head"><h3>Restore from a backup</h3></div>
+    <div class="modal-body">
+      <div id="restoreList" aria-live="polite"></div>
+      <div id="restoreConfirm" style="margin-top:12px"></div>
+      <div id="restoreStatus" role="status" style="margin-top:10px;font-size:13px"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeRestoreDialog()">Close</button>
     </div>
   </div>
 </div>

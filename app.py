@@ -60,6 +60,64 @@ def backup_progress():
     except Exception as e:
         return False, str(e)
 
+# Restore from a backup (Settings, next to Reset). The page lists the backups, each one is checked
+# before it is offered, and a restore first keeps the CURRENT progress as progress.prerestore.json,
+# a separate copy outside the rotation, so restoring can itself be undone (and the backup being
+# restored is never pushed out by that copy). A restore brings back what Reset clears (XP, chapters,
+# quiz scores, streak, challenge flags, current chapter) and leaves the name, learning preference and
+# text size as they are now. Only fixed slot names are ever read; the page never supplies a path.
+CHAPTER_COUNT = 11          # must match CHAPTERS in index.html
+RESTORE_SLOTS = ["bak1", "bak2", "bak3", "prerestore"]
+PRERESTORE_FILE = os.path.join(BASE, "progress.prerestore.json")
+RESTORE_FIELDS = ["xp", "streak", "lastActiveDate", "completed", "quizScores", "challengeRun",
+                  "cur", "currentChapter", "xpModel"]
+
+def slot_path(slot):
+    if slot == "prerestore":
+        return PRERESTORE_FILE
+    return os.path.join(BASE, "progress.%s.json" % slot)
+
+def check_progress(data):
+    """Returns (ok, reason, summary). A backup that fails is shown as damaged and cannot be chosen."""
+    if not isinstance(data, dict):
+        return False, "not a progress file", None
+    xp = data.get("xp")
+    if isinstance(xp, bool) or not isinstance(xp, (int, float)) or not 0 <= xp <= 500:
+        return False, "XP is missing or out of range", None
+    done = data.get("completed")
+    if not isinstance(done, list) or any(isinstance(c, bool) or not isinstance(c, int)
+                                         or not 0 <= c < CHAPTER_COUNT for c in done):
+        return False, "completed chapters are missing or invalid", None
+    quiz = data.get("quizScores", {})
+    if not isinstance(quiz, dict) or any(
+            not str(k).isdigit() or int(k) >= CHAPTER_COUNT or isinstance(v, bool)
+            or not isinstance(v, (int, float)) or v < 0 for k, v in quiz.items()):
+        return False, "quiz scores are invalid", None
+    streak = data.get("streak", 1)
+    if isinstance(streak, bool) or not isinstance(streak, int) or not 0 <= streak <= 100000:
+        return False, "streak is invalid", None
+    if "challengeRun" in data and not isinstance(data["challengeRun"], dict):
+        return False, "challenge records are invalid", None
+    if data.get("xpModel", 1) not in (1, 2):
+        return False, "unknown XP model", None
+    return True, None, {"xp": int(xp), "chapters": len(set(done)),
+                        "quizzes": sum(1 for v in quiz.values() if v >= 3)}
+
+def read_slot(slot):
+    path = slot_path(slot)
+    if not os.path.exists(path):
+        return None
+    info = {"slot": slot, "modified": time.strftime("%Y-%m-%d %H:%M", time.localtime(os.path.getmtime(path)))}
+    try:
+        with open(path) as f:
+            data = json.load(f)
+    except Exception:
+        info.update(ok=False, reason="the file cannot be read", summary=None)
+        return info, None
+    ok, reason, summary = check_progress(data)
+    info.update(ok=ok, reason=reason, summary=summary)
+    return info, data
+
 # ── routes ────────────────────────────────────────────────────────────────────
 @app.route("/")
 def index():
@@ -88,6 +146,40 @@ def backup_progress_route():
     if ok:
         return jsonify({"ok": True})
     return jsonify({"ok": False, "error": err}), 500
+
+@app.route("/api/progress/backups", methods=["GET"])
+def list_backups():
+    out = []
+    for slot in RESTORE_SLOTS:
+        got = read_slot(slot)
+        if got:
+            out.append(got[0])
+    ok, _, summary = check_progress(load_progress())
+    return jsonify({"backups": out, "current": summary if ok else None})
+
+@app.route("/api/progress/restore", methods=["POST"])
+def restore_progress():
+    slot = (request.json or {}).get("slot", "")
+    if slot not in RESTORE_SLOTS:
+        return jsonify({"ok": False, "error": "unknown backup"}), 400
+    got = read_slot(slot)
+    if not got:
+        return jsonify({"ok": False, "error": "that backup no longer exists"}), 404
+    info, data = got
+    if not info["ok"]:
+        return jsonify({"ok": False, "error": "that backup is damaged: " + str(info["reason"])}), 400
+    try:
+        if os.path.exists(SAVE_FILE):
+            shutil.copy2(SAVE_FILE, PRERESTORE_FILE)    # keep what is there now, so this can be undone
+        current = load_progress()
+        for field in RESTORE_FIELDS:
+            current.pop(field, None)
+        current.update({k: v for k, v in data.items() if k in RESTORE_FIELDS})
+        with open(SAVE_FILE, "w") as f:      # not save_progress(): a failed restore must say so
+            json.dump(current, f, indent=2)
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
+    return jsonify({"ok": True})
 
 @app.route("/api/run", methods=["POST"])
 def run_code():

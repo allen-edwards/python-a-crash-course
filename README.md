@@ -118,6 +118,7 @@ pcc_app/
 ├── vendor/                 ← Bundled CodeMirror (offline support)
 ├── docs/                   ← Requirements, architecture, and roadmap
 ├── progress.json           ← Your saved progress (auto-created, not tracked)
+├── progress.bak*.json      ← Up to 3 automatic backups, plus progress.prerestore.json after a restore (not tracked)
 └── .venv/                  ← Virtual environment (auto-created, not tracked)
 ```
 
