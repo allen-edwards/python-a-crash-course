@@ -84,7 +84,7 @@ The AI Tutor needs **your own Anthropic API key**. Anthropic bills API usage to 
 2. Create an API key
 3. Inside the app, click **Settings** in the sidebar and paste your key
 
-**What gets sent:** Professor Python sends what you type to Anthropic's Claude service, using your own API key, to write replies. Your name and learning preference from Settings are included when you have set both. Usage may be billed to the owner of the key. Please don't type personal information. Your lessons and progress stay on this computer. Your key is saved in your browser on this computer.
+**What gets sent:** Professor Python sends what you type to Anthropic's Claude service, using your own API key, to write replies. Your name and learning preference from Settings are included when you have set both. Usage may be billed to the owner of the key. Please don't type personal information. Reloading the page or pressing Clear chat clears the chat from this app. Anthropic's retention rules still apply to what was already sent. Your lessons and progress stay on this computer. Your key is saved in your browser on this computer.
 
 ---
 

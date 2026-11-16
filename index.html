@@ -392,6 +392,7 @@ body{background:var(--bg);color:var(--t);font-family:var(--f);height:100vh;overf
             <div class="qbs" id="quickBtns"></div>
             <div class="tir">
               <input class="ti" id="tutorIn" placeholder="Ask anything about this chapter..."/>
+              <button class="btn" id="clearChatBtn" onclick="clearTutorChat()" title="Clear this conversation from the app">Clear chat</button>
               <button class="btn pr" onclick="sendMsg()">Send ↗</button>
             </div>
           </div>
@@ -425,7 +426,7 @@ body{background:var(--bg);color:var(--t);font-family:var(--f);height:100vh;overf
           Professor Python needs your own Anthropic API key. Create one at
           <a href="https://console.anthropic.com" target="_blank" style="color:var(--ac2)">console.anthropic.com</a>.
           Anthropic bills API usage to the owner of the key.
-          <div style="font-size:12px;color:var(--t3);margin:8px 0">Professor Python sends what you type to Anthropic's Claude service, using your own API key, to write replies. Your name and learning preference from Settings are included. Usage may be billed to the owner of the key. Please don't type personal information. Your lessons and progress stay on this computer.</div>
+          <div style="font-size:12px;color:var(--t3);margin:8px 0">Professor Python sends what you type to Anthropic's Claude service, using your own API key, to write replies. Your name and learning preference from Settings are included. Usage may be billed to the owner of the key. Please don't type personal information. Reloading the page or pressing Clear chat clears the chat from this app. Anthropic's retention rules still apply to what was already sent. Your lessons and progress stay on this computer.</div>
           <div class="apir">
             <input class="apii" id="apiIn" type="password" placeholder="sk-ant-..."/>
             <button class="btn pr" onclick="saveKey()">Save</button>
@@ -1338,6 +1339,20 @@ function showQResult() {
 
 // ═══════════════════════════════════════ TUTOR ═══════════════════════════════
 var tutorHistory = [];
+var tutorEpoch = 0;   // bumped by Clear chat so a reply that was still on its way is dropped, not added back
+
+// Clear chat: empties the in-page history so the next request carries no earlier messages, and removes
+// the displayed messages. Nothing is saved, logged or exported by this button. It does not touch
+// progress, settings, the saved API key or the backup files.
+function clearTutorChat() {
+  tutorEpoch++;
+  tutorHistory = [];
+  var msgs = document.getElementById('tutorMsgs');
+  msgs.innerHTML = '<div class="mg a"><div class="mb">Hello! I\'m Professor Python. What are we working on today?</div></div>';
+  addBubble('<em>Chat cleared from this app.</em>', 'a');
+  var input = document.getElementById('tutorIn');
+  if (input) input.focus();
+}
 
 function renderPrompts() {
   var ch = CHAPTERS[S.cur];
@@ -1351,6 +1366,7 @@ async function sendMsg() {
   var q = input.value.trim(); if (!q) return;
   input.value = '';
   var ch = CHAPTERS[S.cur];
+  var epoch = tutorEpoch;
   addBubble(esc(q),'u'); tutorHistory.push({role:'user',content:q});
   var tid='t_'+Date.now(); addBubble('<span class="dots">Thinking</span>','a',tid);
   var about = (S.studentName && S.learningPreference)
@@ -1631,6 +1647,7 @@ Current chapter: "` + ch.lessonHeading + `" — ` + ch.lessonMeta;
     var r = await fetch('/api/tutor',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({system:sys,messages:tutorHistory.slice(-10),apiKey:apiKey})});
     var d = await r.json();
+    if (epoch !== tutorEpoch) return;   // the chat was cleared while this reply was on its way
     if (d.error){ updateBubble(tid,'❌ '+esc(d.error)); return; }
     tutorHistory.push({role:'assistant',content:d.text});
     updateBubble(tid,fmt(d.text));

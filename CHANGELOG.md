@@ -4,6 +4,17 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-11-15 — Clear chat button on the Professor Python tab
+### Added
+- A **Clear chat** button next to Send. One click empties the in-page tutor history and removes the displayed messages, so the next request sends no earlier messages, and shows "Chat cleared from this app." No confirmation step: the chat is never saved anyway, and the point is that it is quick. It works from the keyboard.
+- A reply that was still on its way when the chat was cleared is dropped instead of being added back.
+- It does not touch progress, settings, the saved API key or the backup files, and it saves, logs or exports nothing (no chat logging, now or later). The suggested-question chips still work after clearing.
+- The tutor notice in Settings and the README now say: "Reloading the page or pressing Clear chat clears the chat from this app. Anthropic's retention rules still apply to what was already sent." The tutor prompt itself is unchanged (its line that refreshing the page starts a fresh chat stays true).
+### Verified
+- On a scratch copy, never real progress, with the tutor call stubbed (nothing sent anywhere): after clearing, the next request carried only the new message; the in-flight reply was dropped; the chips filled the input; progress and the saved key were unchanged; the button works with the keyboard.
+
+---
+
 ## 2026-11-15 — Restore from a backup (Settings)
 ### Added
 - **Restore from a backup** in Settings, next to Reset. It lists the automatic backups (most recent, previous, older) with the date saved and a short summary (XP, chapters done, quizzes passed). Each backup is checked before it is offered; a damaged one is shown as damaged and cannot be chosen. A confirmation shows progress now and after restoring.
