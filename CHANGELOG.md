@@ -4,6 +4,15 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-11-15 — Professor Python tab: a readable chat column on wide screens
+### Changed
+- On a wide window the tutor's replies stretched to about 1340 px (roughly 150 characters per line). The chat now sits in a column up to 900 px wide, left-aligned like the lesson text, with replies at most 760 px (about 85 characters per line). The suggested questions, the input box, Clear chat and Send stay in the same column. The lesson text (820 px), the quiz (680 px) and the sandbox (full width, since code benefits from room) are unchanged.
+- Being left-aligned also keeps the lesson panel, which opens on the right, from covering the chat on a wide screen.
+### Verified
+- On a scratch copy in a real browser at 1920, 1280 and 1024 px wide: the column and replies measure as above, nothing is cut off, no sideways scrolling, and at 1920 the chat and the lesson panel do not overlap. Easy to adjust later: the two limits are `.tw` (column) and `.mg` (reply) in `index.html`.
+
+---
+
 ## 2026-11-15 — Lesson panel: the whole example fits without scrolling
 ### Fixed
 - **Video mode showed a scrollbar, and the full example was not on screen** (found by Allen watching Chapter 7). The lesson panel was a small fixed window (460 x 520 px) and its video stage scrolled whenever the caption, the code and the output did not fit. Measured: the tallest example (Chapter 7) needs about 390 px at normal text size and 430 px at the large size, against 367 px available.
