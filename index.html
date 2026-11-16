@@ -490,7 +490,7 @@ body{background:var(--bg);color:var(--t);font-family:var(--f);height:100vh;overf
 </div>
 
 <!-- FLOATING LESSON PANEL (F14 v1) -->
-<div class="popout hidden" id="lessonPanel" style="width:460px;height:520px;top:70px;right:20px;">
+<div class="popout hidden" id="lessonPanel" style="width:500px;height:min(640px, calc(100vh - 100px));top:70px;right:20px;">
   <div class="popout-bar" id="lessonPanelBar">
     <span class="title" id="lessonPanelTitle">Lesson</span>
     <button class="popout-btn" onclick="minimizeLessonPanel()" title="Minimize">─</button>
@@ -2024,6 +2024,12 @@ function lpRenderAt(elapsed) {
   else to.style.opacity = out ? 1 : 0;
   document.getElementById('lpProgress').style.width =
     (lpTotal ? Math.min(100, elapsed / lpTotal * 100) : 0) + '%';
+  // If the panel is too small for the example (small window, large text size), keep the newest part in view
+  // while the video plays, so nobody has to scroll by hand. Dragging the panel bigger avoids it altogether.
+  if (lpPlaying) {
+    var stage = document.getElementById('lpStage');
+    if (stage && stage.scrollHeight > stage.clientHeight) stage.scrollTop = stage.scrollHeight;
+  }
 }
 
 // Explicitly render and hold the final state (last of each beat type).

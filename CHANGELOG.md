@@ -4,6 +4,17 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-11-15 — Lesson panel: the whole example fits without scrolling
+### Fixed
+- **Video mode showed a scrollbar, and the full example was not on screen** (found by Allen watching Chapter 7). The lesson panel was a small fixed window (460 x 520 px) and its video stage scrolled whenever the caption, the code and the output did not fit. Measured: the tallest example (Chapter 7) needs about 390 px at normal text size and 430 px at the large size, against 367 px available.
+### Changed
+- The panel now opens at 500 px wide and up to 640 px tall, never taller than the window (`min(640px, 100vh - 100px)`). At that size every chapter's fullest frame fits at both text sizes with room to spare. It can still be dragged and resized as before.
+- If the window is still too short for an example (a small window, the large text size), the stage scrolls by itself while the video plays so the newest line stays in view. It does not move while paused.
+### Verified
+- On a scratch copy in a real browser: no overflow in any chapter at normal or large text; in a deliberately short 560 px window with large text, the overflow of 97 px is scrolled automatically during playback and the last output line stays visible; nothing moves when not playing.
+
+---
+
 ## 2026-11-15 — Docs: removed a third-party tool name from the narration notes
 ### Changed
 - Wording only, in `CHANGELOG.md`, `CLAUDE.md`, `docs/ARCHITECTURE.md` and `docs/REQUIREMENTS.md`: the notes about the narration audio no longer name the tool it was produced with. Nothing about how the app works changed. (`CLAUDE.md` now also describes the cue-based Video-mode timing.)
