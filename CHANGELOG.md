@@ -4,6 +4,14 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-11-15 — Video mode: pressing play before the audio has loaded no longer freezes the video
+### Fixed
+- If Play was pressed in the first moment after opening the lesson panel, before the chapter's audio had finished loading, the video started on its silent clock; when the audio then became usable the player switched to it, but the audio had never been started, so the video sat frozen at the start while the button showed "playing". The player now starts the audio at the same place in the lesson as soon as it is ready. Pressing Play after the audio has loaded behaves exactly as before.
+### Verified
+- Reproduced on the previous version (press Play immediately: audio stays paused and the clock reads 0 for the next 4 seconds), then re-tested on the fixed version (the audio starts and the clock and captions follow it), plus the normal path afterwards; no console errors.
+
+---
+
 ## 2026-11-15 — Professor Python tab: a readable chat column on wide screens
 ### Changed
 - On a wide window the tutor's replies stretched to about 1340 px (roughly 150 characters per line). The chat now sits in a column up to 900 px wide, left-aligned like the lesson text, with replies at most 760 px (about 85 characters per line). The suggested questions, the input box, Clear chat and Send stay in the same column. The lesson text (820 px), the quiz (680 px) and the sandbox (full width, since code benefits from room) are unchanged.

@@ -2058,6 +2058,15 @@ function lpTick(ts) {
     // Audio is the source of truth - just read its current position each
     // frame rather than tracking our own clock, so there's nothing to
     // drift out of sync with what's actually being heard.
+    if (lpAudioEl.paused && !lpAudioEl.ended) {
+      // Play was pressed before the audio finished loading, so the silent clock started it; now the audio is usable but
+      // was never started. Start it at the same place in the lesson (otherwise the video freezes at the start).
+      var frac = lpTotal ? lpElapsed / lpTotal : 0;
+      lpTotal = lpTotalMs();
+      lpAudioEl.currentTime = Math.min(frac, 0.999) * lpTotal / 1000;
+      var pp = lpAudioEl.play();
+      if (pp && pp.catch) pp.catch(function () { lpAudioFailed = true; lpLastTs = null; });
+    }
     elapsed = lpAudioEl.currentTime * 1000;
   } else {
     if (lpLastTs == null) lpLastTs = ts;
