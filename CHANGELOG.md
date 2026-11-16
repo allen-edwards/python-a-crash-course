@@ -4,6 +4,12 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-11-15 — Docs: removed a third-party tool name from the narration notes
+### Changed
+- Wording only, in `CHANGELOG.md`, `CLAUDE.md`, `docs/ARCHITECTURE.md` and `docs/REQUIREMENTS.md`: the notes about the narration audio no longer name the tool it was produced with. Nothing about how the app works changed. (`CLAUDE.md` now also describes the cue-based Video-mode timing.)
+
+---
+
 ## 2026-11-15 — Video mode: narration now lands with what is shown (cue timeline)
 ### Fixed
 - **Visuals ran ahead of the narration, by up to about 5 seconds in the worst chapter.** The recordings contain narration only (almost no silence), but every chapter's code, run and output beats also had estimated time of their own, and the player squeezed all beats in proportion to fit the audio. Measured across all 11 chapters, the narration lines were shown 2 to 5 seconds away from where they were spoken.
@@ -146,7 +152,7 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ## 2026-09-13 — Ch7/8/9 real narration audio swapped in (fallback still active - see note)
 ### Changed
-- Replaced `audio/ch7.mp3`, `audio/ch8.mp3`, `audio/ch9.mp3` with newly-recorded narration covering the full extended scripts (confirmed against the exact narration text sent for Speechify - not a stale/wrong recording). Checksummed against the source files after copying.
+- Replaced `audio/ch7.mp3`, `audio/ch8.mp3`, `audio/ch9.mp3` with newly-recorded narration covering the full extended scripts (confirmed against the exact narration text - not a stale/wrong recording). Checksummed against the source files after copying.
 ### Not yet resolved - the fallback from the previous entry is still engaged for all three
 - The new recordings are genuinely complete and correctly paced for a natural speaking voice, but their duration still falls under the 50%-of-raw-estimate threshold added in the safety-fallback commit: **Ch7 43.5% (46.6s/107s), Ch8 37.9% (25.7s/68s), Ch9 46.6% (32.9s/71s)**. The fallback guard is doing exactly what it was built to do - all three still play at correct, watchable silent pacing rather than a broken speedup - but that means the intended fix (real audio) isn't actually taking effect yet.
 - **New data surfaced while checking this that's worth a real decision**: measuring the ratio across all 11 chapters' *current, already-correct, never-touched* audio shows the natural range is wider than assumed when the 50% threshold was picked - Chapter 6 (untouched, unquestionably fine) sits at **48.1%**, and Chapter 5 at 51.5%, both close to or under the cutoff. The three chapters this fallback was built for measured 22.7%/30.5%/41.1% *before* re-recording (a genuine 2.4-4.4x mismatch) - qualitatively different from a chapter that's simply narrated efficiently relative to its code-typing beats. A flat 50% cutoff doesn't cleanly separate "genuinely mismatched content" from "a chapter with a lot of code-typing beats and comparatively little narration," which naturally pulls the ratio down even when everything is correct.
@@ -337,7 +343,7 @@ Every one: starter `challengeCode` is now a **comment-only scaffold** (no workin
 - Drag the progress bar mid-code-typing → jumps to the right character count. Pause/resume → no drift while paused, resumes forward cleanly. Scrub-to-end → final hold. Play after finish → replays from 0. Toggle to Text mid-playback and back → resets cleanly (elapsed 0, progress 0, button `▶`).
 
 ### Deferred (unchanged)
-- **F14a** position-aware toggling; **F14b** Speechify narration audio. Chapters 2–11 still need `CHAPTER_SCRIPTS` entries.
+- **F14a** position-aware toggling; **F14b** narration audio. Chapters 2–11 still need `CHAPTER_SCRIPTS` entries.
 
 ---
 
@@ -366,7 +372,7 @@ Every one: starter `challengeCode` is now a **comment-only scaffold** (no workin
 ### Docs
 - F14 redefined based on the original (older, "lost to file heaven") design intent: a single toggleable panel — not a separate video tab — accessible from anywhere in the app including the sandbox, replacing the current text-based pop-out. Two modes (Video/Text) render from one shared per-chapter script.
 - Added F14a (position-aware mode toggling — intentionally asymmetric: video→text lands near current position, text→video starts slightly before it) — explicitly deferred to v1.1, after v1's core mechanism is proven.
-- Added F14b (real narration via Speechify, produced by Allen per chapter from the same script) — explicitly deferred; not a v1 blocker, since audio production is independent, real-world work and the silent animation has standalone teaching value.
+- Added F14b (real narration, produced by Allen per chapter from the same script) — explicitly deferred; not a v1 blocker, since audio production is independent, real-world work and the silent animation has standalone teaching value.
 - v1's animation timing to be built as a beat/timeline structure from the start, specifically so F14b's audio sync can be added later without reworking the mechanism.
 - Updated ARCHITECTURE.md and ROADMAP.md's v7.0 milestone description to match this fuller, finalized spec.
 

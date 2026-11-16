@@ -265,10 +265,11 @@ Pending: confirm Allen's LottieFiles account access/tier before starting.
     Speech API narration, motion-graphics feel. That was deliberately
     scoped down. F14 as built is a live browser animation (HTML/CSS/JS),
     NOT a rendered video file — no Node.js, no FFmpeg (violates N7).
-    Real narration audio (F14b) shipped 2026-09-13, produced by Allen via
-    Speechify and served from `audio/`; audio.currentTime drives the
-    timing when available, falling back to the original silent/estimate
-    clock if a chapter's file is missing or fails to load. No
+    Real narration audio (F14b) shipped 2026-09-13, produced by Allen
+    and served from `audio/`; audio.currentTime drives the timing, using the
+    per-beat `AUDIO_CUES` list (2026-11-15), falling back to the original
+    silent/estimate clock if a chapter's file is missing, fails to load, or its
+    cues are missing or no longer match the recording. No
     position-memory when toggling Video↔Text (F14a, deferred). Does NOT
     use Professor Python's interactive/Socratic
     prompt — the video is a non-interactive walkthrough, not a
