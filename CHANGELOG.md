@@ -4,6 +4,19 @@ All notable changes to **Python: A Crash Course — A Beginner's Journey** are d
 
 ---
 
+## 2026-11-15 — Video mode: narration now lands with what is shown (cue timeline)
+### Fixed
+- **Visuals ran ahead of the narration, by up to about 5 seconds in the worst chapter.** The recordings contain narration only (almost no silence), but every chapter's code, run and output beats also had estimated time of their own, and the player squeezed all beats in proportion to fit the audio. Measured across all 11 chapters, the narration lines were shown 2 to 5 seconds away from where they were spoken.
+- Chapters 6, 7, 8 and 9 were falling back to silent playback under the old 50% guard even though their recordings were fine; the guard did not separate good chapters from bad ones. All 11 chapters now play with their narration.
+### Changed
+- New `AUDIO_CUES` list in `index.html`: for each chapter, when each narration line is actually spoken, plus the length of the recording the cues were made for. The player builds its timeline from it. A narration line starts at its cue, the code that follows starts typing 400 ms later and has the time until the next cue, and the first caption waits until just before the first spoken word. The timeline's total equals the audio's length exactly.
+- **Safety replaces the 50% guard:** if a chapter's cues are missing, do not match its narration lines, are out of order, or the recording's length no longer matches (it was re-recorded), Video mode uses silent pacing and logs a console warning. It never plays audio that could be out of sync.
+- Idle hold times (`holdMs`) were shortened on 13 code blocks that had too little time (never below 250 ms after typed code or a run command, 500 ms after output), so their code is not typed unreadably fast. Two long blocks (Chapter 7's to-do list and Chapter 8's third example) are still a little tight, with code typing at about 26 to 30 ms per character instead of 40 to 70.
+### Verified
+- On a scratch copy in a real browser: all 11 chapters use their audio, every timeline total equals the recording's length, every narration line sits on its cue (0 ms error), 81 of 81 caption checks pass, the fallbacks trigger for a replaced recording, a missing cue list, a cue-count mismatch and out-of-order cues, real playback tracks the audio clock within about 20 ms, and there are no console errors.
+
+---
+
 ## 2026-11-15 — Clear chat button on the Professor Python tab
 ### Added
 - A **Clear chat** button next to Send. One click empties the in-page tutor history and removes the displayed messages, so the next request sends no earlier messages, and shows "Chat cleared from this app." No confirmation step: the chat is never saved anyway, and the point is that it is quick. It works from the keyboard.

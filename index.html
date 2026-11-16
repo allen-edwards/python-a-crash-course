@@ -749,9 +749,9 @@ var CHAPTER_SCRIPTS = {
       { type:'code', code:'age = 30\ncity = "Denver"', typeSpeedMs:60, holdMs:1400 },
       { type:'narration', text:"age stores a whole number, and city stores text — Python figures out the type automatically, just from the value you give it." },
       { type:'narration', text:"Strings also come with built-in tools called methods. Let's try one." },
-      { type:'code', code:'place = "denver"\nprint(place.title())', typeSpeedMs:60, holdMs:1400 },
-      { type:'run', command:'python variables.py', typeSpeedMs:45, holdMs:500 },
-      { type:'output', text:'Denver', holdMs:1800 },
+      { type:'code', code:'place = "denver"\nprint(place.title())', typeSpeedMs:60, holdMs:900 },
+      { type:'run', command:'python variables.py', typeSpeedMs:45, holdMs:300 },
+      { type:'output', text:'Denver', holdMs:1150 },
       { type:'narration', text:".title() capitalizes the first letter of each word — handy for cleaning up text without retyping it." },
       { type:'narration', text:"Python also does math with a few operators you might not expect — ** for power, and % for remainder." },
       { type:'code', code:'print(5 ** 2)\nprint(10 % 4)', typeSpeedMs:60, holdMs:1400 },
@@ -773,9 +773,9 @@ var CHAPTER_SCRIPTS = {
       { type:'run', command:'python lists.py', typeSpeedMs:45, holdMs:500 },
       { type:'output', text:'blue', holdMs:1800 },
       { type:'narration', text:"Lists are dynamic too — you can add and remove items freely, whenever you want." },
-      { type:'code', code:'colors.append("yellow")\nprint(colors)', typeSpeedMs:60, holdMs:1400 },
-      { type:'run', command:'python lists.py', typeSpeedMs:45, holdMs:500 },
-      { type:'output', text:"['red', 'green', 'blue', 'yellow']", holdMs:1800 }
+      { type:'code', code:'colors.append("yellow")\nprint(colors)', typeSpeedMs:60, holdMs:1300 },
+      { type:'run', command:'python lists.py', typeSpeedMs:45, holdMs:450 },
+      { type:'output', text:"['red', 'green', 'blue', 'yellow']", holdMs:1700 }
     ]
   },
 
@@ -792,9 +792,9 @@ var CHAPTER_SCRIPTS = {
       { type:'output', text:'1\n2\n3', holdMs:1800 },
       { type:'narration', text:"Notice it stops BEFORE 4 — range(1, 4) means start at 1, stop before 4." },
       { type:'narration', text:"List comprehensions let you build a whole new list in a single, readable line." },
-      { type:'code', code:'doubles = [x * 2 for x in range(1, 4)]\nprint(doubles)', typeSpeedMs:55, holdMs:1400 },
-      { type:'run', command:'python loops.py', typeSpeedMs:45, holdMs:500 },
-      { type:'output', text:'[2, 4, 6]', holdMs:1800 }
+      { type:'code', code:'doubles = [x * 2 for x in range(1, 4)]\nprint(doubles)', typeSpeedMs:55, holdMs:1050 },
+      { type:'run', command:'python loops.py', typeSpeedMs:45, holdMs:400 },
+      { type:'output', text:'[2, 4, 6]', holdMs:1350 }
     ]
   },
 
@@ -802,14 +802,14 @@ var CHAPTER_SCRIPTS = {
     title: 'Chapter 5 — if Statements',
     beats: [
       { type:'narration', text:"An if statement makes your code take different paths based on a condition — this is how programs become intelligent." },
-      { type:'code', code:'score = 85\nif score >= 90:\n    print("A grade")\nelif score >= 80:\n    print("B grade")\nelse:\n    print("Keep practicing")', typeSpeedMs:50, holdMs:1400 },
-      { type:'run', command:'python grades.py', typeSpeedMs:45, holdMs:500 },
-      { type:'output', text:'B grade', holdMs:1800 },
+      { type:'code', code:'score = 85\nif score >= 90:\n    print("A grade")\nelif score >= 80:\n    print("B grade")\nelse:\n    print("Keep practicing")', typeSpeedMs:50, holdMs:850 },
+      { type:'run', command:'python grades.py', typeSpeedMs:45, holdMs:300 },
+      { type:'output', text:'B grade', holdMs:1100 },
       { type:'narration', text:"Python checks each condition top to bottom, and stops at the FIRST one that's true — the rest are skipped entirely." },
       { type:'narration', text:"You can combine conditions with and, or check if something is inside a list using in." },
-      { type:'code', code:'members = ["alice", "bob"]\nif "alice" in members:\n    print("Welcome back!")', typeSpeedMs:50, holdMs:1400 },
-      { type:'run', command:'python grades.py', typeSpeedMs:45, holdMs:500 },
-      { type:'output', text:'Welcome back!', holdMs:1800 }
+      { type:'code', code:'members = ["alice", "bob"]\nif "alice" in members:\n    print("Welcome back!")', typeSpeedMs:50, holdMs:850 },
+      { type:'run', command:'python grades.py', typeSpeedMs:45, holdMs:300 },
+      { type:'output', text:'Welcome back!', holdMs:1100 }
     ]
   },
 
@@ -825,9 +825,9 @@ var CHAPTER_SCRIPTS = {
       { type:'run', command:'python dicts.py', typeSpeedMs:45, holdMs:500 },
       { type:'output', text:"{'name': 'Maya', 'age': 29, 'city': 'Miami'}", holdMs:1800 },
       { type:'narration', text:"To loop through both the keys and values at once, use .items()." },
-      { type:'code', code:'for key, value in user.items():\n    print(key + ":", value)', typeSpeedMs:55, holdMs:1400 },
-      { type:'run', command:'python dicts.py', typeSpeedMs:45, holdMs:500 },
-      { type:'output', text:'name: Maya\nage: 29\ncity: Miami', holdMs:1800 }
+      { type:'code', code:'for key, value in user.items():\n    print(key + ":", value)', typeSpeedMs:55, holdMs:1000 },
+      { type:'run', command:'python dicts.py', typeSpeedMs:45, holdMs:350 },
+      { type:'output', text:'name: Maya\nage: 29\ncity: Miami', holdMs:1250 }
     ]
   },
 
@@ -840,9 +840,9 @@ var CHAPTER_SCRIPTS = {
       { type:'output', text:'Battery: 3\nBattery: 2\nBattery: 1\nRecharge me!', holdMs:1800 },
       { type:'narration', text:"That battery -= 1 line is critical — always make sure something changes each time, or the loop runs forever." },
       { type:'narration', text:"break exits a loop immediately, and continue skips just the current pass and moves on to the next." },
-      { type:'code', code:'for num in range(5):\n    if num == 2:\n        continue\n    print(num)', typeSpeedMs:50, holdMs:1400 },
-      { type:'run', command:'python while_loop.py', typeSpeedMs:45, holdMs:500 },
-      { type:'output', text:'0\n1\n3\n4', holdMs:1800 },
+      { type:'code', code:'for num in range(5):\n    if num == 2:\n        continue\n    print(num)', typeSpeedMs:50, holdMs:1050 },
+      { type:'run', command:'python while_loop.py', typeSpeedMs:45, holdMs:400 },
+      { type:'output', text:'0\n1\n3\n4', holdMs:1350 },
       { type:'narration', text:"So far our programs have only displayed information — input() lets a program listen too." },
       { type:'code', code:'name = input("What is your name? ")\nprint(f"Nice to meet you, {name}!")', typeSpeedMs:50, holdMs:1400 },
       { type:'run', command:'python greet.py', typeSpeedMs:45, holdMs:500 },
@@ -852,13 +852,13 @@ var CHAPTER_SCRIPTS = {
       { type:'run', command:'python greet.py', typeSpeedMs:45, holdMs:500 },
       { type:'output', text:'How old are you? 29\nNext year you will be 30.', holdMs:1800 },
       { type:'narration', text:"A flag variable is a clean alternative to while True plus break — one variable controls whether the loop keeps going." },
-      { type:'code', code:'active = True\nwhile active:\n    reply = input("Type quit to stop: ")\n    if reply == "quit":\n        active = False\n    else:\n        print(f"You said: {reply}")', typeSpeedMs:45, holdMs:1600 },
-      { type:'run', command:'python greet.py', typeSpeedMs:45, holdMs:500 },
-      { type:'output', text:'Type quit to stop: hello\nYou said: hello\nType quit to stop: quit', holdMs:1800 },
+      { type:'code', code:'active = True\nwhile active:\n    reply = input("Type quit to stop: ")\n    if reply == "quit":\n        active = False\n    else:\n        print(f"You said: {reply}")', typeSpeedMs:45, holdMs:1390 },
+      { type:'run', command:'python greet.py', typeSpeedMs:45, holdMs:440 },
+      { type:'output', text:'Type quit to stop: hello\nYou said: hello\nType quit to stop: quit', holdMs:1590 },
       { type:'narration', text:"while loops are also great for moving items from one list to another, one at a time." },
-      { type:'code', code:'todo = ["email", "report", "call"]\ndone = []\nwhile todo:\n    task = todo.pop()\n    done.append(task)\n    print(f"Finished: {task}")', typeSpeedMs:45, holdMs:1600 },
-      { type:'run', command:'python greet.py', typeSpeedMs:45, holdMs:500 },
-      { type:'output', text:'Finished: call\nFinished: report\nFinished: email', holdMs:1800 }
+      { type:'code', code:'todo = ["email", "report", "call"]\ndone = []\nwhile todo:\n    task = todo.pop()\n    done.append(task)\n    print(f"Finished: {task}")', typeSpeedMs:45, holdMs:250 },
+      { type:'run', command:'python greet.py', typeSpeedMs:45, holdMs:250 },
+      { type:'output', text:'Finished: call\nFinished: report\nFinished: email', holdMs:500 }
     ]
   },
 
@@ -870,18 +870,18 @@ var CHAPTER_SCRIPTS = {
       { type:'run', command:'python functions.py', typeSpeedMs:45, holdMs:500 },
       { type:'output', text:'Welcome, Sam!', holdMs:1800 },
       { type:'narration', text:"Functions can also return a value back to whoever called them, instead of just printing something." },
-      { type:'code', code:'def triple(number):\n    return number * 3\n\nresult = triple(4)\nprint(result)', typeSpeedMs:50, holdMs:1400 },
-      { type:'run', command:'python functions.py', typeSpeedMs:45, holdMs:500 },
-      { type:'output', text:'12', holdMs:1800 },
+      { type:'code', code:'def triple(number):\n    return number * 3\n\nresult = triple(4)\nprint(result)', typeSpeedMs:50, holdMs:890 },
+      { type:'run', command:'python functions.py', typeSpeedMs:45, holdMs:290 },
+      { type:'output', text:'12', holdMs:1140 },
       { type:'narration', text:"You can give a parameter a default value, so callers can skip it entirely if they want." },
-      { type:'code', code:'def welcome(name, greeting="Hi"):\n    print(greeting + ", " + name + "!")\n\nwelcome("Sam")\nwelcome("Sam", "Hey")', typeSpeedMs:50, holdMs:1400 },
-      { type:'run', command:'python functions.py', typeSpeedMs:45, holdMs:500 },
-      { type:'output', text:'Hi, Sam!\nHey, Sam!', holdMs:1800 },
+      { type:'code', code:'def welcome(name, greeting="Hi"):\n    print(greeting + ", " + name + "!")\n\nwelcome("Sam")\nwelcome("Sam", "Hey")', typeSpeedMs:50, holdMs:250 },
+      { type:'run', command:'python functions.py', typeSpeedMs:45, holdMs:250 },
+      { type:'output', text:'Hi, Sam!\nHey, Sam!', holdMs:500 },
       { type:'narration', text:"As a program grows, it helps to split functions into their own file, called a module, and import them where needed." },
-      { type:'code', code:'# File: helpers.py\ndef shout(text):\n    return text.upper() + "!"', typeSpeedMs:45, holdMs:1600 },
-      { type:'code', code:'# File: main.py\nfrom helpers import shout\n\nprint(shout("nice work"))', typeSpeedMs:45, holdMs:1600 },
-      { type:'run', command:'python main.py', typeSpeedMs:45, holdMs:500 },
-      { type:'output', text:'NICE WORK!', holdMs:1800 }
+      { type:'code', code:'# File: helpers.py\ndef shout(text):\n    return text.upper() + "!"', typeSpeedMs:45, holdMs:520 },
+      { type:'code', code:'# File: main.py\nfrom helpers import shout\n\nprint(shout("nice work"))', typeSpeedMs:45, holdMs:520 },
+      { type:'run', command:'python main.py', typeSpeedMs:45, holdMs:250 },
+      { type:'output', text:'NICE WORK!', holdMs:570 }
     ]
   },
 
@@ -896,13 +896,13 @@ var CHAPTER_SCRIPTS = {
       { type:'output', text:'Whiskers says meow!', holdMs:1800 },
       { type:'narration', text:"self is how each object keeps track of its own data — it connects an attribute or method to that specific instance." },
       { type:'narration', text:"Classes support inheritance too — a child class gets everything the parent has, plus anything new you add." },
-      { type:'code', code:'class ServiceCat(Cat):\n    def assist(self):\n        print(self.name + " is on duty.")\n\nhelper = ServiceCat("Rex")\nhelper.meow()\nhelper.assist()', typeSpeedMs:40, holdMs:1400 },
-      { type:'run', command:'python classes.py', typeSpeedMs:45, holdMs:500 },
-      { type:'output', text:'Rex says meow!\nRex is on duty.', holdMs:1800 },
+      { type:'code', code:'class ServiceCat(Cat):\n    def assist(self):\n        print(self.name + " is on duty.")\n\nhelper = ServiceCat("Rex")\nhelper.meow()\nhelper.assist()', typeSpeedMs:40, holdMs:800 },
+      { type:'run', command:'python classes.py', typeSpeedMs:45, holdMs:300 },
+      { type:'output', text:'Rex says meow!\nRex is on duty.', holdMs:1000 },
       { type:'narration', text:"A child class can also override a parent's method completely, replacing its behavior instead of just adding something new." },
-      { type:'code', code:'class QuietCat(Cat):\n    def meow(self):\n        print(self.name + " gives a tiny, silent meow.")\n\nshy = QuietCat("Pip")\nshy.meow()', typeSpeedMs:45, holdMs:1600 },
-      { type:'run', command:'python classes.py', typeSpeedMs:45, holdMs:500 },
-      { type:'output', text:'Pip gives a tiny, silent meow.', holdMs:1800 }
+      { type:'code', code:'class QuietCat(Cat):\n    def meow(self):\n        print(self.name + " gives a tiny, silent meow.")\n\nshy = QuietCat("Pip")\nshy.meow()', typeSpeedMs:45, holdMs:1000 },
+      { type:'run', command:'python classes.py', typeSpeedMs:45, holdMs:300 },
+      { type:'output', text:'Pip gives a tiny, silent meow.', holdMs:1100 }
     ]
   },
 
@@ -937,6 +937,26 @@ var CHAPTER_SCRIPTS = {
     ]
   }
 };
+
+// F14b audio cues (2026-11-15): for each chapter, when each narration beat is actually SPOKEN in that chapter's recording
+// (ms from the start of the audio, one per narration beat, in order), plus the recording's length the cues were made for.
+// The lesson player builds its timeline from these so what is shown lands with what is said. If the recording is
+// re-recorded (its length no longer matches audioMs) or a list is missing or does not match the beats, the player falls back
+// to silent pacing instead of playing out-of-sync audio. Regenerate this list whenever a chapter's audio changes.
+var AUDIO_CUES = {
+  0: { audioMs: 31700, cues: [1240, 11660, 17920, 22680] },
+  1: { audioMs: 33400, cues: [1070, 11850, 18330, 22340, 28260] },
+  2: { audioMs: 23300, cues: [1310, 8270, 13880, 18710] },
+  3: { audioMs: 25700, cues: [1130, 9140, 14070, 21120] },
+  4: { audioMs: 20000, cues: [2290, 8200, 15180] },
+  5: { audioMs: 19700, cues: [1230, 9830, 15020] },
+  6: { audioMs: 46600, cues: [3010, 10020, 16480, 21540, 27070, 34100, 41660] },
+  7: { audioMs: 25700, cues: [1080, 9900, 14810, 19870] },
+  8: { audioMs: 32900, cues: [1130, 10390, 15040, 20780, 26710] },
+  9: { audioMs: 23900, cues: [2160, 9670, 16480] },
+  10: { audioMs: 29400, cues: [2440, 9700, 16920, 23360] }
+};
+
 
 // Computed length of a single beat, in milliseconds.
 function getBeatDuration(beat) {
@@ -1841,40 +1861,68 @@ var lpAudioEl = null, lpAudioReady = false, lpAudioFailed = false, lpAudioChapte
 
 function lpBeats() { var s = currentScript(); return (s && s.beats) || []; }
 
-function lpUsingAudio() {
-  if (!(lpAudioReady && !lpAudioFailed && lpAudioEl && lpAudioEl.duration && !isNaN(lpAudioEl.duration))) return false;
-  // Safety guard (added 2026-09-13, after Ch7/8/9's content was extended
-  // without re-recording their audio): if the loaded audio is drastically
-  // shorter than the script's current estimated total, proportional
-  // rescaling would compress everything into an unwatchably fast pace
-  // instead of gracefully smoothing over normal minor drift. Falling back
-  // to silent/estimate-based pacing here (rather than force-compressing)
-  // means every caller of this function - the tick loop, play, pause,
-  // scrub - automatically does the right thing without separate patches.
-  var rawTotal = lpBeatDurationsRaw().reduce(function(a,b){ return a + b; }, 0);
-  if (rawTotal > 0 && (lpAudioEl.duration * 1000) < rawTotal * 0.5) {
-    var title = (currentScript() && currentScript().title) || 'this chapter';
-    console.warn('[F14b audio mismatch] "' + title + '": audio is ' + lpAudioEl.duration.toFixed(1) +
-      's but the script is estimated at ' + Math.round(rawTotal / 1000) + 's (more than 2x mismatch) - ' +
-      'falling back to silent pacing instead of force-compressing. Re-record this chapter\'s audio to fix.');
-    return false;
+// Cue-based timeline (2026-11-15). AUDIO_CUES says when each narration beat is actually spoken in the chapter's
+// recording. The narration beat's line starts at its cue; a following code/run/output block starts typing a moment later
+// and has the time until the next cue, split in proportion to its beats' own estimates. Each chapter's timeline therefore
+// lands what is shown with what is said, and its total is exactly the audio's length.
+var LP_CUE_LEAD_MS = 400;     // a block starts typing this long after its narration line begins
+var LP_CUE_PREROLL_MS = 300;  // the first caption appears this long before the first spoken word
+var LP_CUE_STALE_MS = 300;    // the audio may differ this much from the length its cues were made for
+var lpCueCache = { key: null, value: null }, lpCueWarned = {};
+
+// Per-beat durations (ms) from the cue list, or null when the cues cannot be trusted (missing, not matching the
+// beats, or the recording was replaced). null makes the player fall back to silent pacing: it never plays
+// audio that would be out of sync.
+function lpCueDurations() {
+  var ch = CHAPTERS[S.cur].id, data = AUDIO_CUES[ch];
+  if (!lpAudioEl || !lpAudioEl.duration || isNaN(lpAudioEl.duration)) return null;
+  var key = ch + ':' + lpAudioEl.duration;
+  if (lpCueCache.key === key) return lpCueCache.value;
+  var result = null, why = '';
+  var total = lpAudioEl.duration * 1000, beats = lpBeats(), narr = [];
+  beats.forEach(function (b, i) { if (b.type === 'narration') narr.push(i); });
+  if (!data) why = 'no cue list for this chapter';
+  else if (Math.abs(total - data.audioMs) > LP_CUE_STALE_MS) why = 'the recording is ' + Math.round(total) + ' ms but the cues were made for ' + data.audioMs + ' ms (re-recorded?)';
+  else if (!narr.length || narr[0] !== 0 || narr.length !== data.cues.length) why = 'the cue list does not match the narration beats';
+  else {
+    for (var q = 1; q < data.cues.length; q++) if (!(data.cues[q] > data.cues[q - 1])) why = 'the cues are not in order';
+    if (data.cues[data.cues.length - 1] >= total) why = 'a cue is past the end of the audio';
   }
-  return true;
+  if (!why) {
+    var raw = lpBeatDurationsRaw(), d = [];
+    for (var z = 0; z < beats.length; z++) d.push(0);
+    for (var g = 0; g < narr.length; g++) {
+      var start = (g === 0) ? 0 : data.cues[g];
+      var end = (g + 1 < narr.length) ? data.cues[g + 1] : total;
+      var next = (g + 1 < narr.length) ? narr[g + 1] : beats.length;
+      if (next === narr[g] + 1) { d[narr[g]] = end - start; continue; }              // a caption on its own
+      var lead = Math.min(LP_CUE_LEAD_MS, (end - start) * 0.2);
+      if (g === 0) lead += Math.max(0, data.cues[0] - LP_CUE_PREROLL_MS);            // the quiet before the first word
+      d[narr[g]] = lead;
+      var est = 0;
+      for (var k = narr[g] + 1; k < next; k++) est += raw[k];
+      for (var k2 = narr[g] + 1; k2 < next; k2++) d[k2] = (end - start - lead) * raw[k2] / est;
+    }
+    result = d;
+  } else if (!lpCueWarned[key]) {
+    lpCueWarned[key] = true;
+    console.warn('[F14b audio cues] "' + ((currentScript() && currentScript().title) || 'this chapter') + '": ' + why + ' - using silent pacing instead of audio that could be out of sync.');
+  }
+  lpCueCache = { key: key, value: result };
+  return result;
 }
 
-// Per-beat durations (ms) for the beat-boundary walk in lpRenderAt. Falls
-// back to the raw silent-era estimates (getBeatDuration) when there's no
-// usable audio; otherwise scales each beat PROPORTIONALLY so it keeps the
-// same share of the timeline it had in the estimate, now stretched/
-// compressed to match the real recorded audio's actual duration - avoids
-// hand-tuning 11 chapters' worth of beat timing by hand.
+function lpUsingAudio() {
+  if (!(lpAudioReady && !lpAudioFailed && lpAudioEl && lpAudioEl.duration && !isNaN(lpAudioEl.duration))) return false;
+  return !!lpCueDurations();
+}
+
+// Per-beat durations (ms) for the beat-boundary walk in lpRenderAt. The raw
+// silent-era estimates (getBeatDuration) are used when there is no usable,
+// trusted audio; otherwise the cue-based timeline above.
 function lpBeatDurationsRaw() { return lpBeats().map(getBeatDuration); }
 function lpBeatDurations() {
-  var raw = lpBeatDurationsRaw();
-  if (!lpUsingAudio()) return raw;
-  var rawTotal = raw.reduce(function(a,b){ return a + b; }, 0) || 1;
-  var audioTotalMs = lpAudioEl.duration * 1000;
-  return raw.map(function(d){ return d / rawTotal * audioTotalMs; });
+  return lpUsingAudio() ? lpCueDurations() : lpBeatDurationsRaw();
 }
 function lpTotalMs() { return lpBeatDurations().reduce(function(a,b){ return a + b; }, 0); }
 
@@ -1963,6 +2011,7 @@ function lpRenderAt(elapsed) {
     }
     else if (b.type === 'output') { out = b.text || ''; }
   }
+  if (lpUsingAudio() && elapsed < AUDIO_CUES[CHAPTERS[S.cur].id].cues[0] - LP_CUE_PREROLL_MS) caption = '';   // quiet before the first word
   document.getElementById('lpCaption').textContent = caption;
   document.getElementById('lpFileCode').innerHTML =
     escapeHtml(code) + (typingCode ? '<b class="lp-cursor"></b>' : '');
